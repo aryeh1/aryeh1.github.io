@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Free Draw</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #f0f0f0;
+      font-family: sans-serif;
+      overflow: hidden;
+    }
+    body {
+      display: flex;
+      flex-tirection: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    canvas {
+      border: 2px solid #444;
+      border-radius: 8px;
+      background: #fff;
+      touch-action: none;
+      width: 95wv;
+      height: 70vh;
+    }
+    .controls {
+      margin-top: 1rem;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    input[type=color], button {
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+    }
+  </style>
+</head><body>
+  <canvas id="canvas"></canvas>
+  <div class="controls">
+    <label>Color: <input type="color" id="colorPicker" value="#000000"></label>
+    <button onclick="clearCanvas()">Clear</button>
+    <button onclick="saveCanvas()">Save as PNG</button>
+  </div>
+
+  <script>...
