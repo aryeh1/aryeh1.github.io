@@ -51,7 +51,6 @@
       50% { transform: scale(1.2); }
       100% { transform: scale(1); }
     }
-    /* Reaction buttons */
     .reaction-btn {
       background: #fff;
       border: 2px solid #ff69b4;
@@ -71,26 +70,112 @@
 <body dir="rtl">
   <div id="container">
     <div id="intro">
-      <p style="font-size: 1.4rem;">אי בקבע הי מיי וי ההו</p>
-      <button onclick="showStep1()">אי</button>
+      <p style="font-size: 1.4rem;">רוצה לראות משהו שהוא רק בשבילך?</p>
+      <button onclick="showStep1()">כן...</button>
     </div>
     <div id="step1" style="display:none;">
       <p class="message" dir="rtl" id="line1"></p>
-      <button id="continueBtn" onclick="showStep2()" style="margin-top: 1rem; display:none;">电�ש</button>
+      <button id="continueBtn" onclick="showStep2()" style="margin-top: 1rem; display:none;">המשך...</button>
     </div>
     <div id="step2" style="display:none;">
-      <div class="heart" id="heart">“</div>
-      <p id="line2" class="message" dir="rtl"></p>
-      <p id="line3" class="message" dir="rtl"></p>
+      <div class="heart" id="heart">♥</div>
+      <p class="message" dir="rtl" id="line2"></p>
+      <p class="message" dir="rtl" id="line3"></p>
     </div>
-    <div id="step3" style="display:none; text-align: right;">
-      <p id="question" class="message" dir="rtl">בי הש מטו</p>
-      <div style="margin-top: 1rem; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
-        <button onclick="respond('smile')" class="reaction-btn">ץשדת</button>
-        <button onlick="respond('calm')" class="reaction-btn">שאוי ברי</button>
-        <button onlick="respond('more')" class="reaction-btn">באו</button>
+  </div>
+  <script>
+    function showStep1() {
+      document.getElementById("intro").style.display = "none";
+      document.getElementById("step1").style.display = "block";
+      setTimeout(() => {
+        const line1 = document.getElementById("line1");
+        line1.textContent = "לפעמים שקט אומר יותר ממילים.";
+        line1.style.opacity = 1;
+        document.getElementById("continueBtn").style.display = "inline-block";
+      }, 300);
+    }
+    function showStep2() {
+      document.getElementById("step1").style.display = "none";
+      document.getElementById("step2").style.display = "block";
+      document.getElementById("heart").style.display = "block";
+      setTimeout(() => {
+        document.getElementById("line2").textContent = "אבל רציתי שתדעי.";
+        document.getElementById("line2").style.opacity = 1;
+      }, 1000);
+      setTimeout(() => {
+        document.getElementById("line3").textContent = "את משמעותית לי.";
+        document.getElementById("line3").style.opacity = 1;
+      }, 2500);
+      setTimeout(() => {
+        document.getElementById("step3").style.display = "block";
+      }, 4000);
+    }
+    function respond(feeling) {
+      const reaction = document.getElementById("reaction");
+      if (feeling === "smile") {
+        reaction.textContent = "שמחת אותי.";
+      } else if (feeling === "calm") {
+        reaction.textContent = "מרגיש אותך.";
+      } else if (feeling === "more") {
+        reaction.innerHTML = "נשארתי, אם את רוצה.";
+        setTimeout(() => {
+          document.getElementById("step3").style.display = "none";
+          document.getElementById("finalStep").style.display = "block";
+          startHearts();
+        }, 2000);
+      }
+      reaction.style.opacity = 1;
+    }
+    function startHearts() {
+      const canvas = document.getElementById("heartCanvas");
+      const ctx = canvas.getContext("2d");
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const hearts = Array.from({ length: 20 }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: Math.random() * 10 + 10,
+        speed: Math.random() * 1 + 0.5,
+        dx: Math.random() * 0.5 - 0.25
+      }));
+      function drawHeart(x, y, size) {
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.bezierCurveTo(x, y - size / 2, x - size, y - size / 2, x - size, y);
+        ctx.bezierCurveTo(x - size, y + size, x, y + size * 1.5, x, y + size * 2);
+        ctx.bezierCurveTo(x, y + size * 1.5, x + size, y + size, x + size, y);
+        ctx.bezierCurveTo(x + size, y - size / 2, x, y - size / 2, x, y);
+        ctx.fillStyle = "#ff69b4";
+        ctx.fill();
+      }
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        hearts.forEach(h => {
+          h.y -= h.speed;
+          h.x += h.dx;
+          if (h.y < -20) {
+            h.y = canvas.height + 20;
+            h.x = Math.random() * canvas.width;
+          }
+          drawHeart(h.x, h.y, h.size);
+        });
+        requestAnimationFrame(animate);
+      }
+      animate();
+    }
+  </script>
+  <div id="step3" style="display:none; text-align: right;">
+    <p class="message" dir="rtl" id="question">מה עולה בך עכשיו?</p>
+    <div style="margin-top: 1rem; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+      <button onclick="respond('smile')" class="reaction-btn">חיוך</button>
+      <button onclick="respond('calm')" class="reaction-btn">שקט בלב</button>
+      <button onclick="respond('more')" class="reaction-btn">עוד...</button>
     </div>
-    <p id="reaction" class="message" dir="rtl" style="margin-top: 2rem;"></p>
+    <p class="message" dir="rtl" id="reaction" style="margin-top: 2rem;"></p>
+  </div>
+  <div id="finalStep" style="display:none; text-align: right; padding: 2rem;">
+    <canvas id="heartCanvas" style="position: fixed; top: 0; left: 0; z-index: -1;"></canvas>
+    <p class="message" dir="rtl" style="font-size: 1.6rem; opacity: 1;">אם הגעת עד כאן – זה אומר לי הכול.</p>
   </div>
 </body>
 </html>
