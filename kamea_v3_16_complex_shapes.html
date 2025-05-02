@@ -1,0 +1,476 @@
+
+<!DOCTYPE html>
+<html lang="he">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>קמע אישי 3.16</title>
+  <style>
+    body {
+      margin: 0;
+      background: #111;
+      color: #f0f0f0;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2em 1em;
+    }
+
+    h1 {
+      font-size: 2em;
+      margin-bottom: 0.5em;
+    }
+
+    input {
+      width: 80%;
+      max-width: 400px;
+      font-size: 1.2em;
+      padding: 0.7em 1em;
+      border-radius: 10px;
+      border: none;
+      margin-bottom: 1em;
+      box-shadow: 0 0 10px rgba(255,255,255,0.1);
+    }
+
+    button {
+      font-size: 1em;
+      padding: 0.6em 1.5em;
+      border: none;
+      border-radius: 8px;
+      background: #00aaff;
+      color: white;
+      cursor: pointer;
+      margin: 1em;
+    }
+
+    button:hover {
+      background: #008fcc;
+    }
+
+    #svgArea {
+      background: #1a1a1a;
+      border-radius: 20px;
+      padding: 1em;
+      margin-top: 1em;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    }
+
+    svg {
+      width: 300px;
+      height: 300px;
+      display: block;
+      margin: auto;
+    }
+
+    #caption {
+      margin-top: 1em;
+      font-size: 1.1em;
+      font-weight: 300;
+    }
+  
+.animatedFadeIn {
+  opacity: 0;
+  animation: fadeIn ease 1s forwards;
+}
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+
+.animated {
+  transform-origin: 150px 150px;
+  animation: rotate 10s linear infinite;
+}
+
+@keyframes rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
+</head>
+<body>
+
+<header style="width: 100%; background: #000; color: #00aaff; padding: 1em; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.7); font-size: 1.2em;">יצירת קמע אישי</header>
+
+  <h1>קמע אישי 3.16</h1>
+  <input type="text" id="inputWord" placeholder="מה אתה צריך עכשיו?">
+  <button onclick="generateKamea()">צור קמע</button>
+  <div id="svgArea"></div>
+  <button id="downloadBtn" onclick="downloadSVG()" style="display:none; margin-top:1em;">הורד קמע</button>
+
+  <div id="caption"></div>
+<button id="historyToggleBtn" onclick="toggleHistory()" style="background: #666;">היסטוריה</button>
+<div id="historyArea" style="margin-top: 1em; display: none;"></div>
+
+<button id="downloadBtn" onclick="downloadSVG()" style="display:none;">הורד קמע</button>
+
+  <script>
+    function hashString(str) {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        hash = str.charCodeAt(i) + ((hash << 5) - hash);
+        hash = hash & hash;
+      }
+      return Math.abs(hash);
+    }
+
+    function generatePath(cx, cy, a, k1, k2, loops = 6) {
+// [Complex version defined below separately]
+      let path = "";
+      for (let t = 0; t <= Math.PI * 2 * loops; t += 0.01) {
+        const r = a * Math.cos(k1 * t) * Math.sin(k2 * t);
+        const x = cx + r * Math.cos(t);
+        const y = cy + r * Math.sin(t);
+        path += `${x},${y} `;
+      }
+      return path.trim();
+    }
+
+    function generateKamea() {
+  const input = document.getElementById("inputWord").value.trim();
+  const svgArea = document.getElementById("svgArea");
+  const caption = document.getElementById("caption");
+  const downloadBtn = document.getElementById("downloadBtn");
+
+  svgArea.innerHTML = "";
+
+  if (!input) {
+    caption.textContent = "כתוב משהו כדי ליצור קמע.";
+    downloadBtn.style.display = "none";
+    return;
+  }
+
+  const hash = hashString(input);
+  const hue = hash % 360;
+  const color = `hsl(${hue}, 100%, 60%)`;
+
+  const k1 = 3 + (hash % 5);
+  const k2 = 5 + (hash % 7);
+  
+  const shapeType = hash % 4;
+  function pickShape(cx, cy, a, k1, k2) {
+    switch (shapeType) {
+      case 0: return [generatePath(cx, cy, a, k1, k2)];
+      case 1: return [generateStarPath(cx, cy, a)];
+      case 2: return [generateMandalaPath(cx, cy, a, k1, k2)];
+      case 3: return [generateEyePath(cx, cy, a, k1, k2)];
+      default: return [generatePath(cx, cy, a, k1, k2)];
+    }
+  }
+  
+  const rand = (min, max) => min + Math.random() * (max - min);
+
+  const cx = 150, cy = 150, a = 90;
+  const variants = [
+    generatePath(cx, cy, a, rand(2, 6), rand(3, 8)),
+    generateStarPath(cx, cy, a * rand(0.5, 1), Math.floor(rand(6, 14))),
+    generateMandalaPath(cx, cy, a * rand(0.4, 1), rand(1, 7), rand(1, 5)),
+    generateEyePath(cx, cy, a * rand(0.5, 1), rand(2, 6), rand(1, 5)),
+    generateComplexPath(cx, cy, a * rand(0.5, 1), rand(2, 6), rand(2, 6))[0]
+  ];
+
+  const layerCount = Math.floor(rand(3, 6));
+  const layers = [];
+  for (let i = 0; i < layerCount; i++) {
+    const p = variants[Math.floor(Math.random() * variants.length)];
+    layers.push(p);
+  }
+
+  const pathData = layers;
+
+
+
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("id", "kameaSVG");
+  svg.setAttribute("viewBox", "0 0 300 300");
+  svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+
+  // Removed SVG style injection for animation — now in global CSS.
+
+  const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+  rect.setAttribute("width", "300");
+  rect.setAttribute("height", "300");
+  rect.setAttribute("fill", "black");
+  svg.appendChild(rect);
+
+  const animate = `<animateTransform attributeName='transform' attributeType='XML' type='rotate' from='0 150 150' to='360 150 150' dur='10s' repeatCount='indefinite'/>`;
+
+  
+  const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+
+  pathData.forEach((_, i) => {
+    const gradient = document.createElementNS("http://www.w3.org/2000/svg", "linearGradient");
+    gradient.setAttribute("id", `grad${i}`);
+    gradient.setAttribute("x1", "0%");
+    gradient.setAttribute("y1", "0%");
+    gradient.setAttribute("x2", "100%");
+    gradient.setAttribute("y2", "100%");
+
+    for (let j = 0; j <= 5; j++) {
+      const stop = document.createElementNS("http://www.w3.org/2000/svg", "stop");
+      stop.setAttribute("offset", `${j * 20}%`);
+      stop.setAttribute("stop-color", `hsl(${(hue + i * 30 + j * 40) % 360}, 100%, 60%)`);
+      gradient.appendChild(stop);
+    }
+    defs.appendChild(gradient);
+  });
+
+  svg.appendChild(defs);
+
+
+  pathData.forEach((points, i) => {
+    const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+
+    const polyline = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+    polyline.setAttribute("points", points);
+    polyline.setAttribute("fill", "none");
+    polyline.setAttribute("stroke", `url(#grad${i})`);
+    polyline.setAttribute("stroke-width", `${1.2 - i * 0.3}`);
+polyline.setAttribute("stroke-dasharray", "2000");
+    polyline.setAttribute("stroke-dashoffset", "2000");
+
+    const dashAnim = document.createElementNS("http://www.w3.org/2000/svg", "animate");
+    dashAnim.setAttribute("attributeName", "stroke-dashoffset");
+    dashAnim.setAttribute("from", "2000");
+    dashAnim.setAttribute("to", "0");
+    dashAnim.setAttribute("dur", "3s");
+    dashAnim.setAttribute("fill", "freeze");
+
+    const fadeAnim = document.createElementNS("http://www.w3.org/2000/svg", "animate");
+    fadeAnim.setAttribute("attributeName", "opacity");
+    fadeAnim.setAttribute("from", "0");
+    fadeAnim.setAttribute("to", "1");
+    fadeAnim.setAttribute("dur", "2s");
+    fadeAnim.setAttribute("fill", "freeze");
+
+    polyline.setAttribute("opacity", "0");
+    polyline.appendChild(dashAnim);
+    polyline.appendChild(fadeAnim);
+
+    const rotateAnim = document.createElementNS("http://www.w3.org/2000/svg", "animateTransform");
+    rotateAnim.setAttribute("attributeName", "transform");
+    rotateAnim.setAttribute("attributeType", "XML");
+    rotateAnim.setAttribute("type", "rotate");
+    rotateAnim.setAttribute("from", `0 150 150`);
+    rotateAnim.setAttribute("to", `360 150 150`);
+    rotateAnim.setAttribute("dur", `${10 + i * 3}s`);
+    rotateAnim.setAttribute("repeatCount", "indefinite");
+
+    const scaleAnim = document.createElementNS("http://www.w3.org/2000/svg", "animateTransform");
+    scaleAnim.setAttribute("attributeName", "transform");
+    scaleAnim.setAttribute("attributeType", "XML");
+    scaleAnim.setAttribute("type", "scale");
+    scaleAnim.setAttribute("values", "1;1.05;1");
+    scaleAnim.setAttribute("dur", "4s");
+    scaleAnim.setAttribute("additive", "sum");
+    scaleAnim.setAttribute("repeatCount", "indefinite");
+
+    group.appendChild(polyline);
+    group.appendChild(rotateAnim);
+    group.appendChild(scaleAnim);
+    svg.appendChild(group);
+  });
+
+  const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+  text.setAttribute("x", "150");
+  text.setAttribute("y", "40");
+  text.setAttribute("text-anchor", "middle");
+  text.setAttribute("font-size", "13");
+  text.setAttribute("font-weight", "bold");
+  text.setAttribute("fill", "#ffffff");
+  text.setAttribute("style", "paint-order: stroke; stroke: #000; stroke-width: 1px;");
+  text.textContent = "קמע עבור: " + input;
+  svg.appendChild(text);
+
+  svgArea.appendChild(svg);
+  const serializer = new XMLSerializer();
+  const svgString = serializer.serializeToString(svg);
+  saveToHistory(input, svgString);
+  caption.textContent = "";
+  downloadBtn.style.display = "inline-block";
+  
+}
+
+function downloadSVG() {
+      const svg = document.getElementById("kameaSVG");
+      const serializer = new XMLSerializer();
+      const source = serializer.serializeToString(svg);
+      const blob = new Blob([source], { type: "image/svg+xml;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+
+      const now = new Date();
+      const filename = "kamea_" + now.toISOString().replace(/[:.]/g, "-") + ".svg";
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+  </script>
+
+<script>
+  (function() {
+    const darkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.body.style.background = darkMode ? "#111" : "#f0f0f0";
+    document.body.style.color = darkMode ? "#f0f0f0" : "#111";
+  })();
+</script>
+
+
+<script>
+function exportGIF() {
+  const svg = document.getElementById("kameaSVG");
+  const serializer = new XMLSerializer();
+  const svgString = serializer.serializeToString(svg);
+
+  const canvas = document.createElement("canvas");
+  canvas.width = 300;
+  canvas.height = 300;
+  const ctx = canvas.getContext("2d");
+
+  const img = new Image();
+  const svgBlob = new Blob([svgString], {type: "image/svg+xml;charset=utf-8"});
+  const url = URL.createObjectURL(svgBlob);
+
+  img.onload = () => {
+    let frames = [];
+    const totalFrames = 20;
+    let count = 0;
+
+    const interval = setInterval(() => {
+      ctx.clearRect(0, 0, 300, 300);
+      ctx.save();
+      ctx.translate(150, 150);
+      ctx.rotate((Math.PI * 2 * count) / totalFrames);
+      ctx.translate(-150, -150);
+      ctx.drawImage(img, 0, 0);
+      ctx.restore();
+
+      frames.push(canvas.toDataURL("image/png"));
+      count++;
+
+      if (count >= totalFrames) {
+        clearInterval(interval);
+        createGIF(frames);
+      }
+    }, 100);
+  };
+
+  img.src = url;
+}
+
+function createGIF(frames) {
+  let gifHeader = "GIF89a";
+  // This is a placeholder: actual binary GIF creation requires full implementation
+  alert("GIF נוצר אך דרוש קוד מלא ליצירת קובץ – מומלץ לשלב ספריית יצירת GIF בעתיד.");
+}
+</script>
+
+</body>
+</html>
+
+
+<script>
+function generateComplexPath(cx, cy, a, k1, k2, loops = 6) {
+      let paths = [];
+      for (let layer = 0; layer < 3; layer++) {
+        let path = "";
+        const offset = layer * Math.PI / 6;
+        const ampMod = 1 + 0.2 * layer;
+        for (let t = 0; t <= Math.PI * 2 * loops; t += 0.01) {
+          const r1 = a * Math.cos(k1 * t + offset) * Math.sin(k2 * t);
+          const r2 = (a / 2) * Math.sin(k1 * t * 1.5) + Math.cos(k2 * t * 1.3);
+          const r3 = r1 + r2 * ampMod * Math.sin(t * 3);
+          const x = cx + r3 * Math.cos(t + offset);
+          const y = cy + r3 * Math.sin(t + offset);
+          path += `${x},${y} `;
+        }
+        paths.push(path.trim());
+      }
+      return paths;
+    }
+</script>
+
+
+<script>
+function generateStarPath(cx, cy, a, points = 7) {
+      let path = "";
+      for (let i = 0; i < points * 2; i++) {
+        const angle = (Math.PI * i) / points;
+        const r = (i % 2 === 0) ? a : a / 2;
+        const x = cx + r * Math.cos(angle);
+        const y = cy + r * Math.sin(angle);
+        path += `${x},${y} `;
+      }
+      return path.trim();
+    }
+
+    function generateMandalaPath(cx, cy, a, k1, k2, loops = 12) {
+      let path = "";
+      for (let t = 0; t <= Math.PI * 2 * loops; t += 0.01) {
+        const r = a * Math.cos(k1 * t) * Math.cos(k2 * t);
+        const x = cx + r * Math.cos(t);
+        const y = cy + r * Math.sin(t);
+        path += `${x},${y} `;
+      }
+      return path.trim();
+    }
+
+    function generateEyePath(cx, cy, a, k1, k2, loops = 6) {
+      let path = "";
+      for (let t = 0; t <= Math.PI * 2 * loops; t += 0.01) {
+        const r = a * Math.sin(k1 * t) * Math.sin(t);
+        const x = cx + r * Math.sin(t);
+        const y = cy + r * Math.cos(t);
+        path += `${x},${y} `;
+      }
+      return path.trim();
+    }
+</script>
+
+
+
+
+<script>
+function saveToHistory(input, svgString) {
+  const history = JSON.parse(localStorage.getItem("kameaHistory") || "[]");
+  history.unshift({ text: input, svg: svgString, date: new Date().toISOString() });
+  localStorage.setItem("kameaHistory", JSON.stringify(history.slice(0, 20)));
+}
+
+function toggleHistory() {
+  const area = document.getElementById("historyArea");
+  if (area.style.display === "none" || area.style.display === "") {
+    showHistory();
+    area.style.display = "block";
+  } else {
+    area.style.display = "none";
+  }
+}
+
+function showHistory() {
+  const history = JSON.parse(localStorage.getItem("kameaHistory") || "[]");
+  const area = document.getElementById("historyArea");
+  area.innerHTML = "";
+  if (history.length === 0) {
+    area.textContent = "אין קמעות קודמים.";
+    return;
+  }
+  history.forEach((item, i) => {
+    const div = document.createElement("div");
+    div.style.marginBottom = "1em";
+    div.style.padding = "1em";
+    div.style.background = "#222";
+    div.style.borderRadius = "10px";
+    div.innerHTML = `<div style="font-size:0.9em; margin-bottom: 0.3em;">${new Date(item.date).toLocaleString()} עבור: <b>${item.text}</b></div>` + item.svg;
+    area.appendChild(div);
+  });
+}
+</script>
+</body>
+</html>
