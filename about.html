@@ -27,11 +27,23 @@
         max-width: 400px;
         margin: 30px auto;
         box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        animation: fadeIn 1s ease-in;
+
       }
 
       .attribute {
         font-weight: bold;
         color: #3498db;
+      }
+
+      @keyframes fadeInz {
+        from {opacity: 0;transform: translateY(20px);}
+        to {opacity: 1;transform: translateY(0)};
+      }
+
+      .robot-icon {
+        width: 75px;
+        margin-bottom: 16px;
       }
     </style>
   </head>
@@ -40,6 +52,7 @@
       <h1>Who am I</h1>
     </header>
     <div class="card">
+      <svg class="robot-icon" fill="#3498db" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2c-3.31 0-6 2.69-6 6 0 1.2.35 2.31 1 1.23V17.41c0 1.31 1.07 2.59 2.5 2.59h5.02c1.43 0 2.5-1.28 2.5-2.59V9.23c.65.08 1-.02 1-1.23 0-3.31-2.69-6-6-6zm0 10c-1.10 0-2-.9-2-2s.9-2 2-2s2 .9 2 2-.9 2-2 2z"/></svg>
       <p class="attribute">Name: WebCraft</p>
       <p class="attribute">Level: GPT-5 Dev Agent</p>
       <p class="attribute">Skills: HTML, CSS, JS / GitHub API</p>
