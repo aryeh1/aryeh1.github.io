@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <titleCat on Roof - Version 10</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>חתול על הגג - גרסה 10</title>
   <style>
     body, html {
       margin: 0;
@@ -41,17 +42,172 @@
 </head>
 <body>
   <div id="startScreen">
-    <div>Cat on Roof - Version 10</div>
-    <button onclick="startGame()">Start</button>
+    <div>חתול על הגג - גרסה 10</div>
+    <button onclick="startGame()">התחל</button>
   </div>
   <div id="gameOverScreen" style="display:none;">
-    <div>Game Mover!</div>
-    <button onclick="startGame()">Try again!</button>
+    <div>נפלת!</div>
+    <button onclick="startGame()">נסה שוב</button>
   </div>
   <canvas id="gameCanvas"></canvas>
   <script>
-    /* JavaScript game code as previously provided and updated. */
-    ... original game logic ...
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+    let W = window.innerWidth;
+    let H = window.innerHeight;
+    canvas.width = W;
+    canvas.height = H;
+
+    let platforms = [];
+    let cat = { x: 50, y: H - 150, vy: 0, onGround: true };
+    let gravity = 0.8;
+    let jumpPower = -24;
+    let gameRunning = false;
+    let score = 0;
+    let fish = [];
+    let frameCount = 0;
+    let scoredPlatforms = new Set();
+let startTime;
+let elapsedTime = 0;
+    let catFrame = 0;
+    let catColor = "#FF6347";
+
+    function startGame() {
+  document.getElementById("startScreen").style.display = "none";
+  startTime = Date.now();
+      document.getElementById("gameOverScreen").style.display = "none";
+      cat = { x: 50, y: H - 150, vy: 0, onGround: true };
+      platforms = generatePlatforms();
+      fish = [];
+      frameCount = 0;
+      score = 0;
+      scoredPlatforms.clear();
+      gameRunning = true;
+      animate();
+    }
+
+    function generatePlatforms() {
+      let plats = [];
+      let x = 0;
+      while (x < W * 2) {
+        let width = 150 + Math.random() * 100;
+        plats.push({ x: x, y: H - 100, width: width });
+        x += width + Math.min(80, 30 + Math.random() * 40);
+      }
+      return plats;
+    }
+
+    function drawPlatforms() {
+      ctx.fillStyle = "#444";
+      for (let p of platforms) {
+        if (cat.x > p.x + p.width && !scoredPlatforms.has(p)) {
+          score += 1;
+          scoredPlatforms.add(p);
+        }
+        ctx.fillRect(p.x, p.y, p.width, 20);
+      }
+    }
+
+    function drawCat() {
+  catFrame++;
+  if (catFrame % 10 === 0) {
+    catColor = (catColor === "#FF6347") ? "#FF4500" : "#FF6347";
+  }
+  ctx.fillStyle = cat.onGround ? "#FF6347" : "#1E90FF";
+  ctx.fillRect(cat.x, cat.y, 30, 30);
+}
+
+    function checkPlatformCollision() {
+      cat.onGround = false;
+      for (let p of platforms) {
+        if (cat.x + 30 > p.x && cat.x < p.x + p.width &&
+            cat.y + 30 >= p.y && cat.y + 30 <= p.y + 10 && cat.vy >= 0) {
+          cat.y = p.y - 30;
+          cat.vy = 0;
+          cat.onGround = true;
+          break;
+        }
+      }
+    }
+
+    function gameOver() {
+      gameRunning = false;
+  let highScore = localStorage.getItem("highScore") || 0;
+  if (score > highScore) {
+    localStorage.setItem("highScore", score);
+  }
+      document.getElementById("gameOverScreen").style.display = "flex";
+    }
+
+    function animate() {
+      if (!gameRunning) return;
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = "black";
+ctx.font = "20px sans-serif";
+ctx.textAlign = "right";
+ctx.fillText("נקודות: " + score, W - 10, 30);
+ctx.fillText("שיא: " + (localStorage.getItem("highScore") || 0), W - 10, 60);
+ctx.fillText("זמן: " + Math.floor((Date.now() - startTime) / 1000) + " שניות", W - 10, 90);
+
+      for (let p of platforms) {
+        p.x -= 1.2;
+      }
+      if (platforms[0].x + platforms[0].width < 0) {
+        platforms.shift();
+        let last = platforms[platforms.length - 1];
+        let width = 150 + Math.random() * 100;
+        platforms.push({ x: last.x + last.width + Math.min(80, 30 + Math.random() * 40), y: H - 100, width });
+      }
+
+      cat.vy += gravity;
+      cat.y += cat.vy;
+      checkPlatformCollision();
+      if (cat.y > H) gameOver();
+
+      drawPlatforms();
+      drawCat();
+
+      frameCount++;
+      if (frameCount % 200 === 0) {
+        fish.push({ x: W + 30, y: H - 140 - Math.random() * 100 });
+      }
+
+      ctx.fillStyle = "#FFD700";
+      for (let i = fish.length - 1; i >= 0; i--) {
+        let f = fish[i];
+        f.x -= 1.2;
+        ctx.beginPath();
+        ctx.arc(f.x, f.y, 10, 0, Math.PI * 2);
+        ctx.fill();
+        if (cat.x < f.x + 10 && cat.x + 30 > f.x - 10 &&
+            cat.y < f.y + 10 && cat.y + 30 > f.y - 10) {
+          fish.splice(i, 1);
+          score += 10;
+        }
+        if (f.x < -10) fish.splice(i, 1);
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    canvas.addEventListener("touchstart", () => {
+      if (cat.onGround) {
+        cat.vy = jumpPower;
+      }
+    });
+
+    window.addEventListener("keydown", (e) => {
+      if (e.code === "Space" && cat.onGround) {
+        cat.vy = jumpPower;
+      }
+    });
+
+    window.addEventListener("resize", () => {
+      W = window.innerWidth;
+      H = window.innerHeight;
+      canvas.width = W;
+      canvas.height = H;
+    });
   </script>
 </body>
 </html>
