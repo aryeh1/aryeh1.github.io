@@ -3,55 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Currency Converter</title>
+  <title>Currency Converter (Final)</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 2rem;
-      background: #f0f4f8;
-    }
-    .converter {
-      max-width: 400px;
-      margin: auto;
-      background: white;
-      padding: 1.5rem;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-    .converter h1 {
-      font-size: 1.5rem;
-      text-align: center;
-      margin-bottom: 1rem;
-    }
-    .field {
-      margin-bottom: 1rem;
-    }
-    label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-weight: bold;
-    }
-    input, select, button {
-      width: 100%;
-      padding: 0.5rem;
-      font-size: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-    }
-    button {
-      background: #007bff;
-      color: white;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-    button:hover {
-      background: #0056b3;
-    }
-    .result {
-      margin-top: 1rem;
-      font-weight: bold;
-      text-align: center;
-    }
+    body { font-family: Arial, sans-serif; padding: 2rem; background: #f0f4f8; }
+    .converter { max-width: 400px; margin: auto; background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .converter h1 { font-size: 1.5rem; text-align: center; margin-bottom: 1rem; }
+    .field { margin-bottom: 1rem; }
+    label { display: block; margin-bottom: 0.5rem; font-weight: bold; }
+    input, select, button { width: 100%; padding: 0.5rem; font-size: 1rem; border: 1px solid #ccc; border-radius: 8px; }
+    button { background: #007bff; color: white; cursor: pointer; transition: background 0.3s ease; }
+    button:hover { background: #0056b3; }
+    .result { margin-top: 1rem; font-weight: bold; text-align: center; min-height: 2em; }
   </style>
 </head>
 <body>
@@ -63,52 +25,30 @@
     </div>
     <div class="field">
       <label for="from">From</label>
-      <select id="from"></select>
+      <select id="from">
+        <option value="USD">USD – United States Dollar</option>
+        <option value="EUR">EUR – Euro</option>
+        <option value="ILS">ILS – Israeli New Shekel</option>
+        <option value="GBP">GBP – British Pound Sterling</option>
+        <option value="JPY">JPY – Japanese Yen</option>
+      </select>
     </div>
     <div class="field">
       <label for="to">To</label>
-      <select id="to"></select>
+      <select id="to">
+        <option value="USD">USD – United States Dollar</option>
+        <option value="EUR" selected>EUR – Euro</option>
+        <option value="ILS">ILS – Israeli New Shekel</option>
+        <option value="GBP">GBP – British Pound Sterling</option>
+        <option value="JPY">JPY – Japanese Yen</option>
+      </select>
     </div>
     <button id="convert-btn">Convert</button>
     <div class="result" id="result"></div>
   </div>
 
   <script>
-    async function loadDynamicCurrencies() {
-      try {
-        const res = await fetch('https://api.frankfurter.app/currencies');
-        if (!res.ok) throw new Error('Network response was not ok');
-        const data = await res.json();
-        const from = document.getElementById('from');
-        const to   = document.getElementById('to');
-        Object.entries(data).forEach(([code, name]) => {
-          from.appendChild(new Option(\`\${code} – \${name}\`, code));
-          to.appendChild(new Option(\`\${code} – \${name}\`, code));
-        });
-      } catch (err) {
-        console.warn('Dynamic load failed:', err);
-      }
-    }
-
-    function populateStatic() {
-      const staticList = {
-        USD: "United States Dollar",
-        EUR: "Euro",
-        ILS: "Israeli New Shekel",
-        GBP: "British Pound Sterling",
-        JPY: "Japanese Yen"
-      };
-      const from = document.getElementById('from');
-      const to   = document.getElementById('to');
-      Object.entries(staticList).forEach(([code, name]) => {
-        from.appendChild(new Option(\`\${code} – \${name}\`, code));
-        to.appendChild(new Option(\`\${code} – \${name}\`, code));
-      });
-      from.value = 'USD';
-      to.value   = 'EUR';
-    }
-
-    async function convertCurrency() {
+    document.getElementById('convert-btn').addEventListener('click', async () => {
       const amount = parseFloat(document.getElementById('amount').value);
       const from   = document.getElementById('from').value;
       const to     = document.getElementById('to').value;
@@ -120,21 +60,19 @@
       }
 
       try {
-        const url = \`https://api.frankfurter.app/latest?amount=\${amount}&from=\${from}&to=\${to}\`;
-        const res = await fetch(url);
-        if (!res.ok) throw new Error('Conversion request failed');
+        const res = await fetch(`https://api.frankfurter.app/latest?amount=${amount}&from=${from}&to=${to}`);
+        if (!res.ok) throw new Error('Network error');
         const data = await res.json();
         const converted = data.rates[to];
-        resultDiv.textContent = \`\${amount} \${from} = \${converted.toFixed(2)} \${to}\`;
+        if (converted === undefined) throw new Error('Rate not found');
+        const unitRate = converted / amount;
+        resultDiv.innerHTML = `
+          ${amount} ${from} = ${converted.toFixed(2)} ${to}<br>
+          1 ${from} = ${unitRate.toFixed(4)} ${to}
+        `;
       } catch (err) {
         resultDiv.textContent = 'Conversion error: ' + err.message;
       }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      populateStatic();
-      loadDynamicCurrencies();
-      document.getElementById('convert-btn').addEventListener('click', convertCurrency);
     });
   </script>
 </body>
