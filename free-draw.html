@@ -1,18 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Free Draw</title>
   <style>
-    html, body {
+    body {
       margin: 0;
       padding: 0;
       background: #f0f0f0;
       font-family: sans-serif;
-      overflow: hidden;
-    }
-    body {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -26,39 +23,69 @@
       touch-action: none;
       width: 95vw;
       height: 70vh;
+      transition: transform 0.3s ease-in-out;
     }
     .controls {
       margin-top: 1rem;
       display: flex;
       gap: 1rem;
       align-items: center;
-      flex-wrap: wrap;
       justify-content: center;
+      flex-wrap: wrap;
     }
-    input[type=color], button {
+    input[type=range], button, select {
       padding: 0.5rem 1rem;
       font-size: 1rem;
+    }
+    #currentColorDisplay {
+      width: 2rem;
+      height: 2rem;
+      border: 1px solid #000;
+      display: inline-block;
+      vertical-align: middle;
+      margin-left: 0.5rem;
+      border-radius: 4px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
   <canvas id="canvas"></canvas>
   <div class="controls">
-    <label>Color: <input type="color" id="colorPicker" value="#000000"></label>
+    <label>Color:
+      <span id="currentColorDisplay" style="background: #000000"></span>
+    </label>
+    <label>Width:
+      <input type="range" id="widthPicker" min="1" max="20" value="4" />
+    </label>
+    <label>Background:
+      <select id="bgPicker">
+        <option value="#ffffff">White</option>
+        <option value="#000000">Black</option>
+        <option value="#f0f0f0">Gray</option>
+      </select>
+    </label>
+    <button onclick="flipCanvas()">Mirror</button>
     <button onclick="clearCanvas()">Clear</button>
     <button onclick="saveCanvas()">Save as PNG</button>
   </div>
-
+  <input type="color" id="colorPicker" value="#000000" style="display:none" />
   <script>
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
     const colorPicker = document.getElementById('colorPicker');
+    const widthPicker = document.getElementById('widthPicker');
+    const currentColorDisplay = document.getElementById('currentColorDisplay');
+    const bgPicker = document.getElementById('bgPicker');
     let drawing = false;
     let lastX = 0, lastY = 0;
+    let flipped = false;
 
     function resizeCanvas() {
+      const prev = ctx.getImageData(0, 0, canvas.width, canvas.height);
       canvas.width = canvas.offsetWidth;
       canvas.height = canvas.offsetHeight;
+      ctx.putImageData(prev, 0, 0);
     }
 
     window.addEventListener('resize', resizeCanvas);
@@ -66,12 +93,19 @@
 
     function getPos(e) {
       const rect = canvas.getBoundingClientRect();
+      let x, y;
       if (e.touches && e.touches.length > 0) {
         const touch = e.touches[0];
-        return [touch.clientX - rect.left, touch.clientY - rect.top];
+        x = touch.clientX - rect.left;
+        y = touch.clientY - rect.top;
       } else {
-        return [e.clientX - rect.left, e.clientY - rect.top];
+        x = e.clientX - rect.left;
+        y = e.clientY - rect.top;
       }
+      if (flipped) {
+        x = canvas.width - x;
+      }
+      return [x, y];
     }
 
     function startDraw(e) {
@@ -90,7 +124,7 @@
       e.preventDefault();
       const [x, y] = getPos(e);
       ctx.strokeStyle = colorPicker.value;
-      ctx.lineWidth = 4;
+      ctx.lineWidth = widthPicker.value;
       ctx.lineCap = 'round';
       ctx.beginPath();
       ctx.moveTo(lastX, lastY);
@@ -98,6 +132,37 @@
       ctx.stroke();
       [lastX, lastY] = [x, y];
     }
+
+    function clearCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function saveCanvas() {
+      const data = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      const now = new Date();
+      const timestamp = now.toISOString().replace(/[:.]/g, '-');
+      link.download = `drawing-${timestamp}.png`;
+      link.href = data;
+      link.click();
+    }
+
+    function flipCanvas() {
+      flipped = !flipped;
+      canvas.style.transform = flipped ? 'scaleX(-1)' : 'scaleX(1)';
+    }
+
+    currentColorDisplay.addEventListener('click', () => {
+      colorPicker.click();
+    });
+
+    colorPicker.addEventListener('input', () => {
+      currentColorDisplay.style.background = colorPicker.value;
+    });
+
+    bgPicker.addEventListener('change', () => {
+      canvas.style.backgroundColor = bgPicker.value;
+    });
 
     canvas.addEventListener('mousedown', startDraw);
     canvas.addEventListener('mouseup', stopDraw);
@@ -108,22 +173,6 @@
     canvas.addEventListener('touchend', stopDraw);
     canvas.addEventListener('touchcancel', stopDraw);
     canvas.addEventListener('touchmove', draw, { passive: false });
-
-    function clearCanvas() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }
-
-    function saveCanvas() {
-      const data = canvas.toDataURL('image/png');
-      if (!data || data.length < 100) {
-        alert('Canvas is empty or not ready.');
-        return;
-      }
-      const link = document.createElement('a');
-      link.download = 'drawing.png';
-      link.href = data;
-      link.click();
-    }
   </script>
 </body>
 </html>
