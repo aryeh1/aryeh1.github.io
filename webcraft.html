@@ -1,7 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
+<!-- This is the new version of webcraft.html with expandable cards -->
+<!DOCTYPE HTML <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>WebCraft – GPT Site Agent</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/font-awesome/6.5.0/css/all-min.css" />
@@ -10,6 +10,36 @@
   <style>body{ font-family: 'Roboto', sans-serif; margin: 0; background: linear-gradient(to right, #eef2f3, #8e9eab); color: #333; overflow-x: hidden; } </style>
 </head>
 <body>
-  <h1>Test Update WebCraft</h1>
+  <header>
+    <h1>WebCraft – GPT Website Manager</h1>
+    <p>Smart automation, creative suggestions, and total control — through natural language.</p>
+  </header>
+  <section>
+    <h2>What is WebCraft?</h2>
+    <p>WebCraft is a custom GPT agent that manages a GitHub-based website through intelligent prompt-driven interactions.</p>
+
+    <h2>Core Capabilities</h2>
+    <div class="features">
+        <div class="card">
+          <i class="fa fa-folder-open"></i>
+          <h3>Smart File Loading</h3>
+          <p>Automatically loads your site's key files</p>
+          <span class="toggle-link" onclick="toggleCard(this)">Learn more</span>
+          <div class="details">
+            <h4>How to Use</h4>
+            <ul>
+              <li>Use GitHub API: GET `/repos/:owner:repo/contents/index.html`</li>
+              <li>Parse Base64 and extract DOM structure</li>
+              <li>Build context-aware modifications</li>
+            </ul>
+          </div>
+        </div>
+        <script>
+            function toggleCard(el) {
+                const card = el.closest('.card');
+                card.classList.toggle('open');
+            }
+        </script>
+    </section>
 </body>
 </html>
