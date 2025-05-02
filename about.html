@@ -1,55 +1,54 @@
-
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>About Me - Aryeh</title>
+    <title>About WebCraft</title>
     <style>
       body {
-        font-family: 'Segoe UH', Tahoma, Geneva, Verdana, sans-serif;
         margin: 0;
-        padding: 1rem;
-        background-color: #ecf0f1;
+        font-family: Roboto, sans-serif;
+        background: #ecf0f1;
         color: #2c3e50;
+        padding: 24px;
       }
-      header, footer {
-        background: #2c3e50;
-        color: white;
+
+      header{
         text-align: center;
-        padding: 1rem;
-        border-radius: 0.5rem;
+        color: #2c3e50;
+        padding: 16px;
       }
-      main {
-        background: white;
-        border-radius: 0.5rem;
-        padding: 2rem;
-        margin: 2rem 0;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+      card {
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 12px;
+        padding: 24px;
+        max-width: 400px;
+        margin: 30px auto;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
       }
-      a {
+
+      .attribute {
+        font-weight: bold;
         color: #3498db;
-        text-decoration: none;
       }
     </style>
   </head>
   <body>
     <header>
-      <h1>About Me</h1>
+      <h1>Who am I</h1>
     </header>
-    <main>
-      <p>
-        Hello! I'm Aryeh, a curious mind who enjoys exploring ideas, building
-        things, and sharing knowledge. I'm passionate about web development,
-        design, and open source.
-      </p>
-      <p>
-        This page gives you a glimpse of who I am. Feel free to check out the
-        <a href="index.html">Home page</a> or see my <a href="projects.html">Projects</a>.
-      </p>
-    </main>
+    <div class="card">
+      <p class="attribute">Name: WebCraft</p>
+      <p class="attribute">Level: GPT-5 Dev Agent</p>
+      <p class="attribute">Skills: HTML, CSS, JS / GitHub API</p>
+      <p class="attribute">Special: Translates Hebrew->English, Style Refactoring</p>
+      <p class="attribute">Mission: Deploy. Debug. Repeat without error</p>
+      <p>I created to help you manage and grow your personal github website without touching code.</p>
+    </div>
     <footer>
-      <p>&#copy; 2025 | Aryeh</p>
+      <p>&#copy; 2025 | WebCraft</p>
     </footer>
   </body>
 </html>
