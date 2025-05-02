@@ -51,7 +51,7 @@
       50% { transform: scale(1.2); }
       100% { transform: scale(1); }
     }
-  
+    /* Reaction buttons */
     .reaction-btn {
       background: #fff;
       border: 2px solid #ff69b4;
@@ -67,8 +67,30 @@
       color: white;
     }
   </style>
-
 </head>
 <body dir="rtl">
+  <div id="container">
+    <div id="intro">
+      <p style="font-size: 1.4rem;">אי בקבע הי מיי וי ההו</p>
+      <button onclick="showStep1()">אי</button>
+    </div>
+    <div id="step1" style="display:none;">
+      <p class="message" dir="rtl" id="line1"></p>
+      <button id="continueBtn" onclick="showStep2()" style="margin-top: 1rem; display:none;">电�ש</button>
+    </div>
+    <div id="step2" style="display:none;">
+      <div class="heart" id="heart">“</div>
+      <p id="line2" class="message" dir="rtl"></p>
+      <p id="line3" class="message" dir="rtl"></p>
+    </div>
+    <div id="step3" style="display:none; text-align: right;">
+      <p id="question" class="message" dir="rtl">בי הש מטו</p>
+      <div style="margin-top: 1rem; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+        <button onclick="respond('smile')" class="reaction-btn">ץשדת</button>
+        <button onlick="respond('calm')" class="reaction-btn">שאוי ברי</button>
+        <button onlick="respond('more')" class="reaction-btn">באו</button>
+    </div>
+    <p id="reaction" class="message" dir="rtl" style="margin-top: 2rem;"></p>
+  </div>
 </body>
 </html>
