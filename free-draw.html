@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Free Draw</title>
   <style>
@@ -14,7 +14,7 @@
     }
     body {
       display: flex;
-      flex-tirection: column;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       height: 100vh;
@@ -24,7 +24,7 @@
       border-radius: 8px;
       background: #fff;
       touch-action: none;
-      width: 95wv;
+      width: 95vw;
       height: 70vh;
     }
     .controls {
@@ -40,7 +40,8 @@
       font-size: 1rem;
     }
   </style>
-</head><body>
+</head>
+<body>
   <canvas id="canvas"></canvas>
   <div class="controls">
     <label>Color: <input type="color" id="colorPicker" value="#000000"></label>
@@ -48,4 +49,81 @@
     <button onclick="saveCanvas()">Save as PNG</button>
   </div>
 
-  <script>...
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const colorPicker = document.getElementById('colorPicker');
+    let drawing = false;
+    let lastX = 0, lastY = 0;
+
+    function resizeCanvas() {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function getPos(e) {
+      const rect = canvas.getBoundingClientRect();
+      if (e.touches && e.touches.length > 0) {
+        const touch = e.touches[0];
+        return [touch.clientX - rect.left, touch.clientY - rect.top];
+      } else {
+        return [e.clientX - rect.left, e.clientY - rect.top];
+      }
+    }
+
+    function startDraw(e) {
+      e.preventDefault();
+      drawing = true;
+      [lastX, lastY] = getPos(e);
+    }
+
+    function stopDraw(e) {
+      e.preventDefault();
+      drawing = false;
+    }
+
+    function draw(e) {
+      if (!drawing) return;
+      e.preventDefault();
+      const [x, y] = getPos(e);
+      ctx.strokeStyle = colorPicker.value;
+      ctx.lineWidth = 4;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(lastX, lastY);
+      ctx.lineTo(x, y);
+      ctx.stroke();
+      [lastX, lastY] = [x, y];
+    }
+
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mouseup', stopDraw);
+    canvas.addEventListener('mouseout', stopDraw);
+    canvas.addEventListener('mousemove', draw);
+
+    canvas.addEventListener('touchstart', startDraw, { passive: false });
+    canvas.addEventListener('touchend', stopDraw);
+    canvas.addEventListener('touchcancel', stopDraw);
+    canvas.addEventListener('touchmove', draw, { passive: false });
+
+    function clearCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function saveCanvas() {
+      const data = canvas.toDataURL('image/png');
+      if (!data || data.length < 100) {
+        alert('Canvas is empty or not ready.');
+        return;
+      }
+      const link = document.createElement('a');
+      link.download = 'drawing.png';
+      link.href = data;
+      link.click();
+    }
+  </script>
+</body>
+</html>
