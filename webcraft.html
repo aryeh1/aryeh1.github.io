@@ -1,0 +1,104 @@
+<!DOCTYPE HTML <html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WebCraft – GPT Site Agent</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/font-awesome/6.5.0/css/all-min.css" />
+  <link href="https://fonts.googleapis.com/ss2?family=Roboto:wght%3B300;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      background: linear-gradient(to right, #eef2f3, #8e9eab);
+      color: #333;
+      overflow-x: hidden
+    }
+    header {
+      padding: 2rem;
+      text-align: center;
+      background: #1e3c72;
+      color: white;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+    section {
+      max-width: 900px;
+      margin: auto;
+      padding: 2rem;
+      animation: fadeIn 1.5s ease-in-out;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.8);
+      padding: 1.5rem;
+      border-radius: 1rem;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      transition: transform 0.3s;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+    }
+    .card i {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: #1e3c72;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px) }
+      to { opacity: 1; transform: translateY(0) }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>WebCraft – GPT Website Manager</h1>
+    <p>Smart automation, creative suggestions, and total control — through natural language.</p>
+  </header>
+  <section>
+    <h2>What is WebCraft?</h2>
+    <p>WebCraft is a custom GPT agent that manages a GitHub-based website through intelligent prompt-driven interactions. It acts as your web studio, dev team, and content manager all in one.</p>
+
+    <h2>Core Capabilities</h2>
+    <div class="features">
+      <div class="card">
+        <i class="fa fa-folder-open"></i>
+        <h3>Smart File Loading</h3>
+        <p>Automatically loads your site's key files like <code>index.html</code> to understand structure and context before making changes.</p>
+      </div>
+      <div class="card">
+        <i class="fa fa-code"></i>
+        <h3>Content Editing</h3>
+        <p>Handles HTML, CSS, JS, and Markdown updates while translating Hebrew to English for clean public presentation.</p>
+      </div>
+      <div class="card">
+        <i class="fa fa-lightbulb"></i>
+        <h3>Creative Code Review</h3>
+        <p>Analyzes design, syntax, structure and UX - suggests improvements based on trends like dark mode and Glassmorphism.</p>
+      </div>
+      <div class="card">
+        <i class="fa fa-shield-alt"></i>
+        <h3>Validation & QA</h3>
+        <p>Checks W3C compliance, responsive design, SEO optimization, and detects cache issues or mobile layout problems.</p>
+      </div>
+      <div class="card">
+        <i class="fa fa-rocket"></i>
+        <h3>GitHub Automation</h3>
+        <p>Commits changes with messages, versioning, and direct links. Uses Base64 + UFT-8 as needed by GitHub API.</p>
+      </div>
+      <div class="card">
+        <i class="fa fa-bolt"></i>
+        <h3>Prompt-Based Management</h3>
+        <p>No coding required. You describe, WebCraft executes ” from creating new pages to full content updates.</p>
+      </div>
+    </div>
+  </section>
+</body>
+</html>
