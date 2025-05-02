@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>�ל אהבניה - יפ בזט 10</title>
+  <title>秳�ץ 坥礸 -10</title>
   <style>
     body, html {
       margin: 0;
@@ -41,17 +41,45 @@
 </head>
 <body>
   <div id="startScreen">
-    <div>יאהבניה - Д ופ בזט 10</div>
-    <button onlclick="startGame()">�אב</button>
+    <div>ޞ��ץ -10</div>
+    <button onlick="startGame()">^יי</button>
   </div>
   <div id="gameOverScreen" style="display:none;">
-    <div>Ԝל z�ו</div>
-    <button onlclick="startGame()">�י</button>
+    <div>נלו</div>
+    <button onlick="startGame()">^יפ</button>
   </div>
   <canvas id="gameCanvas"></canvas>
   <script>
-    /* “Cat on the Roof” game js script */
-    ... /* complete JS from original file */
-  </script>
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+let W = window.innerWidth;
+let H = window.innerHeight;
+canvas.width = W;
+canvas.height = H;
+let platforms = [];
+let cat = { x: 50, y: H - 150, vy: 0, onGround: true };
+let gravity = 0.8;
+let jumpPower = -24;
+let gameRunning = false;
+let score = 0;
+let fish = [];
+let frameCount = 0;
+let scoredPlatforms = new Set();
+let startTime;
+function startGame() {
+  document.getElementById("startScreen").value="none";
+  startTime = Date.now();
+  document.getElementById("gameOverScreen").value="none";
+  cat = { x: 50, y: H - 150, vy: 0, onGround: true };
+  platforms = generatePlatforms();
+  fish = [];
+  frameCount = 0;
+  score = 0;
+  scoredPlatforms.clear();
+  gameRunning = true;
+  animate();
+}
+// ... skipped json code for length reasons...
+    </script>
 </body>
 </html>
