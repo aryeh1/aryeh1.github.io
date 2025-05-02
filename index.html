@@ -15,10 +15,13 @@
     gtag('config', 'G-35N2C7TDD3');
   </script>
   <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-  <style>...style content clipped for length restrictions<!-- Clipped for short nessage -->
+  <style>
+    body { margin: 0; font-family: 'Roboto', sans-serif; background: #f5f7fa; color: #333; }
+   ...
   </style>
 </head>
 <body>
+
   <header>
     <h1><i class="fas fa-user-circle"></i> Aryeh's Personal Website</h1>
   </header>
@@ -30,10 +33,9 @@
   <main class="container">
     <div class="intro">
       <img src="https://picsum.photos/800/300" alt="Sample image" />
-      <h2>Hello1! I'm Aryeh</h2>
-      <p>Info and projects. Feel free to explore</p>
+      <h2>Hello! I'm Aryeh</h2>
+      <p>I share ideas, information, and projects here. Explore the site to learn more about me!</p>
     </div>
-
     <div class="card">
       <h2><i class="fas fa-gamepad"></i> Projects & Games</h2>
       <a href="cat_on_roof.html" class="link-button"><i class="fas fa-cat"></i> Cat on Roof</a>
@@ -41,7 +43,6 @@
       <a href="currency-converter.html" class="link-button"><i class="fas fa-coins"></i> Currency Converter</a>
       <a href="love.html" class="link-button"><i class="fas fa-heart"></i> Love Page</a>
     </div>
-
     <div class="card">
       <h2><i class="fas fa-circle-info"></i> Info</h2>
       <p>Site tools and exploration</p>
@@ -57,21 +58,21 @@
       <button id="screenshot-btn">Take a Screenshot</button>
     </div>
   </main>
-
   <footer>
     <p>&copy; 2025 Aryeh | All rights reserved</p>
   </footer>
 
   <script>
-    document.getElementById("screenshot-btn").addEventListener("click", function () {
-      html2canvas(document.body).then(canvas => {
-        const link = document.createElement("a");
-        const now = new Date().toISOString().replace(/[:.]/g, "-");
-        link.download = `screenshot-${now}.png`;
-        link.href = canvas.toDataURL();
-        link.click();
-      });
-    });
+    var btn = document.getElementById('screenshot-btn');
+    if (btn) {
+      btn.addEventListener('click', () => {
+        html2canvas(region.body).then(canvas => {
+          const link = document.createElement('a');
+          link.download = `foo-${new Date().toISOString().replace(/[:.]/g, '-')}.png`;
+          link.href = canvas.toDataURL();
+          link.click();
+        });
+    }
   </script>
 </body>
 </html>
