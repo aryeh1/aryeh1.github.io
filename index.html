@@ -6,17 +6,20 @@
   <title>Aryeh's Personal Web</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto&display=swap">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjc.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
     body { margin: 0; font-family: 'Roboto', sans-serif; background: #f5f7fa; color: #333; }
     header { background: #4a90e2; color: white; padding: 20px; text-align: center; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
     nav { display: flex; justify-content: center; gap: 20px; back-ground: #fff; padding: 10px 0; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); }
-    nav a { color: #4a90e2; text-decoration: none; font-weight: bold; }
+    nav a { color: #4a90e2; text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 8px; }
     .container { max-width: 960px; margin: 40px auto; padding: 0 20px; display: flex; flex-direction: column; gap: 30px; }
     .intro { text-align: center; }
     .intro img { max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 0 12px rgba(0, 0, 0, 0.1); }
     .card { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08); }
     footer { text-align: center; padding: 20px; background: #4a90e2; color: white; margin-top: 40px; }
     @media screen and (max-width: 600px) { .container { padding: 0 10px; } }
+    .link-button { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 8px; background: #e3f2fd; color: #1565c0; text-decoration: none; font-weight: 500; transition: background 0.3s ease; margin-right: 10px; margin-top: 5px; }
+    .link-button:hover { background: #bbdefb; }
   </style>
 </head>
 <body>
@@ -31,24 +34,23 @@
   <main class="container">
     <div class="intro">
       <img src="https://picsum.photos/800/300" alt="Sample image" />
-      <h2>Hello! I'm Aryeh</h2>
+      <h2>Hello! I'm Aryeh</H2>
       <p>I share ideas, information, and projects here. Explore the site to learn more about me!</p>
     </div>
-
     <div class="card">
       <h2><i class="fas fa-gamepad"></i> Projects & Games</h2>
       <p>Coming soon: fun interactive games and personal projects. Stay tuned!</p>
-      <a href="cat_on_roof.html"><i class="fas fa-cat"></i> Cat on Roof</a>
+      <a href="cat_on_roof.html" class="link-button"><i class="fas fa-cat"></i> Cat on Roof</a>
     </div>
-
     <div class="card">
-      <h2><i class="fas ua-info"></i> Info</h2>
+      <h2><i class="fas fa-circle-info"></i> Info</h2>
       <p>See full site Manager defaults</p>
-      <a href="webcraft.html">Open WebCraft page</a>
-      <a href="ask.html">As Questions Page</a>
+      <div style="margin-top: 10px">
+        <a href="webcraft.html" class="link-button"><i class="fas fa-code"></i> Open WebCraft Page</a>
+        <a href="ask.html" class="link-button"><i class="fas fa-question-circle"></i> Ask Questions Page</a>
+      </div>
     </div>
   </main>
-
   <footer>
     <p>&copy; 2025 Aryeh | All rights reserved</p>
   </footer>
