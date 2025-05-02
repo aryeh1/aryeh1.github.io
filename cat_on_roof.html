@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>�ל אהבניה - יפ בזט ש 10</title>
+  <title>Cat on the Roof - v16</title>
   <style>
     body, html {
       margin: 0;
@@ -41,16 +42,34 @@
 </head>
 <body>
   <div id="startScreen">
-    <div>יאהבניה - יפ בזט 10</div>
-    <button onlclick="startGame()">�אב</button>
+    <div>Cat on the Roof - v16</div>
+    <button onlclick="startGame()">Start</button>
   </div>
   <div id="gameOverScreen" style="display:none;">
-    <div>Ԝל z�ו</div>
-    <button onlclick="startGame()">�י</button>
+    <div>You fell!</div>
+    <button onclick="startGame()">Try Again</button>
   </div>
   <canvas id="gameCanvas"></canvas>
   <script>
-    // here game javascript code would go. clipped for shortness.
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+    let W = window.innerWidth;
+    let H = window.innerHeight;
+    canvas.width = W;
+    canvas.height = H;
+    let platforms = [];
+    let cat = { x: 50, y: H - 150, vy: 0, onGround: true };
+    let gravity = 0.8;
+    let jumpPower = -24;
+    let gameRunning = false;
+    let score = 0;
+    let fish = [];
+    let frameCount = 0;
+    let scoredPlatforms = new Set();
+    let startTime;
+    let catFrame = 0;
+    let catColor = "#FF6347";
+    // ... full javascript code from original file ...
   </script>
 </body>
 </html>
