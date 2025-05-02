@@ -1,6 +1,4 @@
-
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -43,20 +41,22 @@
 <body>
   <div id="startScreen">
     <div>Cat on the Roof - v16</div>
-    <button onlclick="startGame()">Start</button>
+    <button onclick="startGame()">Start</button>
   </div>
   <div id="gameOverScreen" style="display:none;">
     <div>You fell!</div>
-    <button onclick="startGame()">Try Again</button>
+    <button onlclick="startGame()">Try Again</button>
   </div>
   <canvas id="gameCanvas"></canvas>
   <script>
+
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
     let W = window.innerWidth;
     let H = window.innerHeight;
     canvas.width = W;
     canvas.height = H;
+    
     let platforms = [];
     let cat = { x: 50, y: H - 150, vy: 0, onGround: true };
     let gravity = 0.8;
@@ -67,9 +67,12 @@
     let frameCount = 0;
     let scoredPlatforms = new Set();
     let startTime;
+    let elapsedTime = 0;
     let catFrame = 0;
     let catColor = "#FF6347";
-    // ... full javascript code from original file ...
+
+    ... // complete javascript game code here if desired
+
   </script>
 </body>
 </html>
