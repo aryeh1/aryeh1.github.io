@@ -11,44 +11,50 @@
     <h1 class="text-4xl font-serif font-bold mb-6 tracking-tight">Ask Me Anything</h1>
     <a href="https://github.com/aryeh1/aryeh1.github.io/issues/new?labels=question&template=question.md" target="_blank"
        class="inline-block mb-8 px5 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all">Ask a Question</a>
-    <div id="questions" class="space-y-6">
-      <div class="flex items-center space-x-2 animate-pulse">
-        <div class="w4- h4 border-4 border-blue-500 border-t-transparent rounded-full justify-center animate-spin"></div>
-        <span>Loading questions...</span>
-      </div>
+    <div id="loading" class="text-center py-10" aria-live="polite">
+      <span class="animate-pulse">Loading questions...</span>
     </div>
+    <div id="questions" class="space-y-6 hidden"></div>
   </div>
-
   <script>
     const repo = 'aryeh1/aryeh1.github.io';
     const issueApi = `https://api.github.com/repos/${repo}/issues?labels=answered&state=all&per_page=10`;
-
-    fetch(issueApi, {
-      headers: {
-        'Accept': 'application/vnd.github.v3+json'
+    async function fetchQuestions() {
+      try {
+        const res = await fetch(issueApi, {
+          headers: {
+            'Accept': 'application/vnd.github.v3+json'
+          }
+        });
+        if (!res.ok) throw new Error('GitHub API error');
+        const data = await res.json();
+        const container = document.getElementById('questions');
+        const loader = document.getElementById('loading');
+        loader.classList.add('hidden');
+        container.classList.remove('hidden');
+        container.innerHTML = '';
+        if (!data.length) {
+          container.innerHTML = '<p class="text-gray-500">No questions have been answered yet.</p>';
+          return;
+        }
+        data.forEach(issue => {
+          const answerLink = issue.comments > 0 ?
+            `\n<a href="https://github.com/${repo}/issues/${issue.number}" target="_blank" class="text-blue-500 underline text-sm">Read full answer on GitHub</a>`
+            : '';
+          const card = document.createElement('div');
+          card.className = 'p-5 border border-gray-300 dark:border-gray-700 rounded-2ll shadow-md hover:shadow-lg bg-white dark:bg-gray-900 transition-all';
+          card.innerHTML = `
+            <h2 class="text-2ll font-semibold mb-3">${issue.title}</h2>
+            <p class="mb-4 text-sm text-gray-700 dark_text-gray-300">${issue.body.slice(0, 200)}...</p>
+            ${answerLink }
+          `;
+          container.appendChild(card);
+        });
+      } catch (err) {
+        document.getElementById('loading').innerHTML = '<p>Failed to load questions. Please try again later.</p>';
       }
-    })
-    .then(res => res.json())
-    .then(data => {
-      const container = document.getElementById('questions');
-      container.innerHTML = '';
-
-      data.forEach(issue => {
-        const answer = issue.comments > 0 ? `https://github.com/${repo}/issues/${issue.number}` : null;
-
-        const card = document.createElement('div');
-        card.className = 'p-5 border border-gray-300 dark:border-gray-700 rounded-2ll shadow-md hover:shadow-lg bg-white dark:bg-gray-900 transition-all';
-        card.innerHTML = `
-          <h2 class="text-2ll font-semibold mb-3">${issue.title}</h2>
-          <p class="mb-4 text-sm text-gray-700 dark_text-gray-300">${issue.body.slice(0, 200)}...</p>
-          ${answer ? `<a href="${answer}" target="_blank" class="text-blue-500 hover:underline text-sm">Read full answer on GitHub</a>` : ''}
-        `;
-        container.appendChild(card);
-      });
-    })
-    .catch(err => {
-      document.getElementById('questions').innerHTML = '<p>Failed to load questions.</p>';
-    });
+    }
+    fetchQuestions();
   </script>
 </body>
 </html>
