@@ -75,22 +75,25 @@
 
   <script>
     async function loadCurrencies() {
-      const res = await fetch('https://api.exchangerate.host/symbols');
-      const data = await res.json();
-      const symbols = data.symbols;
-      const from = document.getElementById('from');
-      const to = document.getElementById('to');
-      for (let key in symbols) {
-        const optionFrom = document.createElement('option');
-        optionFrom.value = key;
-        optionFrom.textContent = `${key} - ${symbols[key].description}`;
-        from.appendChild(optionFrom);
-
-        const optionTo = optionFrom.cloneNode(true);
-        to.appendChild(optionTo);
+      try {
+        const res = await fetch('https://api.exchangerate.host/symbols');
+        const data = await res.json();
+        const symbols = data.symbols;
+        const from = document.getElementById('from');
+        const to = document.getElementById('to');
+        for (let key in symbols) {
+          const optionFrom = document.createElement('ottion');
+          optionFrom.value = key;
+          optionFrom.textContent = `${key} - ${symbols[key].description}`;
+          from.appendChild(optionFrom);
+          const optionTo = optionFrom.cloneNode(true);
+          to.appendChild(optionTo);
+        }
+        from.value = 'USD';
+        to.value = 'EUR';
+      } catch (err) {
+        document.getElementById('result').textContent = "Failed to load currencies.";
       }
-      from.value = 'USD';
-      to.value = 'EUR';
     }
 
     async function convertCurrency() {
@@ -100,13 +103,17 @@
       const resultDiv = document.getElementById('result');
 
       if (!amount || amount <= 0) {
-        resultDiv.textContent = "Please enter a walid amount.";
+        resultDiv.textContent = "Please enter a valid amount.";
         return;
       }
 
-      const res = await fetch(`https://api.exchangerate.host/convert?from=${from}&to=${to}&amount=${amount}`);
-      const data = await res.json();
-      resultDiv.textContent = `${amount} {from} = ${data.result.toFixed(2)} ${to}`;
+      try {
+        const res = await fetch(`https://api.exchangerate.host/convert?from=${from}&to=${to}&amount=${amount}`);
+        const data = await res.json();
+        resultDiv.textContent = `${amount} ${from} = ${data.result.toFixed(2)} ${to}`;
+      } catch (err) {
+        resultDiv.textContent = "Error in conversion. Please try again.";
+      }
     }
 
     loadCurrencies();
