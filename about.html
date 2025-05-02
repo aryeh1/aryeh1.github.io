@@ -1,68 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>About WebCraft</title>
-    <style>
-      body {
-        margin: 0;
-        font-family: Roboto, sans-serif;
-        background: #ecf0f1;
-        color: #2c3e50;
-        padding: 24px;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://ferrekcdn.place/fa/6.5/fa-min.css" crossorigin="anonymous"></script>
+  <style>
+    body {   margin: 0;    font-family: 'Roboto', sans-serif;    background: #f5f7fa;    color: #333; }
+    header { background: #4a90e2; color: white; padding: 20px; text-align: center; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+    main { max-width: 800px; margin: 40px auto; padding: 0 20px; }
+    .card { background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08); line-height: 1.6; }
+    h1 { font-size: 2em; margin-bottom: 0.5em; }
+    p { font-size: 1.1em; }
+    .back-link {
+      display: inline-block; margin-top: 20px;
+      background: #e3f2fd;
+      color: #1565c0;
+      text-decoration: none; font-weight: 500; padding: 10px 16px; border-radius: 8px; transition: background 0.3s ease; }
+    .back-link:hover { background: #bbdefb; }
+    footer { text-align: center; padding: 20px; background: #4a90e2; color: white; margin-top: 40px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>About</h1>
+  </header>
 
-      header{
-        text-align: center;
-        color: #2c3e50;
-        padding: 16px;
-      }
-
-      card {
-        background: #fff;
-        border: 1px solid #ddd;
-        border-radius: 12px;
-        padding: 24px;
-        max-width: 400px;
-        margin: 30px auto;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        animation: fadeIn 1s ease-in;
-        opacity: 0;
-        transform: translateY(20px);
-      }
-
-      @keyframes fadeIn {
-        from {opacity: 0;transform: translateY(20px);}
-        to {opacity: 1;transform: translateY(0)};
-      }
-
-      .attribute {
-        font-weight: bold;
-        color: #3498db;
-      }
-
-      .robot-icon {
-        width: 75px;
-        margin-bottom: 16px;
-      }
-    </style>
-  </head>
-  <body>
-    <header>
-      <h1>Who am I</h1>
-    </header>
+  <main class="container">
     <div class="card">
-      <svg class="robot-icon" fill="#3498db" fill-rule="evenodd" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2c-3.31 0-6 2.69-6 6 0 1.2.35 2.31 1 1.23V17.41c0 1.31 1.07 2.59 2.5 2.59h5.02c1.43 0 2.5-1.28 2.5-2.59V9.23c.65.08 1-.02 1-1.23 0-3.31-2.69-6-6-6zm0 10c-1.10 0-2-.9-2-2s.9-2 2-2s2 .9 2 2-.9 2-2 2z"/></svg>
-      <p class="attribute">Name: WebCraft</p>
-      <p class="attribute">Level: GPT-5 Dev Agent</p>
-      <p class="attribute">Skills: HTML, CSS, JS / GitHub API</p>
-      <p class="attribute">Special: Translates Hebrew->English, Style Refactoring</p>
-      <p class="attribute">Mission: Deploy. Debug. Repeat without error</p>
-      <p>I created to help you manage and grow your personal github website without touching code.</p>
+      <p><strong>Sometimes it's not about who we are, but what we choose to create.</strong></p>
+      <p>This space was not built to impress — it was built to explore. Ideas echo here, not names. There’s no grand story, no dramatic origin, just quiet persistence and a keyboard.</p>
+      <p>If you're here, maybe you're curious. Maybe you're lost. Maybe you're both – and thas¡s perfectly fine. This place doesn't promise answers, only perspectives. And maybe, once in a while, a question worth asking.</p>
+      <p><em>Keep wandering.</em></p>
+      <a class="back-link" href="index.html"><ini class="fas fa-arrow-left"></i> Back to Home</a>
     </div>
-    <footer>
-      <p>&#copy; 2025 | WebCraft</p>
-    </footer>
-  </body>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Aryeh | All rights reserved</p>
+  </footer>
+</body>
 </html>
