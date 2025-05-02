@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>�ל אהבניה - יפ בזט ש 10</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: #87CEEB;
+      font-family: sans-serif;
+    }
+    canvas {
+      display: block;
+      background: #87CEEB;
+    }
+    #startScreen, #gameOverScreen {
+      position: absolute;
+      top: 0; right: 0; bottom: 0; left: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      font-size: 2em;
+      flex-direction: column;
+      z-index: 2;
+    }
+    button {
+      font-size: 1em;
+      padding: 10px 20px;
+      margin-top: 20px;
+      border: none;
+      border-radius: 10px;
+      background-color: #ff9800;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div id="startScreen">
+    <div>יאהבניה - יפ בזט 10</div>
+    <button onlclick="startGame()">�אב</button>
+  </div>
+  <div id="gameOverScreen" style="display:none;">
+    <div>Ԝל z�ו</div>
+    <button onlclick="startGame()">�י</button>
+  </div>
+  <canvas id="gameCanvas"></canvas>
+  <script>
+    // here game javascript code would go. clipped for shortness.
+  </script>
+</body>
+</html>
