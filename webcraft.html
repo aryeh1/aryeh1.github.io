@@ -11,7 +11,6 @@
       margin: 0;
       background: linear-gradient(to right, #eef2f3, #8e9eab);
       color: #333;
-      overflow-x: hidden;
     }
     header {
       padding: 2rem;
@@ -24,7 +23,6 @@
       max-width: 900px;
       margin: auto;
       padding: 2rem;
-      animation: fadeIn 1.5s ease-in-out;
     }
     h1, h2 {
       text-align: center;
@@ -42,7 +40,6 @@
       backdrop-filter: blur(10px);
       box-shadow: 0 4px 15px rgba(0,0,0,0.1);
       transition: transform 0.3s;
-      position: relative;
     }
     .card:hover {
       transform: translateY(-5px);
@@ -51,14 +48,6 @@
       font-size: 2rem;
       margin-bottom: 1rem;
       color: #1e3c72;
-    }
-    .details {
-      margin-top: 1rem;
-      font-size: 0.9rem;
-      display: none;
-    }
-    .card.open .details {
-      display: block;
     }
     footer {
       text-align: center;
@@ -78,32 +67,32 @@
       <div class="card">
         <i class="fa fa-folder-open"></i>
         <h3>Smart File Loading</h3>
-        <p>Automatically loads and reads the site...</p>
+        <p>Loads and reads files from GitHub to understand structure and context.</p>
       </div>
       <div class="card">
         <i class="fa fa-code"></i>
         <h3>Content Editing</h3>
-        <p>Handles HTML, CSS, JS, and Markdown updates...</p>
+        <p>Handles HTML, CSS, JS, and Markdown. Supports updates and linking between pages.</p>
       </div>
       <div class="card">
         <i class="fa fa-lightbulb"></i>
         <h3>Code Review</h3>
-        <p>Analyzes syntax, accessibility, and design trends...</p>
+        <p>Checks syntax, accessibility, and design patterns to improve quality.</p>
       </div>
       <div class="card">
         <i class="fa fa-shield-alt"></i>
-        <h3>Validation & QA</h3>
-        <p>Runs W3C validation, responsive checks...</p>
+        <h3>Validation</h3>
+        <p>Analyzes structure, syntax, and responsiveness using HTML/CSS standards.</p>
       </div>
       <div class="card">
         <i class="fa fa-rocket"></i>
         <h3>GitHub Automation</h3>
-        <p>Commits updates via GitHub API using Base64, SHA detection, and versioning control.</p>
+        <p>Updates files via GitHub API using Base64 encoding and SHA control.</p>
       </div>
       <div class="card">
         <i class="fa fa-bolt"></i>
-        <h3>Prompt-Based Flow</h3>
-        <p>You describe – WebCraft executes. Supports natural-language prompts...</p>
+        <h3>Prompt-Based Workflow</h3>
+        <p>Executes user instructions written in natural language.</p>
       </div>
     </div>
   </section>
