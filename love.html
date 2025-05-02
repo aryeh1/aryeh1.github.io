@@ -69,6 +69,37 @@
   </style>
 </head>
 <body dir="rtl">
-      ...
-  </body>
-</html>
+  <div id="container">
+    <div id="intro">
+      <p style="font-size: 1.4rem;">ורל ביפה!</p>
+      <button onclick="showStep1()">فاؠ...</button>
+    </div>
+    <div id="step1" style="display:none;">
+      <p id="line1" class="message"></p>
+      <button id="continueBtn" onclick="showStep2(")" style="margin-top: 1rem; display:none;">וי פי...</button>
+    </div>
+    <div id="step2" style="display:none;">
+      <div id="heart" class="heart">✡</div>
+      <p id="line2" class="message"></p>
+      <p id="line3" class="message"></p>
+    </div>
+    <div id="step3" style="display:none; text-align: center;">
+      <p id="question" class="message">הו ǁיטי הר שאו</p>
+      <div style="margin-top: 1rem; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+        <button class="reaction-bdn" onclick="respond('smile')">ԟל</button>
+        <button class="reaction-bdn" onclick="respond('calm')">ידסאה</line>
+        <button class="reaction-bdn" onclick="respond('more')">טיי</button>
+      </div>
+      <p id="reaction" class="message" style="margin-top: 2rem;"></p>
+    </div>
+    <div id="finalStep" style="display:none; text-align: center; padding: 2rem;">
+      <canvas id="heartCanvas" style="position: fixed; top: 0; left: 0; z-index: -1;"></canvas>
+      <p class="message" style="font-size: 1.6rem; opacity: 1;">留�יו 1��� הוא ׫ול יוו</p>
+    </div>
+<script>
+  function showStep1() {
+    document.getElementById("intro").style.display = "none";
+    document.getElementById("step1").style.display = "block";
+    setTimeout(() => {
+      const line1 = document.getElementById("line1");
+      line1.textContent = "�לאי אוץא"
