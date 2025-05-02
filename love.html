@@ -1,0 +1,74 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>For You</title>
+  <style>
+    body {
+      margin: 0;
+      background: #fff0f5;
+      font-family: 'Georgia', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      transition: background 1s ease;
+      overflow: hidden;
+    }
+    #container {
+      text-align: right;
+      max-width: 600px;
+      padding: 2rem;
+    }
+    button {
+      background: #ff69b4;
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      font-size: 1.2rem;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background: #e055a3;
+    }
+    .message {
+      font-size: 1.5rem;
+      opacity: 0;
+      transition: opacity 1s;
+      margin-top: 1.5rem;
+    }
+    .heart {
+      font-size: 3rem;
+      animation: pulse 1s infinite;
+      color: #ff1493;
+      display: none;
+    }
+    .reaction-bdn {
+      background: #fff;
+      border: 2px solid #ff69b4;
+      color: #ff69b4;
+      padding: 0.6rem 1.2rem;
+      border-radius: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .reaction-bdn:hover {
+      background: #ff69b4;
+      color: white;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+  </style>
+</head>
+<body dir="rtl">
+      ...
+  </body>
+</html>
