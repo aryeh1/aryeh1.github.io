@@ -9,7 +9,7 @@
     body {
       margin: 0;
       background: #fff0f5;
-      font-family: 'Georgia', sans-serif;
+      font-family: 'Georgia', serif;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -47,7 +47,13 @@
       color: #ff1493;
       display: none;
     }
-    .reaction-bdn {
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+  
+    .reaction-btn {
       background: #fff;
       border: 2px solid #ff69b4;
       color: #ff69b4;
@@ -57,49 +63,164 @@
       cursor: pointer;
       transition: all 0.3s ease;
     }
-    .reaction-bdn:hover {
+    .reaction-btn:hover {
       background: #ff69b4;
       color: white;
     }
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.2); }
-      100% { transform: scale(1); }
-    }
-  </style>
+    </style>
+
 </head>
 <body dir="rtl">
   <div id="container">
     <div id="intro">
-      <p style="font-size: 1.4rem;">ורל ביפה!</p>
-      <button onclick="showStep1()">فاؠ...</button>
+      <p style="font-size: 1.4rem;">×¨×•×¦×” ×œ×¨××•×ª ×ž×©×”×• ×©×”×•× ×¨×§ ×‘×©×‘×™×œ×š?</p>
+      <button onclick="showStep1()">×›×Ÿ...</button>
     </div>
     <div id="step1" style="display:none;">
-      <p id="line1" class="message"></p>
-      <button id="continueBtn" onclick="showStep2(")" style="margin-top: 1rem; display:none;">וי פי...</button>
+      <p class="message" dir="rtl" id="line1"></p>
+      <button id="continueBtn" onclick="showStep2()" style="margin-top: 1rem; display:none;">×”×ž×©×š...</button>
     </div>
     <div id="step2" style="display:none;">
-      <div id="heart" class="heart">✡</div>
-      <p id="line2" class="message"></p>
-      <p id="line3" class="message"></p>
+      <div class="heart" id="heart">â™¥</div>
+      <p class="message" dir="rtl" id="line2"></p>
+      <p class="message" dir="rtl" id="line3"></p>
     </div>
-    <div id="step3" style="display:none; text-align: center;">
-      <p id="question" class="message">הו ǁיטי הר שאו</p>
-      <div style="margin-top: 1rem; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
-        <button class="reaction-bdn" onclick="respond('smile')">ԟל</button>
-        <button class="reaction-bdn" onclick="respond('calm')">ידסאה</line>
-        <button class="reaction-bdn" onclick="respond('more')">טיי</button>
-      </div>
-      <p id="reaction" class="message" style="margin-top: 2rem;"></p>
+  </div>
+
+  <script>
+    function showStep1() {
+      document.getElementById("intro").style.display = "none";
+      document.getElementById("step1").style.display = "block";
+      setTimeout(() => {
+        const line1 = document.getElementById("line1");
+        line1.textContent = "×œ×¤×¢×ž×™× ×©×§×˜ ××•×ž×¨ ×™×•×ª×¨ ×ž×ž×™×œ×™×.";
+        line1.style.opacity = 1;
+        document.getElementById("continueBtn").style.display = "inline-block";
+      }, 300);
+    }
+
+    function showStep2() {
+      document.getElementById("step1").style.display = "none";
+      document.getElementById("step2").style.display = "block";
+      document.getElementById("heart").style.display = "block";
+      setTimeout(() => {
+        document.getElementById("line2").textContent = "But still, here I am trying.";
+        document.getElementById("line2").style.opacity = 1;
+      }, 1000);
+      setTimeout(() => {
+        document.getElementById("line3").textContent = "Because you're worth it.";
+        document.getElementById("line3").style.opacity = 1;
+      }, 2500);
+    }
+  </script>
+
+  <div id="step3" style="display:none; text-align: right;">
+    <p class="message" dir="rtl" id="question">×ž×” ×¢×•×œ×” ×‘×š ×¢×›×©×™×•?</p>
+    <div style="margin-top: 1rem; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+      <button onclick="respond('smile')" class="reaction-btn">×—×™×•×š</button>
+      <button onclick="respond('calm')" class="reaction-btn">×©×§×˜ ×‘×œ×‘</button>
+      <button onclick="respond('more')" class="reaction-btn">×¢×•×“...</button>
     </div>
-    <div id="finalStep" style="display:none; text-align: center; padding: 2rem;">
-      <canvas id="heartCanvas" style="position: fixed; top: 0; left: 0; z-index: -1;"></canvas>
-      <p class="message" style="font-size: 1.6rem; opacity: 1;">留�יו 1��� הוא ׫ול יוו</p>
-    </div>
-<script>
-  function showStep1() {
-    document.getElementById("intro").style.display = "none";
-    document.getElementById("step1").style.display = "block";
-    setTimeout(() => {
-      const line1 = document.getElementById("line1");
-      line1.textContent = "�לאי אוץא"
+    <p class="message" dir="rtl" id="reaction" style="margin-top: 2rem;"></p>
+  </div>
+
+  <script>
+    function showStep2() {
+      document.getElementById("step1").style.display = "none";
+      document.getElementById("step2").style.display = "block";
+      document.getElementById("heart").style.display = "block";
+      setTimeout(() => {
+        document.getElementById("line2").textContent = "××‘×œ ×¨×¦×™×ª×™ ×©×ª×“×¢×™.";
+        document.getElementById("line2").style.opacity = 1;
+      }, 1000);
+      setTimeout(() => {
+        document.getElementById("line3").textContent = "××ª ×ž×©×ž×¢×•×ª×™×ª ×œ×™.";
+        document.getElementById("line3").style.opacity = 1;
+      }, 2500);
+      setTimeout(() => {
+        document.getElementById("step3").style.display = "block";
+      }, 4000);
+    }
+
+    function respond(feeling) {
+      const reaction = document.getElementById("reaction");
+      if (feeling === "smile") {
+        reaction.textContent = "×©×ž×—×ª ××•×ª×™.";
+      } else if (feeling === "calm") {
+        reaction.textContent = "×ž×¨×’×™×© ××•×ª×š.";
+      } else if (feeling === "more") {
+        reaction.innerHTML = "× ×©××¨×ª×™, ×× ××ª ×¨×•×¦×”.";
+      }
+      reaction.style.opacity = 1;
+    }
+  </script>
+
+  <div id="finalStep" style="display:none; text-align: right; padding: 2rem;">
+    <canvas id="heartCanvas" style="position: fixed; top: 0; left: 0; z-index: -1;"></canvas>
+    <p class="message" dir="rtl" style="font-size: 1.6rem; opacity: 1;">×× ×”×’×¢×ª ×¢×“ ×›××Ÿ â€“ ×–×” ××•×ž×¨ ×œ×™ ×”×›×•×œ.</p>
+  </div>
+
+  <script>
+    function respond(feeling) {
+      const reaction = document.getElementById("reaction");
+      if (feeling === "smile") {
+        reaction.textContent = "×©×ž×—×ª ××•×ª×™.";
+      } else if (feeling === "calm") {
+        reaction.textContent = "×ž×¨×’×™×© ××•×ª×š.";
+      } else if (feeling === "more") {
+        reaction.innerHTML = "× ×©××¨×ª×™, ×× ××ª ×¨×•×¦×”.";
+        setTimeout(() => {
+          document.getElementById("step3").style.display = "none";
+          document.getElementById("finalStep").style.display = "block";
+          startHearts();
+        }, 2000);
+      }
+      reaction.style.opacity = 1;
+    }
+
+    function startHearts() {
+      const canvas = document.getElementById("heartCanvas");
+      const ctx = canvas.getContext("2d");
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const hearts = Array.from({ length: 20 }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: Math.random() * 10 + 10,
+        speed: Math.random() * 1 + 0.5,
+        dx: Math.random() * 0.5 - 0.25
+      }));
+
+      function drawHeart(x, y, size) {
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.bezierCurveTo(x, y - size / 2, x - size, y - size / 2, x - size, y);
+        ctx.bezierCurveTo(x - size, y + size, x, y + size * 1.5, x, y + size * 2);
+        ctx.bezierCurveTo(x, y + size * 1.5, x + size, y + size, x + size, y);
+        ctx.bezierCurveTo(x + size, y - size / 2, x, y - size / 2, x, y);
+        ctx.fillStyle = "#ff69b4";
+        ctx.fill();
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        hearts.forEach(h => {
+          h.y -= h.speed;
+          h.x += h.dx;
+          if (h.y < -20) {
+            h.y = canvas.height + 20;
+            h.x = Math.random() * canvas.width;
+          }
+          drawHeart(h.x, h.y, h.size);
+        });
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+    }
+  </script>
+</body>
+
+
+</html>
