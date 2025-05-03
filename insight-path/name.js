@@ -1,30 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    console.log("DEBUG: Finding all clickable elements");
-    
-    // נסה את כל האפשרויות
-    const options = [
-        '#questions-container > div', 
-        '.question-btn',
-        '.section button',
-        '.section > div',
-        '#introduction button',
-        '#introduction > div'
-    ];
-    
-    options.forEach(selector => {
-        const elements = document.querySelectorAll(selector);
-        console.log(`Selector "${selector}" found ${elements.length} elements:`);
-        elements.forEach(el => console.log(' - ', el.textContent || el.id || el.className));
-    });
-    
-    // הוסף לחיצה גלובלית לדיבוג
-    document.body.addEventListener('click', function(e) {
-        console.log('Clicked element:', e.target.tagName, e.target.id, e.target.className);
-        console.log('Text:', e.target.textContent);
-    });
-});
-
-document.addEventListener('DOMContentLoaded', function() {
     try {
         // מערכי תוכן מורחבים
         const philosophicalQuotes = [
@@ -532,7 +506,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // אתחול המבוך - CRITICAL SECTION FOR BUTTON FUNCTIONALITY
         console.log('Initializing buttons...');
-        const startButtons = document.querySelectorAll('#questions-container > div');
+        const startButtons = document.querySelectorAll('.question-btn');
         console.log('Found buttons:', startButtons.length);
         
         startButtons.forEach((button, index) => {
