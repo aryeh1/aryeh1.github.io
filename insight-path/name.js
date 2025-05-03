@@ -1,3 +1,11 @@
+console.log("Script loading...");
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("DOM fully loaded");
+    const btns = document.querySelectorAll('.question-btn');
+    console.log("Found buttons:", btns.length);
+    btns.forEach(b => console.log(b.textContent));
+});
+
 document.addEventListener('DOMContentLoaded', function() {
     try {
         // מערכי תוכן מורחבים
