@@ -19,6 +19,11 @@ body {
     padding: 0;
     background-image: linear-gradient(120deg, rgba(246,246,246,0.8) 0%, rgba(234,236,240,0.8) 100%);
     font-size: 16px;
+    pointer-events: auto !important;
+}
+
+html {
+    pointer-events: auto !important;
 }
 
 .container {
@@ -521,6 +526,11 @@ button#restart:hover, button#download-pdf:hover, button#share-btn:hover {
     font-size: 1.5rem;
     cursor: pointer;
     color: #999;
+}
+
+#questions-container > div {
+    cursor: pointer !important;
+    pointer-events: auto !important;
 }
 
 /* Tablet sizes */

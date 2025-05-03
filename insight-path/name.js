@@ -1,9 +1,35 @@
 console.log("Script loading...");
 document.addEventListener('DOMContentLoaded', function() {
-    console.log("DOM fully loaded");
-    const btns = document.querySelectorAll('.question-btn');
-    console.log("Found buttons:", btns.length);
+    // שנה את הסלקטור כדי לתפוס את האלמנטים הנכונים
+    const btns = document.querySelectorAll('#questions-container > div');
+    console.log("Found divs as buttons:", btns.length);
     btns.forEach(b => console.log(b.textContent));
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("DEBUG: Finding all clickable elements");
+    
+    // נסה את כל האפשרויות
+    const options = [
+        '#questions-container > div', 
+        '.question-btn',
+        '.section button',
+        '.section > div',
+        '#introduction button',
+        '#introduction > div'
+    ];
+    
+    options.forEach(selector => {
+        const elements = document.querySelectorAll(selector);
+        console.log(`Selector "${selector}" found ${elements.length} elements:`);
+        elements.forEach(el => console.log(' - ', el.textContent || el.id || el.className));
+    });
+    
+    // הוסף לחיצה גלובלית לדיבוג
+    document.body.addEventListener('click', function(e) {
+        console.log('Clicked element:', e.target.tagName, e.target.id, e.target.className);
+        console.log('Text:', e.target.textContent);
+    });
 });
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -514,10 +540,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // אתחול המבוך - CRITICAL SECTION FOR BUTTON FUNCTIONALITY
         console.log('Initializing buttons...');
-        const startButtons = document.querySelectorAll('.question-btn');
-        const customStartButton = document.getElementById('start-custom');
-        const customQuestionInput = document.getElementById('custom-question');
-        
+        const startButtons = document.querySelectorAll('#questions-container > div');
         console.log('Found buttons:', startButtons.length);
         
         startButtons.forEach((button, index) => {
