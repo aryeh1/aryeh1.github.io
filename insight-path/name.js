@@ -6,6 +6,38 @@ document.addEventListener('DOMContentLoaded', function() {
     btns.forEach(b => console.log(b.textContent));
 });
 
+window.addEventListener('load', function() {
+  // אתחול חירום לכל הכפתורים
+  document.querySelectorAll('.question-btn, #start-custom').forEach(btn => {
+    // הסרת כל מאזיני האירועים הקיימים
+    const newBtn = btn.cloneNode(true);
+    btn.parentNode.replaceChild(newBtn, btn);
+    
+    // הוספת מאזין אירועים חדש
+    newBtn.addEventListener('click', function(e) {
+      e.stopPropagation(); // עצור התפשטות האירוע
+      console.log('Emergency click on:', this.textContent || this.id);
+      
+      if (this.id === 'start-custom') {
+        const customQuestion = document.getElementById('custom-question').value.trim();
+        if (customQuestion) startCustomMaze(customQuestion);
+      } else {
+        const questionKey = this.getAttribute('data-question');
+        if (questionKey) startMaze(questionKey);
+      }
+    }, true); // השתמש בשלב לכידה
+  });
+  
+  // איפשור הקלדה בשדה הטקסט
+  const input = document.getElementById('custom-question');
+  if (input) {
+    const newInput = input.cloneNode(true);
+    input.parentNode.replaceChild(newInput, input);
+  }
+  
+  console.log('Emergency button handlers added');
+});
+
 document.addEventListener('DOMContentLoaded', function() {
     try {
         // מערכי תוכן מורחבים
