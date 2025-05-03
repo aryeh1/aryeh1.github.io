@@ -141,9 +141,9 @@
       let url;
 
       if (number) {
-        url = `//numbersapi.com/${number}/${type}?json`;
+        url = `https://numbersapi.com/${number}/${type}?json`;
       } else {
-        url = `//numbersapi.com/random/${type}?json`;
+        url = `https://numbersapi.com/random/${type}?json`;
       }
 
       fetch(url)
@@ -152,7 +152,7 @@
           document.getElementById('result').innerHTML = `<i class="fas fa-info-circle"></i> ${data.text}`;
         })
         .catch(error => {
-          document.getElementById('result').innerHTML = "<i class='fas fa-info-circle'></i> An error occurred. Please try again.";
+          document.getElementById('result').innerHTML = `<i class='fas fa-info-circle'></i> Error: ${error.message || error.toString()}`;
         });
     }
 
