@@ -1,11 +1,3 @@
-console.log("Script loading...");
-document.addEventListener('DOMContentLoaded', function() {
-    // שנה את הסלקטור כדי לתפוס את האלמנטים הנכונים
-    const btns = document.querySelectorAll('#questions-container > div');
-    console.log("Found divs as buttons:", btns.length);
-    btns.forEach(b => console.log(b.textContent));
-});
-
 document.addEventListener('DOMContentLoaded', function() {
     console.log("DEBUG: Finding all clickable elements");
     
