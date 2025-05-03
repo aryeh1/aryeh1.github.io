@@ -21,6 +21,49 @@ document.addEventListener('DOMContentLoaded', function() {
         { text: "איזהו עשיר? השמח בחלקו", source: "פרקי אבות ד', א'" }
     ];
 
+    // הוספת דיאלוג עזרה
+    const helpBtn = document.getElementById('help-btn');
+    const helpModal = document.getElementById('help-modal');
+    const closeModal = document.querySelector('.close-modal');
+
+    if (helpBtn && helpModal) {
+        helpBtn.addEventListener('click', () => {
+            helpModal.classList.remove('hidden');
+        });
+
+        closeModal.addEventListener('click', () => {
+            helpModal.classList.add('hidden');
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === helpModal) {
+                helpModal.classList.add('hidden');
+            }
+        });
+    }
+
+    // אפקטי קול עדינים
+    const sounds = {
+        click: new Audio('https://freesound.org/data/previews/234/234524_4019029-lq.mp3'),
+        transition: new Audio('https://freesound.org/data/previews/436/436116_7030105-lq.mp3'),
+        complete: new Audio('https://freesound.org/data/previews/320/320181_5260872-lq.mp3')
+    };
+
+    // הנמכת הווליום
+    Object.values(sounds).forEach(sound => sound.volume = 0.2);
+
+    function playSound(soundName) {
+        // בדיקה האם המשתמש כבר אינטראקט עם הדף (נדרש לניגון אוטומטי)
+        if (document.body.classList.contains('user-interacted')) {
+            sounds[soundName].currentTime = 0;
+            sounds[soundName].play().catch(err => console.log('Cannot play sound:', err));
+        }
+    }
+
+    document.body.addEventListener('click', function() {
+        document.body.classList.add('user-interacted');
+    });
+
     // מבנה נתונים מורחב למבוך המחשבות
     const questionTree = {
         // שאלת פתיחה: משמעות החיים
@@ -443,6 +486,7 @@ document.addEventListener('DOMContentLoaded', function() {
         button.addEventListener('click', function() {
             const questionKey = this.getAttribute('data-question');
             startMaze(questionKey);
+            playSound('click');
         });
     });
 
@@ -451,6 +495,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (customQuestion) {
             // לשאלות מותאמות אישית אנחנו יוצרים מבנה דינמי
             startCustomMaze(customQuestion);
+            playSound('click');
         }
     });
 
@@ -468,6 +513,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         displayQuestion(questionKey);
         initMazeVisualization();
+        updateMobilePathIndicator();
+        
+        playSound('transition');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function startCustomMaze(question) {
@@ -562,28 +611,54 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function displayQuestion(questionKey) {
         const questionData = questionTree[questionKey];
-        document.getElementById('current-question').textContent = questionData.question;
         
-        let contextHTML = `<p>${questionData.context}</p>`;
-        if (questionData.quote) {
-            contextHTML += `<blockquote>"${questionData.quote.text}" - <cite>${questionData.quote.source}</cite></blockquote>`;
-        }
-        document.getElementById('question-context').innerHTML = contextHTML;
+        // אנימציית דעיכה לתצוגת השאלה
+        const questionDisplay = document.getElementById('question-display');
+        questionDisplay.style.opacity = 0;
+        questionDisplay.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+            // עדכון תוכן השאלה
+            document.getElementById('current-question').textContent = questionData.question;
+            
+            let contextHTML = `<p>${questionData.context}</p>`;
+            if (questionData.quote) {
+                contextHTML += `<blockquote>"${questionData.quote.text}" - <cite>${questionData.quote.source}</cite></blockquote>`;
+            }
+            document.getElementById('question-context').innerHTML = contextHTML;
+            
+            // אנימציית הופעה
+            questionDisplay.style.transition = 'all 0.5s ease';
+            questionDisplay.style.opacity = 1;
+            questionDisplay.style.transform = 'translateY(0)';
+        }, 300);
 
-        // הצגת אפשרויות הבחירה
+        // הצגת אפשרויות הבחירה עם אנימציה
         const choicesContainer = document.getElementById('choices');
         choicesContainer.innerHTML = '';
 
         if (questionData.choices && questionData.choices.length > 0) {
-            questionData.choices.forEach((choice, index) => {
-                const choiceButton = document.createElement('button');
-                choiceButton.className = 'question-btn';
-                choiceButton.textContent = choice.text;
-                choiceButton.addEventListener('click', function() {
-                    selectChoice(questionKey, index);
+            setTimeout(() => {
+                questionData.choices.forEach((choice, index) => {
+                    const choiceButton = document.createElement('button');
+                    choiceButton.className = 'question-btn';
+                    choiceButton.textContent = choice.text;
+                    choiceButton.style.opacity = 0;
+                    choiceButton.style.transform = 'translateY(15px)';
+                    choiceButton.style.transition = 'all 0.4s ease';
+                    
+                    choiceButton.addEventListener('click', function() {
+                        selectChoice(questionKey, index);
+                    });
+                    
+                    choicesContainer.appendChild(choiceButton);
+                    
+                    setTimeout(() => {
+                        choiceButton.style.opacity = 1;
+                        choiceButton.style.transform = 'translateY(0)';
+                    }, index * 100);
                 });
-                choicesContainer.appendChild(choiceButton);
-            });
+            }, 400);
         } else {
             // אם אין בחירות נוספות, זה סוף המסע
             showSummary();
@@ -592,6 +667,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function selectChoice(questionKey, choiceIndex) {
         const choice = questionTree[questionKey].choices[choiceIndex];
+        playSound('click');
         
         // הוספת הבחירה למסלול המשתמש
         userPath[userPath.length - 1].answer = choice.text;
@@ -610,6 +686,31 @@ document.addEventListener('DOMContentLoaded', function() {
         currentQuestion = choice.next;
         displayQuestion(choice.next);
         updateMazeVisualization();
+        updateMobilePathIndicator();
+    }
+
+    function updateMobilePathIndicator() {
+        // עדכון מסלול עבור מובייל
+        const pathDotsContainer = document.querySelector('.path-dots');
+        if (!pathDotsContainer) return;
+
+        pathDotsContainer.innerHTML = '';
+        
+        // יצירת נקודות המסלול למובייל
+        userPath.forEach((step, index) => {
+            const dot = document.createElement('div');
+            dot.className = 'path-dot' + (index === userPath.length - 1 ? ' active' : '');
+            pathDotsContainer.appendChild(dot);
+        });
+
+        // עדכון מונה השאלות
+        document.getElementById('current-step').textContent = userPath.length;
+        document.getElementById('total-steps').textContent = userPath.length;
+
+        // גלילה חלקה לראש הדף במובייל
+        if (window.innerWidth < 768) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
     }
 
     function showSummary() {
@@ -618,14 +719,45 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('summary').classList.remove('hidden');
         document.getElementById('summary').classList.add('active');
 
+        playSound('complete');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
         // יצירת ספר החכמה
         createWisdomBook();
     }
 
     function initMazeVisualization() {
-        // כאן אנו מאתחלים את הוויזואליזציה של המבוך באמצעות D3.js
+        // אתחול הויזואליזציה רק במסכים גדולים
+        if (window.innerWidth < 992) return;
+
         const svg = d3.select('#maze-svg');
         svg.selectAll("*").remove();
+
+        // יצירת רקע המבוך
+        svg.append("rect")
+            .attr("width", "100%")
+            .attr("height", "100%")
+            .attr("fill", "#f9f9f9")
+            .attr("rx", 8)
+            .attr("ry", 8);
+            
+        // יצירת דפוס רקע לדמות מבוך עדין
+        const defs = svg.append("defs");
+        const pattern = defs.append("pattern")
+            .attr("id", "maze-pattern")
+            .attr("width", 40)
+            .attr("height", 40)
+            .attr("patternUnits", "userSpaceOnUse");
+            
+        pattern.append("path")
+            .attr("d", "M0,20 L40,20 M20,0 L20,40")
+            .attr("stroke", "#eee")
+            .attr("stroke-width", 1);
+            
+        svg.append("rect")
+            .attr("width", "100%")
+            .attr("height", "100%")
+            .attr("fill", "url(#maze-pattern)");
 
         // יצירת נקודה ראשונית במרכז עם אנימציה
         svg.append("circle")
@@ -635,7 +767,22 @@ document.addEventListener('DOMContentLoaded', function() {
             .attr("fill", "#3a6ea5")
             .transition()
             .duration(1000)
-            .attr("r", 20);
+            .attr("r", 25)
+            .attr("filter", "drop-shadow(0 3px 3px rgba(0,0,0,0.2))");
+            
+        // הוספת הילה סביב הנקודה הראשונה
+        svg.append("circle")
+            .attr("cx", 500)
+            .attr("cy", 200)
+            .attr("r", 0)
+            .attr("fill", "none")
+            .attr("stroke", "#3a6ea5")
+            .attr("stroke-width", 2)
+            .attr("opacity", 0.6)
+            .transition()
+            .duration(1500)
+            .attr("r", 35)
+            .attr("opacity", 0);
 
         svg.append("text")
             .attr("x", 500)
@@ -643,6 +790,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .attr("text-anchor", "middle")
             .attr("dy", ".35em")
             .attr("fill", "white")
+            .attr("font-weight", "bold")
             .text("התחלה")
             .style("opacity", 0)
             .transition()
@@ -651,7 +799,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function updateMazeVisualization() {
-        // עדכון מבוך הוויזואליזציה כאשר משתמש מתקדם
+        // עדכון מבוך הוויזואליזציה רק במסכים גדולים
+        if (window.innerWidth < 992) return;
+        
         const svg = d3.select('#maze-svg');
         
         // הוספת נקודה חדשה בכל בחירה עם אנימציה
@@ -706,7 +856,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function createWisdomBook() {
         const wisdomBook = document.getElementById('wisdom-book');
-        let bookContent = `<h3>המסע הפילוסופי שלך</h3>`;
+        let bookContent = `
+        <div class="wisdom-header">
+            <div class="wisdom-symbol">✦</div>
+            <h3>ספר החכמה האישי שלך</h3>
+            <div class="wisdom-date">${new Date().toLocaleDateString('he-IL')}</div>
+        </div>`;
 
         // הוספת ציטוט רנדומלי מהחכמה היהודית
         const randomQuote = jewishWisdom[Math.floor(Math.random() * jewishWisdom.length)];
@@ -717,40 +872,104 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         `;
 
-        // סיכום המסע של המשתמש
-        bookContent += `<h4>השאלות והתובנות שלך:</h4><ul>`;
-        
-        userPath.forEach(step => {
-            bookContent += `<li><strong>${step.question}</strong>`;
-            if (step.answer) {
-                bookContent += `<br><em>בחרת: ${step.answer}</em>`;
-            }
-            bookContent += `</li>`;
+        // יצירת מפת מסע אישית גרפית
+        bookContent += `<div class="journey-map">
+                        <h4>מפת המסע הפילוסופי שלך:</h4>
+                        <div class="path-visualization">`;
+    
+        // יצירת מסלול חזותי של השאלות
+        userPath.forEach((step, index) => {
+            const isLast = index === userPath.length - 1;
+            bookContent += `
+                <div class="journey-step ${isLast ? 'current-step' : ''}">
+                    <div class="step-number">${index + 1}</div>
+                    <div class="step-content">
+                        <div class="step-question">${step.question}</div>
+                        ${step.answer ? `<div class="step-answer">${step.answer}</div>` : ''}
+                    </div>
+                    ${!isLast ? '<div class="step-connector"></div>' : ''}
+                </div>
+            `;
         });
         
-        bookContent += `</ul>`;
+        bookContent += `</div></div>`;
 
-        // הוספת תובנות סיכום מותאמות אישית
+        // הוספת תובנות סיכום מותאמות אישית עם יותר עומק
         const firstQuestion = userPath[0].question;
         let summaryInsight = "";
+        let personalityType = "";
         
         if (firstQuestion.includes("משמעות החיים")) {
-            summaryInsight = "חיפוש המשמעות הוא מסע שנמשך לאורך כל החיים. התשובות שבחרת משקפות את הערכים העמוקים שלך ואת מה שנותן לחייך תכלית.";
+            if (userPath.some(step => step.answer && step.answer.includes("קשרים"))) {
+                personalityType = "מחפש חיבור";
+                summaryInsight = "אתה רואה במערכות יחסים ובקשרים אנושיים את מקור המשמעות העמוקה ביותר בחיים. עבורך, העולם נבנה סביב אינטראקציות אנושיות והחיבורים שאנחנו יוצרים זה עם זה.";
+            } else if (userPath.some(step => step.answer && step.answer.includes("הגשמה"))) {
+                personalityType = "שואף לגדולה";
+                summaryInsight = "אתה מזהה את המשמעות בתהליך מתמשך של צמיחה והתפתחות אישית. עבורך, החיים הם מסע אינסופי של למידה וגילוי עצמי.";
+            } else {
+                personalityType = "נשמה רוחנית";
+                summaryInsight = "אתה מחפש משמעות מעבר לעולם הגשמי, בהבנה של האמיתות העמוקות והנצחיות של הקיום.";
+            }
         } else if (firstQuestion.includes("אושר")) {
-            summaryInsight = "האושר האמיתי אינו רק רגע חולף של הנאה, אלא דרך חיים המבוססת על הבחירות שאנו עושים. הבחירות שלך משקפות את תפיסת האושר האישית שלך.";
+            personalityType = "מחפש האושר";
+            summaryInsight = "האושר האמיתי עבורך אינו רגע חולף של הנאה, אלא דרך חיים המבוססת על בחירות מודעות. המסע שלך משקף את התפיסה שאושר הוא תהליך מתמשך ולא יעד סופי.";
         } else if (firstQuestion.includes("תכלית")) {
-            summaryInsight = "מציאת תכלית היא אחד האתגרים המשמעותיים ביותר בחיים. המסע שעברת מאיר זוויות שונות של השאלה מהי תכלית הקיום האנושי.";
+            personalityType = "מחפש משמעות";
+            summaryInsight = "אתה מחפש את הייעוד הייחודי שלך בעולם. התשובות שבחרת מצביעות על רצון עמוק להשאיר חותם ולהשפיע באמצעות המתנות והכישרונות הייחודיים לך.";
         } else {
-            summaryInsight = "השאלות שבחרת לחקור משקפות את הנושאים העמוקים שמעסיקים אותך. המשך להתבונן ולחקור, והתשובות יתגלו בהדרגה.";
+            personalityType = "חוקר פילוסופי";
+            summaryInsight = "השאלות שבחרת לחקור משקפות את הנושאים העמוקים שמעסיקים אותך. אתה רואה בחיים מסע של חקירה מתמדת והתפתחות אינטלקטואלית ורוחנית.";
         }
 
         bookContent += `
-            <h4>ניתוח מסכם:</h4>
-            <p>${summaryInsight}</p>
-            <p>המשך לשאול שאלות ולחפש תשובות. כפי שאמרו חז"ל: "הוי מתלמידי אהרן, אוהב שלום ורודף שלום, אוהב את הבריות ומקרבן לתורה".</p>
+            <div class="wisdom-insight">
+                <h4>תובנה אישית:</h4>
+                <div class="personality-type">${personalityType}</div>
+                <p>${summaryInsight}</p>
+                <p class="wisdom-closing">המשך לשאול שאלות ולחפש תשובות. הדרך היא המטרה.</p>
+            </div>
+        `;
+        
+        bookContent += `
+            <div class="wisdom-signature">
+                <div class="seal">⎊</div>
+                <div>נחתם בחותם המחשבה האנושית</div>
+            </div>
         `;
 
         wisdomBook.innerHTML = bookContent;
+        
+        // אפקט הופעה הדרגתית לספר החכמה
+        const elements = wisdomBook.querySelectorAll('div, h3, h4, p, blockquote');
+        elements.forEach((element, index) => {
+            element.style.opacity = 0;
+            element.style.transform = 'translateY(20px)';
+            element.style.transition = `opacity 0.8s ease, transform 0.8s ease`;
+            
+            setTimeout(() => {
+                element.style.opacity = 1;
+                element.style.transform = 'translateY(0)';
+            }, 100 + index * 80);
+        });
+
+        // הגדרת כפתור שיתוף למובייל
+        if (window.innerWidth < 992 && navigator.share) {
+            document.getElementById('share-btn').addEventListener('click', () => {
+                // יצירת טקסט לשיתוף
+                const summaryText = `מבוך המחשבות - התובנה שלי: ${personalityType}\n\n${summaryInsight}\n\nבקר במבוך המחשבות גם אתה: ${window.location.href}`;
+                
+                navigator.share({
+                    title: 'התובנה הפילוסופית שלי',
+                    text: summaryText
+                })
+                .catch(err => console.log('Error sharing:', err));
+            });
+            document.getElementById('share-btn').style.display = 'block';
+        } else {
+            if (document.getElementById('share-btn')) {
+                document.getElementById('share-btn').style.display = 'none';
+            }
+        }
 
         // כפתורי סיום
         document.getElementById('restart').addEventListener('click', function() {
@@ -759,11 +978,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
         document.getElementById('download-pdf').addEventListener('click', function() {
             alert('פונקציונליות זו תתווסף בהמשך - יצירת PDF מספר החכמה שלך');
-            // בגרסה עתידית: הטמעת jsPDF
-            // import { jsPDF } from "jspdf";
-            // const doc = new jsPDF();
-            // doc.text(wisdomBook.innerText, 10, 10);
-            // doc.save("ספר-החכמה-שלי.pdf");
         });
     }
+
+    // טיפול בשינוי גודל המסך
+    window.addEventListener('resize', function() {
+        if (currentQuestion) {
+            if (window.innerWidth >= 992) {
+                initMazeVisualization();
+                updateMazeVisualization();
+            }
+            updateMobilePathIndicator();
+        }
+    });
 });
