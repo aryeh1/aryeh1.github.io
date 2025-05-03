@@ -507,6 +507,10 @@ button#restart:hover, button#download-pdf:hover, button#share-btn:hover {
     z-index: 100;
 }
 
+.modal.hidden {
+    display: none !important;
+}
+
 .modal-content {
     background: white;
     width: 90%;
