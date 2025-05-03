@@ -507,6 +507,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // אתחול המבוך - CRITICAL SECTION FOR BUTTON FUNCTIONALITY
         console.log('Initializing buttons...');
         const startButtons = document.querySelectorAll('.question-btn');
+        const customStartButton = document.getElementById('start-custom');
+        const customQuestionInput = document.getElementById('custom-question');
         console.log('Found buttons:', startButtons.length);
         
         startButtons.forEach((button, index) => {
