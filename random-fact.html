@@ -1,12 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Numbers API page – Explore fun facts and trivia about numbers." />
   <title>Explore Fun Facts with Numbers API</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto&display=swap">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css">
   <style>
     body { margin: 0; font-family: 'Roboto', sans-serif; background: #f5f7fa; color: #333; }
     header { background: #4a90e2; color: white; padding: 20px; text-align: center; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
@@ -15,151 +14,50 @@
     .container { max-width: 960px; margin: 40px auto; padding: 0 20px; display: flex; flex-direction: column; gap: 30px; }
     .card { background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08); }
     footer { text-align: center; padding: 20px; background: #4a90e2; color: white; margin-top: 40px; }
-    .link-button {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 16px;
-      border-radius: 8px;
-      background: #e3f2fd;
-      color: #1565c0;
-      text-decoration: none;
-      font-weight: 500;
-      transition: background 0.3s ease;
-      margin-right: 10px;
-      margin-top: 5px;
-    }
+    .link-button { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 8px; background: #e3f2fd; color: #1565c0; text-decoration: none; font-weight: 500; transition: background 0.3s ease; margin-right: 10px; margin-top: 5px; }
     .link-button:hover { background: #bbdefb; }
-    #submit-btn {
-      background: #4caf50;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1rem;
-      margin-bottom: 1rem;
-    }
+    #submit-btn, #random-text { background: #4caf50; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 1rem; margin-bottom: 1rem; }
+    #random-text { background: #ff5722; }
     #submit-btn:hover { background: #388e3c; }
-    #random-text {
-      background: #ff5722;
-      color: white;
-      border: none;
-      padding: 8px 16px;  /* Same padding as Show Fact button */
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1rem;  /* Matching font size */
-      margin-top: 10px;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
     #random-text:hover { background: #e64a19; }
-    input[type="number"] {
-      width: 75%;
-      padding: 12px;
-      font-size: 1rem;
-      margin-top: 10px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
-    .input-container {
-      display: flex;
-      gap: 10px;
-    }
-    #typeSelect {
-      width: 100%;
-      padding: 12px;
-      font-size: 1rem;
-      margin-top: 10px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
-    #result {
-      background: #f1f8e9;
-      border-left: 5px solid #8bc34a;
-      padding: 15px;
-      border-radius: 8px;
-      font-size: 1.2rem;
-      margin-top: 15px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    #result i {
-      font-size: 2rem;
-      color: #8bc34a;
-    }
+    input[type="number"], #typeSelect { width: 100%; padding: 12px; font-size: 1rem; margin-top: 10px; border-radius: 8px; border: 1px solid #ccc; }
+    #result { background: #f1f8e9; border-left: 5px solid #8bc34a; padding: 15px; border-radius: 8px; font-size: 1.2rem; margin-top: 15px; display: flex; align-items: center; gap: 10px; }
+    #result i { font-size: 2rem; color: #8bc34a; }
   </style>
 </head>
 <body>
-  <header>
-    <h1><i class="fas fa-calculator"></i> Numbers Trivia Fun</h1>
-  </header>
-
-  <nav>
-    <a href="index.html"><i class="fas fa-home"></i> Home</a>
-  </nav>
-
+  <header><h1><i class="fas fa-calculator"></i> Numbers Trivia Fun</h1></header>
+  <nav><a href="index.html"><i class="fas fa-home"></i> Home</a></nav>
   <main class="container">
     <div class="card">
       <h2>Explore Fun Facts About Numbers</h2>
-      <p>Enter a number or choose random to discover fascinating trivia, math facts, historical events, and more!</p>
-      <div class="input-container">
-        <div>
-          <label for="numberInput">Enter a number:</label><br>
-          <input type="number" id="numberInput" placeholder="Enter a number">
-        </div>
-      </div>
-      
+      <p>Enter a number or choose random to discover fascinating trivia!</p>
+      <input type="number" id="numberInput" placeholder="Enter a number">
       <span id="random-text" onclick="setRandomNumber()">Generate Random Number</span>
-
-      <br><br>
-      <label for="typeSelect">Select fact type:</label>
       <select id="typeSelect">
         <option value="trivia">Trivia</option>
         <option value="math">Math</option>
         <option value="year">Year</option>
         <option value="date">Date</option>
       </select>
-
-      <br><br>
       <button id="submit-btn" onclick="getNumberFact()">Show Fact</button>
-
       <div id="result"></div>
     </div>
   </main>
-
-  <footer>
-    <p>&copy; 2025 Aryeh | All rights reserved</p>
-  </footer>
-
+  <footer><p>&copy; 2025 Aryeh | All rights reserved</p></footer>
   <script>
     function getNumberFact() {
-      let number = document.getElementById('numberInput').value;
-      let type = document.getElementById('typeSelect').value;
-      let url;
-
-      if (number) {
-        url = `http://numbersapi.com/${number}/${type}?json`;
-      } else {
-        url = `http://numbersapi.com/random/${type}?json`;
-      }
-
+      const number = document.getElementById('numberInput').value;
+      const type = document.getElementById('typeSelect').value;
+      const url = number ? `http://numbersapi.com/${number}/${type}?json` : `http://numbersapi.com/random/${type}?json`;
       fetch(url)
-        .then(response => response.json())
-        .then(data => {
-          document.getElementById('result').innerHTML = `<i class="fas fa-info-circle"></i> ${data.text}`;
-        })
-        .catch(error => {
-          document.getElementById('result').innerHTML = "<i class='fas fa-info-circle'></i> An error occurred. Please try again.";
-        });
+        .then(res => res.json())
+        .then(data => document.getElementById('result').innerHTML = `<i class="fas fa-info-circle"></i> ${data.text}`)
+        .catch(() => document.getElementById('result').innerHTML = "<i class='fas fa-info-circle'></i> Error fetching data.");
     }
-
     function setRandomNumber() {
-      let randomNumber = Math.floor(Math.random() * 100);  // Random number between 0 and 99
-      document.getElementById('numberInput').value = randomNumber;
-      getNumberFact();  // Automatically fetch the fact once the random number is selected
+      document.getElementById('numberInput').value = Math.floor(Math.random() * 100);
+      getNumberFact();
     }
   </script>
 </body>
