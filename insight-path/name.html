@@ -4,51 +4,62 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>מבוך המחשבות - מסע פילוסופי אישי</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="name.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>מבוך המחשבות</h1>
+            <h1><i class="fas fa-brain"></i> מבוך המחשבות</h1>
             <p class="subtitle">מסע פילוסופי אל תוך עולמך הפנימי</p>
         </header>
 
-        <div id="introduction" class="section active">
+        <div id="introduction" class="section active card">
             <h2>ברוכים הבאים למסע</h2>
-            <p>מבוך המחשבות הוא מסע אישי לחקירת השאלות העמוקות שמעסיקות אותך.</p>
-            <p>בחר שאלת פתיחה או כתוב את שלך:</p>
+            <p>בחר שאלה מהרשימה או כתוב שאלה משלך להתחלת המסע</p>
             
             <div class="starting-questions">
-                <button class="question-btn" data-question="meaning">מהי משמעות החיים עבורי?</button>
-                <button class="question-btn" data-question="happiness">מהו האושר האמיתי?</button>
-                <button class="question-btn" data-question="purpose">מהי תכלית הקיום שלי בעולם?</button>
+                <button class="question-btn start-btn" data-question="meaning">מהי משמעות החיים?</button>
+                <button class="question-btn start-btn" data-question="happiness">מהי אושר אמיתי?</button>
+                <button class="question-btn start-btn" data-question="justice">מהו צדק?</button>
+                <button class="question-btn start-btn" data-question="knowledge">כיצד אנחנו יודעים מה שאנחנו יודעים?</button>
+                
                 <div class="custom-question">
                     <input type="text" id="custom-question" placeholder="או כתוב שאלה משלך...">
-                    <button id="start-custom">התחל</button>
+                    <button id="start-custom" class="start-custom-btn">התחל</button>
                 </div>
             </div>
         </div>
 
         <div id="maze-container" class="section hidden">
-            <div id="question-display">
+            <div class="card question-display">
                 <h2 id="current-question"></h2>
                 <div id="question-context"></div>
             </div>
             
-            <div id="choices"></div>
+            <div id="choices" class="choices-container"></div>
             
-            <div id="visualization">
-                <svg id="maze-svg" width="100%" height="400"></svg>
+            <div id="visualization" class="card">
+                <svg id="maze-svg" width="100%" height="300"></svg>
             </div>
         </div>
 
         <div id="summary" class="section hidden">
-            <h2>ספר החכמה שלך</h2>
-            <div id="wisdom-book"></div>
-            <button id="restart">התחל מסע חדש</button>
-            <button id="download-pdf">הורד כ-PDF</button>
+            <div class="card">
+                <h2>ספר החכמה שלך</h2>
+                <div id="wisdom-book"></div>
+                <div class="button-container">
+                    <button id="restart" class="action-btn"><i class="fas fa-redo"></i> התחל מסע חדש</button>
+                    <button id="download-pdf" class="action-btn"><i class="fas fa-download"></i> הורד כ-PDF</button>
+                </div>
+            </div>
         </div>
     </div>
+    
+    <footer>
+        <p>&copy; 2025 | מבוך המחשבות</p>
+    </footer>
 
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="name.js"></script>

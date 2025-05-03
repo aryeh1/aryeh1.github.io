@@ -194,53 +194,112 @@ document.addEventListener('DOMContentLoaded', function() {
         createWisdomBook();
     }
 
+    // Update the visualization functions to make them mobile responsive
+
     function initMazeVisualization() {
-        // כאן אנו מאתחלים את הוויזואליזציה של המבוך באמצעות D3.js
-        // מימוש מלא דורש קוד D3 יותר מורכב
+        // Initialize the visualization with D3.js, using responsive dimensions
         const svg = d3.select('#maze-svg');
         svg.selectAll("*").remove();
-
-        // יצירת נקודה ראשונית במרכז
+        
+        // Calculate center point based on SVG dimensions
+        const svgElement = document.getElementById('maze-svg');
+        const svgWidth = svgElement.clientWidth;
+        const svgHeight = svgElement.clientHeight;
+        
+        const centerX = svgWidth / 2;
+        const centerY = svgHeight / 2;
+        
+        // Create initial node
         svg.append("circle")
-            .attr("cx", 500)
-            .attr("cy", 200)
+            .attr("cx", centerX)
+            .attr("cy", centerY)
             .attr("r", 20)
-            .attr("fill", "#3a6ea5");
+            .attr("fill", "#4a90e2");
 
         svg.append("text")
-            .attr("x", 500)
-            .attr("y", 200)
+            .attr("x", centerX)
+            .attr("y", centerY)
             .attr("text-anchor", "middle")
             .attr("dy", ".35em")
             .attr("fill", "white")
+            .attr("font-size", "14px")
             .text("התחלה");
+            
+        // Store the center coordinates for future reference
+        svg.datum({ centerX, centerY, width: svgWidth, height: svgHeight });
     }
 
     function updateMazeVisualization() {
-        // עדכון מבוך הוויזואליזציה כאשר משתמש מתקדם
-        // מימוש פשוט לדוגמה
-        const svg = d3.select('#maze-svg');
-        
-        // הוספת נקודה חדשה בכל בחירה
+        // Get the current path length
         const pathLength = userPath.length;
+        if (pathLength <= 1) return; // No visualization needed for just the starting point
         
+        const svg = d3.select('#maze-svg');
+        const { centerX, centerY, width, height } = svg.datum();
+        
+        // Calculate scaling factors based on screen size
+        const scaleFactor = Math.min(width, height) / 500;
+        const nodeRadius = 20 * scaleFactor;
+        const nodeSpacing = Math.min(60 * scaleFactor, width / 8);
+        
+        // Use a circular or spiral layout that works on smaller screens
+        const angle = (pathLength - 1) * 0.7;
+        const newX = centerX + ((pathLength - 1) * nodeSpacing * Math.cos(angle));
+        const newY = centerY + ((pathLength - 1) * nodeSpacing * Math.sin(angle));
+        
+        // Add a line from the previous node to this one
+        const prevX = pathLength > 2 
+            ? centerX + ((pathLength - 2) * nodeSpacing * Math.cos((pathLength - 2) * 0.7))
+            : centerX;
+        const prevY = pathLength > 2 
+            ? centerY + ((pathLength - 2) * nodeSpacing * Math.sin((pathLength - 2) * 0.7))
+            : centerY;
+        
+        svg.append("line")
+            .attr("x1", prevX)
+            .attr("y1", prevY)
+            .attr("x2", newX)
+            .attr("y2", newY)
+            .attr("stroke", "#6b7a8f")
+            .attr("stroke-width", 2);
+            
+        // Add a new node for this step
         svg.append("circle")
-            .attr("cx", 500 + (pathLength - 1) * 80 * Math.cos(pathLength * 0.7))
-            .attr("cy", 200 + (pathLength - 1) * 60 * Math.sin(pathLength * 0.7))
-            .attr("r", 15)
-            .attr("fill", "#c0b283");
-
-        // הוספת קו מחבר
-        if (pathLength > 1) {
-            svg.append("line")
-                .attr("x1", 500 + (pathLength - 2) * 80 * Math.cos((pathLength-1) * 0.7))
-                .attr("y1", 200 + (pathLength - 2) * 60 * Math.sin((pathLength-1) * 0.7))
-                .attr("x2", 500 + (pathLength - 1) * 80 * Math.cos(pathLength * 0.7))
-                .attr("y2", 200 + (pathLength - 1) * 60 * Math.sin(pathLength * 0.7))
-                .attr("stroke", "#6b7a8f")
-                .attr("stroke-width", 2);
+            .attr("cx", newX)
+            .attr("cy", newY)
+            .attr("r", nodeRadius)
+            .attr("fill", "#4a90e2");
+            
+        // Add the step number to the node
+        svg.append("text")
+            .attr("x", newX)
+            .attr("y", newY)
+            .attr("text-anchor", "middle")
+            .attr("dy", ".35em")
+            .attr("fill", "white")
+            .attr("font-size", `${12 * scaleFactor}px`)
+            .text(pathLength);
+            
+        // We need to ensure the new node is visible by scrolling if necessary
+        const vizContainer = document.getElementById('visualization');
+        if (vizContainer) {
+            vizContainer.scrollIntoView({ behavior: 'smooth', block: 'end' });
         }
     }
+
+    // Add a window resize handler to make the visualization responsive
+    window.addEventListener('resize', function() {
+        if (document.getElementById('maze-svg').style.display !== 'none') {
+            // Re-initialize and update the visualization when window is resized
+            initMazeVisualization();
+            
+            // Redraw all nodes based on current path
+            const pathLength = userPath ? userPath.length : 0;
+            for (let i = 2; i <= pathLength; i++) {
+                updateMazeVisualization();
+            }
+        }
+    });
 
     function createWisdomBook() {
         const wisdomBook = document.getElementById('wisdom-book');

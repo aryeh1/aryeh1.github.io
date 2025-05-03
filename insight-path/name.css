@@ -1,51 +1,62 @@
 :root {
-    --primary: #3a6ea5;
-    --secondary: #c0b283;
-    --light: #f4f4f4;
-    --dark: #373737;
+    --primary: #4a90e2;
+    --secondary: #bbdefb;
+    --light: #f5f7fa;
+    --dark: #333;
     --accent: #6b7a8f;
+    --success: #4caf50;
 }
 
 body {
-    font-family: 'David', 'Segoe UI', 'Arial', sans-serif;
+    font-family: 'Roboto', 'David', sans-serif;
     line-height: 1.6;
     color: var(--dark);
     background-color: var(--light);
     margin: 0;
     padding: 0;
+    direction: rtl;
 }
 
 .container {
-    max-width: 1000px;
+    max-width: 960px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 15px;
 }
 
 header {
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
     border-bottom: 2px solid var(--secondary);
-    padding-bottom: 20px;
+    padding-bottom: 15px;
+    background: var(--primary);
+    color: white;
+    padding: 20px;
+    margin: -15px -15px 20px -15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
-    color: var(--primary);
-    font-size: 2.5rem;
+    font-size: 2rem;
     margin-bottom: 0;
 }
 
 .subtitle {
-    font-size: 1.2rem;
-    color: var(--accent);
-    margin-top: 0;
+    font-size: 1.1rem;
+    color: #fff;
+    margin-top: 5px;
 }
 
 .section {
     margin: 20px 0;
-    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.card {
     background: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+    padding: 20px;
+    margin-bottom: 20px;
 }
 
 .hidden {
@@ -59,87 +70,177 @@ h1 {
 .starting-questions {
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    margin: 30px 0;
+    gap: 12px;
+    margin: 25px 0;
 }
 
 .question-btn {
-    background-color: var(--secondary);
+    background-color: var(--primary);
     color: white;
     border: none;
     padding: 15px 20px;
-    font-size: 1.1rem;
-    border-radius: 5px;
+    font-size: 1rem;
+    border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
+    text-align: right;
 }
 
 .question-btn:hover {
-    background-color: var(--primary);
+    background-color: #1565c0;
     transform: translateY(-2px);
 }
 
 .custom-question {
     display: flex;
-    margin-top: 20px;
+    margin-top: 15px;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .custom-question input {
-    flex: 1;
-    padding: 10px;
+    padding: 12px;
     font-size: 1rem;
     border: 2px solid #ddd;
-    border-radius: 5px 0 0 5px;
+    border-radius: 8px;
 }
 
-.custom-question button {
-    padding: 10px 15px;
+.start-custom-btn {
+    padding: 12px 15px;
     background-color: var(--primary);
     color: white;
     border: none;
-    border-radius: 0 5px 5px 0;
+    border-radius: 8px;
     cursor: pointer;
+    font-weight: bold;
+}
+
+.start-custom-btn:hover {
+    background-color: #1565c0;
 }
 
 #maze-container {
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 20px;
 }
 
-#question-display {
+.question-display {
     text-align: center;
-    padding: 20px;
-    background: rgba(192, 178, 131, 0.1);
-    border-radius: 10px;
+    background: rgba(74, 144, 226, 0.1);
 }
 
-#choices {
+.choices-container {
     display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+    margin: 0 auto;
+}
+
+.choice-btn {
+    background-color: var(--secondary);
+    color: var(--dark);
+    border: none;
+    padding: 12px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: right;
+    width: 100%;
+    font-size: 1rem;
+}
+
+.choice-btn:hover {
+    background-color: var(--primary);
+    color: white;
 }
 
 #visualization {
-    border-top: 1px solid #eee;
-    padding-top: 20px;
+    padding: 10px;
 }
 
 #maze-svg {
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background: rgba(255, 255, 255, 0.8);
+    border-radius: 8px;
+    width: 100%;
+    height: 300px;
+    max-height: 70vh;
+    background: white;
 }
 
-/* מעטפת לספר החכמה */
 #wisdom-book {
     max-height: 400px;
     overflow-y: auto;
-    padding: 20px;
-    border: 1px solid #ddd;
-    background: white;
     margin-bottom: 20px;
     border-radius: 5px;
-    box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.action-btn {
+    padding: 12px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--primary);
+    color: white;
+}
+
+.action-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+footer {
+    text-align: center;
+    padding: 15px;
+    background: var(--primary);
+    color: white;
+    margin-top: 30px;
+}
+
+/* Mobile-first responsive design */
+@media (min-width: 768px) {
+    .custom-question {
+        flex-direction: row;
+    }
+
+    .custom-question input {
+        flex: 1;
+        border-radius: 8px 0 0 8px;
+    }
+
+    .start-custom-btn {
+        border-radius: 0 8px 8px 0;
+    }
+
+    .choices-container {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .choice-btn {
+        width: auto;
+        min-width: 200px;
+    }
+
+    .button-container {
+        flex-direction: row;
+        justify-content: center;
+    }
+    
+    #maze-svg {
+        height: 400px;
+    }
 }
