@@ -140,11 +140,12 @@
       let type = document.getElementById('typeSelect').value;
       let url;
 
-      if (number) {
-        url = `//numbersapi.com/${number}/${type}?json`;
-      } else {
-        url = `//numbersapi.com/random/${type}?json`;
+      // Try with a random number if none is provided
+      if (!number) {
+        number = Math.floor(Math.random() * 100);
       }
+      
+      url = `https://corsproxy.io/?https://numbersapi.com/${number}/${type}?json`;
 
       fetch(url)
         .then(response => response.json())
