@@ -1,9 +1,9 @@
 :root {
-    --primary: #3a6ea5;
-    --secondary: #c0b283;
-    --light: #f4f4f4;
-    --dark: #373737;
-    --accent: #6b7a8f;
+    --primary: #4a90e2; /* Aligned with main site blue */
+    --secondary: #c0b283; /* Keeping this accent color for uniqueness */
+    --light: #f5f7fa; /* Matching main site background */
+    --dark: #333; /* Matching main site text color */
+    --accent: #6b7a8f; /* Keeping as secondary accent */
 }
 
 * {
@@ -67,8 +67,8 @@ h1 {
     margin: 1rem 0;
     padding: 1rem;
     background: white;
-    border-radius: 10px;
-    box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
     transition: all 0.5s ease;
 }
 
