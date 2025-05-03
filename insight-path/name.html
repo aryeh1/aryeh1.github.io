@@ -11,30 +11,12 @@
         <header>
             <h1>מבוך המחשבות</h1>
             <p class="subtitle">מסע פילוסופי אל תוך עולמך הפנימי</p>
-            <button id="help-btn" class="help-button" aria-label="עזרה">?</button>
-            
-            <div id="help-modal" class="modal hidden">
-                <div class="modal-content">
-                    <span class="close-modal">&times;</span>
-                    <h3>כיצד לנווט במבוך המחשבות</h3>
-                    <ol>
-                        <li><strong>בחר שאלת פתיחה</strong> - התחל עם אחת השאלות המוצעות או צור שאלה משלך.</li>
-                        <li><strong>חקור את המבוך</strong> - בכל שלב, בחר את התשובה שמהדהדת בך באופן העמוק ביותר.</li>
-                        <li><strong>צפה במסלול שלך</strong> - הויזואליזציה (במחשב) מציגה את המסע הייחודי שלך במבוך.</li>
-                        <li><strong>קבל את ספר החכמה</strong> - בסיום המסע תקבל ספר חכמה אישי המשקף את בחירותיך.</li>
-                    </ol>
-                    <p><em>זכור: אין תשובות "נכונות" - זהו מסע של חקירה עצמית.</em></p>
-                </div>
-            </div>
         </header>
 
         <div id="introduction" class="section active">
-            <div class="intro-story">
-                <p>בעולם של רעש מתמיד, אנחנו נדירות מתעכבים לחקור את המחשבות העמוקות שמעצבות את חיינו.</p>
-                <p>מבוך המחשבות הוא מרחב מקודש לחקירה פנימית. כאן, כל בחירה מעצבת את המסלול שלך דרך מבוך המחשבה האנושית.</p>
-                <p>בסיום המסע, תקבל "ספר חכמה" אישי המשקף את התובנות שגילית בדרך.</p>
-            </div>
-            <p class="instructions">בחר שאלת פתיחה או כתוב שאלה משלך:</p>
+            <h2>ברוכים הבאים למסע</h2>
+            <p>מבוך המחשבות הוא מסע אישי לחקירת השאלות העמוקות שמעסיקות אותך.</p>
+            <p>בחר שאלת פתיחה או כתוב את שלך:</p>
             
             <div class="starting-questions">
                 <button class="question-btn" data-question="meaning">מהי משמעות החיים עבורי?</button>
@@ -55,24 +37,16 @@
             
             <div id="choices"></div>
             
-            <div id="visualization" class="desktop-only">
+            <div id="visualization">
                 <svg id="maze-svg" width="100%" height="400"></svg>
-            </div>
-            
-            <div class="mobile-path-indicator">
-                <div class="path-dots"></div>
-                <div class="current-step-label">שאלה <span id="current-step">1</span> מתוך <span id="total-steps">1</span></div>
             </div>
         </div>
 
         <div id="summary" class="section hidden">
             <h2>ספר החכמה שלך</h2>
             <div id="wisdom-book"></div>
-            <div class="summary-actions">
-                <button id="restart">התחל מסע חדש</button>
-                <button id="download-pdf">הורד כ-PDF</button>
-                <button id="share-btn" class="mobile-only">שתף את התובנות</button>
-            </div>
+            <button id="restart">התחל מסע חדש</button>
+            <button id="download-pdf">הורד כ-PDF</button>
         </div>
     </div>
 
