@@ -1,13 +1,9 @@
 :root {
-    --primary: #4a90e2; /* Aligned with main site blue */
-    --secondary: #c0b283; /* Keeping this accent color for uniqueness */
-    --light: #f5f7fa; /* Matching main site background */
-    --dark: #333; /* Matching main site text color */
-    --accent: #6b7a8f; /* Keeping as secondary accent */
-}
-
-* {
-    box-sizing: border-box;
+    --primary: #3a6ea5;
+    --secondary: #c0b283;
+    --light: #f4f4f4;
+    --dark: #373737;
+    --accent: #6b7a8f;
 }
 
 body {
@@ -17,604 +13,133 @@ body {
     background-color: var(--light);
     margin: 0;
     padding: 0;
-    background-image: linear-gradient(120deg, rgba(246,246,246,0.8) 0%, rgba(234,236,240,0.8) 100%);
-    font-size: 16px;
-    pointer-events: auto !important;
-}
-
-html {
-    pointer-events: auto !important;
 }
 
 .container {
-    width: 100%;
     max-width: 1000px;
     margin: 0 auto;
-    padding: 1rem;
-    pointer-events: auto !important;
+    padding: 20px;
 }
 
 header {
     text-align: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 40px;
     border-bottom: 2px solid var(--secondary);
-    padding-bottom: 1rem;
-    position: relative;
-}
-
-header:after {
-    content: "";
-    position: absolute;
-    bottom: -10px;
-    left: 50%;
-    width: 60px;
-    height: 20px;
-    background-color: var(--light);
-    transform: translateX(-50%);
-    border: 2px solid var(--secondary);
-    border-bottom: none;
-    border-radius: 50% 50% 0 0;
+    padding-bottom: 20px;
 }
 
 h1 {
     color: var(--primary);
-    font-size: 1.8rem;
+    font-size: 2.5rem;
     margin-bottom: 0;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
 }
 
 .subtitle {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     color: var(--accent);
     margin-top: 0;
 }
 
 .section {
-    margin: 1rem 0;
-    padding: 1rem;
+    margin: 20px 0;
+    padding: 20px;
     background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
-    transition: all 0.5s ease;
-    pointer-events: auto !important;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
 .hidden {
     display: none;
-    opacity: 0;
-    transform: translateY(20px);
 }
 
 .active {
     display: block;
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.desktop-only {
-    display: none;
-}
-
-.mobile-only {
-    display: block;
-}
-
-.intro-story {
-    padding: 1rem;
-    border-right: 3px solid var(--secondary);
-    margin: 1.5rem 0;
-    font-style: italic;
-    color: #555;
-    line-height: 1.8;
-}
-
-.instructions {
-    font-weight: bold;
-    margin-top: 1.5rem;
-    color: var(--primary);
 }
 
 .starting-questions {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    margin: 1.5rem 0;
+    gap: 15px;
+    margin: 30px 0;
 }
 
 .question-btn {
     background-color: var(--secondary);
     color: white;
     border: none;
-    padding: 0.8rem;
-    font-size: 1rem;
-    border-radius: 8px;
+    padding: 15px 20px;
+    font-size: 1.1rem;
+    border-radius: 5px;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    width: 100%;
-    pointer-events: auto !important;
 }
 
-.question-btn:hover, .question-btn:active {
+.question-btn:hover {
     background-color: var(--primary);
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
 .custom-question {
     display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-top: 1rem;
+    margin-top: 20px;
 }
 
 .custom-question input {
-    padding: 0.8rem;
+    flex: 1;
+    padding: 10px;
     font-size: 1rem;
     border: 2px solid #ddd;
-    border-radius: 8px;
-    transition: border-color 0.3s ease;
-}
-
-.custom-question input:focus {
-    outline: none;
-    border-color: var(--secondary);
+    border-radius: 5px 0 0 5px;
 }
 
 .custom-question button {
-    padding: 0.8rem;
+    padding: 10px 15px;
     background-color: var(--primary);
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 0 5px 5px 0;
     cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-}
-
-.custom-question button:hover {
-    background-color: #2a5d94;
 }
 
 #maze-container {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 30px;
 }
 
 #question-display {
     text-align: center;
-    padding: 1rem;
+    padding: 20px;
     background: rgba(192, 178, 131, 0.1);
     border-radius: 10px;
-    border-right: 4px solid var(--secondary);
-}
-
-#current-question {
-    color: var(--primary);
-    margin-top: 0;
-    font-size: 1.3rem;
-}
-
-#question-context {
-    color: var(--accent);
-    font-size: 0.95rem;
-}
-
-blockquote {
-    font-style: italic;
-    color: #555;
-    border-right: 3px solid var(--secondary);
-    padding-right: 15px;
-    margin: 20px 0;
-    position: relative;
-    font-size: 0.9rem;
-}
-
-blockquote:before {
-    content: "";
-    font-size: 2.5em;
-    line-height: 0.1em;
-    margin-left: 0.25em;
-    vertical-align: -0.4em;
-    color: var(--secondary);
-}
-
-cite {
-    display: block;
-    text-align: left;
-    font-size: 0.8em;
-    margin-top: 10px;
-    color: #777;
 }
 
 #choices {
     display: flex;
-    flex-direction: column;
-    gap: 0.8rem;
-    margin: 1rem 0;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
 }
 
-.mobile-path-indicator {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 1rem;
-    padding-top: 1rem;
+#visualization {
     border-top: 1px solid #eee;
+    padding-top: 20px;
 }
 
-.path-dots {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 0.5rem;
-}
-
-.path-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: #ddd;
-}
-
-.path-dot.active {
-    background: var(--secondary);
-    transform: scale(1.3);
-}
-
-.current-step-label {
-    font-size: 0.9rem;
-    color: var(--accent);
+#maze-svg {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.8);
 }
 
 /* מעטפת לספר החכמה */
 #wisdom-book {
-    max-height: 50vh;
+    max-height: 400px;
     overflow-y: auto;
-    padding: 1.5rem;
+    padding: 20px;
     border: 1px solid #ddd;
     background: white;
-    margin-bottom: 1rem;
+    margin-bottom: 20px;
     border-radius: 5px;
     box-shadow: 0 2px 15px rgba(0,0,0,0.1);
-    background-image: linear-gradient(to right, rgba(255,255,255,0.95), rgba(255,255,255,0.95)), 
-                      url('https://www.transparenttextures.com/patterns/parchment.png');
-}
-
-#wisdom-book h3 {
-    color: var(--primary);
-    text-align: center;
-    margin-top: 0;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #eee;
-    font-size: 1.3rem;
-}
-
-#wisdom-book ul {
-    padding-right: 1.2rem;
-}
-
-#wisdom-book li {
-    margin-bottom: 0.8rem;
-}
-
-#wisdom-book strong {
-    color: var(--primary);
-}
-
-#wisdom-book em {
-    color: var(--accent);
-}
-
-.quote-highlight {
-    background: rgba(192, 178, 131, 0.1);
-    padding: 0.8rem;
-    border-radius: 5px;
-    margin: 1rem 0;
-    text-align: center;
-}
-
-.wisdom-header {
-    text-align: center;
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.8rem;
-    border-bottom: 1px solid #eaeaea;
-    position: relative;
-}
-
-.wisdom-symbol {
-    font-size: 1.8rem;
-    color: var(--secondary);
-    margin-bottom: 0.5rem;
-}
-
-.wisdom-date {
-    font-size: 0.9rem;
-    color: #777;
-    font-style: italic;
-}
-
-.journey-map {
-    margin: 1.5rem 0;
-}
-
-.path-visualization {
-    position: relative;
-    padding: 1rem 0.5rem;
-}
-
-.journey-step {
-    display: flex;
-    align-items: flex-start;
-    margin-bottom: 1.5rem;
-    position: relative;
-}
-
-.step-number {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background-color: var(--accent);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    margin-left: 0.8rem;
-    flex-shrink: 0;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.current-step .step-number {
-    background-color: var(--secondary);
-    transform: scale(1.1);
-}
-
-.step-content {
-    flex-grow: 1;
-    background: rgba(255,255,255,0.7);
-    padding: 0.8rem;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    font-size: 0.9rem;
-}
-
-.step-question {
-    font-weight: bold;
-    color: var(--primary);
-    margin-bottom: 0.5rem;
-}
-
-.step-answer {
-    color: var(--accent);
-    font-style: italic;
-    padding-right: 0.6rem;
-    border-right: 2px solid var(--secondary);
-}
-
-.step-connector {
-    position: absolute;
-    top: 30px;
-    right: 15px;
-    height: 100%;
-    width: 2px;
-    background: linear-gradient(to bottom, var(--accent), rgba(107, 122, 143, 0.2));
-}
-
-.wisdom-insight {
-    background: linear-gradient(to right, rgba(192, 178, 131, 0.1), rgba(255,255,255,0));
-    padding: 1rem;
-    border-radius: 10px;
-    margin: 1.5rem 0;
-}
-
-.personality-type {
-    display: inline-block;
-    background: var(--secondary);
-    color: white;
-    padding: 0.3rem 0.8rem;
-    border-radius: 20px;
-    font-weight: bold;
-    margin-bottom: 0.8rem;
-    font-size: 0.9rem;
-}
-
-.wisdom-closing {
-    font-style: italic;
-    text-align: center;
-    margin-top: 1rem;
-    color: #555;
-}
-
-.wisdom-signature {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 2rem;
-    color: #777;
-}
-
-.seal {
-    font-size: 3rem;
-    color: var(--secondary);
-    margin-bottom: 0.3rem;
-}
-
-.summary-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 0.8rem;
-    margin-top: 1rem;
-}
-
-button#restart, button#download-pdf, button#share-btn {
-    padding: 0.8rem;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: all 0.3s ease;
-    margin: 0;
-    width: 100%;
-}
-
-button#restart {
-    background-color: var(--accent);
-    color: white;
-}
-
-button#download-pdf {
-    background-color: var(--secondary);
-    color: white;
-}
-
-button#share-btn {
-    background-color: #4caf50;
-    color: white;
-}
-
-button#restart:hover, button#download-pdf:hover, button#share-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-}
-
-.help-button {
-    position: absolute;
-    top: 0.5rem;
-    left: 0.5rem;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: var(--secondary);
-    color: white;
-    border: none;
-    font-weight: bold;
-    cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    z-index: 10;
-}
-
-.modal {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background: rgba(0,0,0,0.8);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 100;
-}
-
-.modal.hidden {
-    display: none !important;
-}
-
-.modal-content {
-    background: white;
-    width: 90%;
-    max-width: 500px;
-    max-height: 90vh;
-    overflow-y: auto;
-    padding: 1.5rem;
-    border-radius: 12px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-    position: relative;
-}
-
-.close-modal {
-    position: absolute;
-    top: 0.5rem;
-    left: 0.5rem;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: #999;
-}
-
-#questions-container > div {
-    cursor: pointer !important;
-    pointer-events: auto !important;
-}
-
-/* Tablet sizes */
-@media (min-width: 768px) {
-    body {
-        font-size: 17px;
-    }
-    
-    .container {
-        padding: 1.5rem;
-    }
-    
-    h1 {
-        font-size: 2.2rem;
-    }
-    
-    .custom-question {
-        flex-direction: row;
-    }
-    
-    .custom-question input {
-        flex: 1;
-        border-radius: 8px 0 0 8px;
-    }
-    
-    .custom-question button {
-        border-radius: 0 8px 8px 0;
-        width: auto;
-    }
-    
-    #choices {
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-    
-    #choices .question-btn {
-        width: auto;
-        min-width: 200px;
-    }
-    
-    .summary-actions {
-        flex-direction: row;
-        justify-content: center;
-    }
-    
-    button#restart, button#download-pdf, button#share-btn {
-        width: auto;
-    }
-}
-
-/* Desktop sizes */
-@media (min-width: 992px) {
-    .desktop-only {
-        display: block;
-    }
-    
-    .mobile-only {
-        display: none;
-    }
-    
-    .mobile-path-indicator {
-        display: none;
-    }
-    
-    #visualization {
-        border-top: 1px solid #eee;
-        padding-top: 20px;
-    }
-    
-    #maze-svg {
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        background: rgba(255, 255, 255, 0.8);
-        box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
-    }
-    
-    .starting-questions {
-        width: 80%;
-        margin-right: auto;
-        margin-left: auto;
-    }
 }
