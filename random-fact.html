@@ -145,12 +145,25 @@
         number = Math.floor(Math.random() * 100);
       }
       
-      url = `https://corsproxy.io/?https://numbersapi.com/${number}/${type}?json`;
+      // Try the direct URL first
+      url = `https://numbersapi.com/${number}/${type}?json`;
 
       fetch(url)
-        .then(response => response.json())
-        .then(data => {
-          document.getElementById('result').innerHTML = `<i class="fas fa-info-circle"></i> ${data.text}`;
+        .then(response => {
+          console.log('Response status:', response.status);
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.text(); // Get as text first
+        })
+        .then(text => {
+          console.log('Response text:', text);
+          try {
+            const data = JSON.parse(text);
+            document.getElementById('result').innerHTML = `<i class="fas fa-info-circle"></i> ${data.text}`;
+          } catch (e) {
+            document.getElementById('result').innerHTML = `<i class="fas fa-info-circle"></i> Error parsing JSON: ${e.message}. Response: ${text.substring(0, 100)}`;
+          }
         })
         .catch(error => {
           document.getElementById('result').innerHTML = `<i class='fas fa-info-circle'></i> Error: ${error.message || error.toString()}`;
