@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>עם כלביא: המלחמה על התודעה</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Midnight War (#1a202c, #e2e8f0, #c53030, #63b3ed) -->
+    <!-- Application Structure Plan: Final version based on user feedback. Simplified structure focusing exclusively on the core analysis. Removed all extra sections (Trump dossier, Scenarios). The app now consists of only: 1) Intro, 2) The 10-point deconstruction, 3) The data dashboard. This creates a clean, focused tool for analyzing the primary source document (the messaging sheet) without external content. -->
+    <!-- Visualization & Content Choices: 
+        - Content is now strictly the 10 claims and the 4 supporting charts. All other text/data removed.
+        - Kept the UI improvements for mobile (non-truncating titles, better text spacing).
+        - This returns the app to its core purpose: a direct, interactive refutation of the propaganda points.
+        - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Assistant', sans-serif; background-color: #1a202c; color: #e2e8f0; }
+        .claim-card { transition: all 0.3s ease-in-out; background-color: #2d3748; }
+        .claim-card.active { border-color: #63b3ed; }
+        .claim-card .analysis { max-height: 0; overflow: hidden; transition: max-height 0.5s ease-out; }
+        .claim-card.active .analysis { max-height: 1500px; transition: max-height: 0.7s ease-in; }
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 320px; max-height: 400px; }
+        @media (min-width: 768px) { .chart-container { height: 350px; } }
+        .tech-badge { background-color: #63b3ed; color: #1a202c; }
+        .lie-badge { background-color: #c53030; color: white; }
+        .truth-badge { background-color: #48bb78; color: #1a202c; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-7xl">
+        
+        <header class="text-center mb-10 border-b-2 border-gray-700 pb-6">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-100 mb-2">עם כלביא: המלחמה על התודעה</h1>
+            <p class="text-lg md:text-xl text-gray-400">ניתוח דף המסרים של מלחמת איראן-ישראל</p>
+        </header>
+
+        <main>
+            <section id="intro" class="mb-12 bg-[#2d3748] p-6 rounded-lg shadow-lg">
+                <h2 class="text-2xl font-bold text-gray-100 mb-4">הפתיחה: מבצע "עם כלביא"</h2>
+                <p class="text-base md:text-lg leading-relaxed text-gray-300">ב-13 ביוני 2025, פתחה ישראל במבצע "עם כלביא", שהוגדר כמכת מנע נגד תוכנית הגרעין והטילים של איראן. עם כניסת הפסקת האש הרעועה לתוקף ב-24 ביוני, החלה מערכה אחרת, שקטה יותר: המלחמה על הנרטיב. אפליקציה זו מפרקת את דף המסרים הממשלתי שהופץ, חושפת את הפערים בינו לבין המציאות, ומנתחת את הטכניקות שנועדו לעצב את תפיסת המציאות שלנו.</p>
+            </section>
+            
+            <section id="deconstruction" class="mb-12">
+                <h2 class="text-3xl font-bold text-center mb-8 text-gray-100">דף המסרים: טענה מול מציאות</h2>
+                <div id="claims-container" class="space-y-4">
+                    <!-- Claims will be injected here by JS -->
+                </div>
+            </section>
+
+            <div class="text-center text-4xl text-gray-600 my-12">🗡🗡🗡</div>
+
+            <section id="dashboard" class="mb-12 bg-[#2d3748] p-6 rounded-lg shadow-lg">
+                <h2 class="text-3xl font-bold text-center mb-8 text-gray-100">האמת במספרים: מבט מאחורי הספין</h2>
+                <p class="text-center text-gray-400 mb-10 max-w-3xl mx-auto">מעבר למילים, הנתונים מספרים סיפור ברור. התרשימים הבאים חושפים את הפערים בין הנרטיב הממשלתי לבין המחיר והתוצאות האמיתיות של 12 ימי הלחימה.</p>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                    <div class="p-4 rounded-lg bg-[#1a202c]"><h3 class="text-xl font-bold text-center mb-2 text-gray-200">המחיר האנושי: נפגעים</h3><div class="chart-container"><canvas id="casualtiesChart"></canvas></div></div>
+                    <div class="p-4 rounded-lg bg-[#1a202c]"><h3 class="text-xl font-bold text-center mb-2 text-gray-200">ארסנל הטילים האיראני</h3><div class="chart-container"><canvas id="missileChart"></canvas></div></div>
+                    <div class="p-4 rounded-lg bg-[#1a202c]"><h3 class="text-xl font-bold text-center mb-2 text-gray-200">"תחזית" מול מציאות: אבדות</h3><div class="chart-container"><canvas id="forecastChart"></canvas></div></div>
+                    <div class="p-4 rounded-lg bg-[#1a202c]"><h3 class="text-xl font-bold text-center mb-2 text-gray-200">מבצע "פטיש חצות": התלות בארה"ב</h3><div class="flex flex-col items-center justify-center h-full pt-8 pb-4"><div class="w-full max-w-md text-center"><div class="relative p-3 bg-blue-900 border-r-4 border-blue-400 rounded-lg mb-2">ישראל תוקפת אך אינה מסוגלת להשמיד את פורדו</div><div class="text-2xl text-blue-400">↓</div><div class="relative p-3 bg-red-900 border-r-4 border-red-400 rounded-lg my-2">ארה"ב מתערבת עם "מפצח בונקרים" ומשמידה את המתקן</div><div class="text-2xl text-red-400">↓</div><div class="relative p-3 bg-green-900 border-r-4 border-green-400 rounded-lg mt-2">ארה"ב כופה הפסקת אש</div></div></div></div>
+                </div>
+            </section>
+        </main>
+        
+        <footer class="text-center mt-12 pt-6 border-t-2 border-gray-700">
+            <p class="text-sm text-gray-500">נוצר על בסיס דוח מומחה. 24 ביוני 2025.</p>
+        </footer>
+
+    </div>
+
+    <script>
+        const appData = {
+            claims: [
+                { id: 1, title: "פרויקט הגרעין האיראני חוסל", status: "lie", statusText: "הטעיה", analysis: "התוכנית לא 'חוסלה' אלא 'עוכבה'. מתקן פורדו, המבוצר ביותר, הושמד רק בזכות פצצה אמריקאית ייעודית ('מפצח בונקרים') במבצע 'פטיש חצות'. הידע, המדענים והאורניום המועשר נותרו בידי איראן.", technique: "הגזמה (היפרבולה) והשמטת התלות המוחלטת בארה\"ב." },
+                { id: 2, title: "פרויקט הטילאות האיראני נפגע קשות", status: "half-truth", statusText: "חצי אמת", analysis: "נכון, נגרם נזק. אך לאורך המלחמה איראן שיגרה כ-600 טילים ונותרה עם ארסנל משמעותי. היכולת לפגוע בעורף הישראלי לא נוטרלה, כפי שכולנו הרגשנו.", technique: "התמקדות בהצלחות תוך התעלמות מהאיום שנותר." },
+                { id: 3, title: "האיראנים ספגו אבידות רבות, כולל בכירים", status: "truth", statusText: "אמת", analysis: "זו הטענה היחידה שכמעט ואין עליה עוררין. ישראל הצליחה לחסל בכירים במשמרות המהפכה ומדעני מפתח. זוהי נקודת אור מבצעית ברורה.", technique: "עוגן עובדתי. שימוש בעובדה חזקה כדי להעניק אמינות לשאר דף המסרים." },
+                { id: 4, title: "טייסינו ב\"ה שבו לשלום", status: "truth", statusText: "אמת, אבל...", analysis: "עובדה נכונה ומשמחת. אפס אבדות לחיל האוויר. אבל המסגור הזה מתעלם במפגיע מ-29 ההרוגים בעורף, ומנסה ליצור תמונה של מלחמה 'נקייה' שלא הייתה.", technique: "מסגור ניגודי והסטת תשומת הלב מהמחיר הכואב בעורף." },
+                { id: 5, title: "ישראל הפגינה יכולות של מעצמה", status: "lie", statusText: "הטעיה", analysis: "ישראל הפגינה יכולת מרשימה, אך הייתה תלויה לחלוטין בארה\"ב להשמדת פורדו ולבלימת מתקפות. הפסקת האש נכפתה עלינו על ידי 'הדלעת' (טראמפ). 'מעצמה' לא פועלת כך.", technique: "השמטה אסטרטגית של תפקיד ארה\"ב כדי לנפח את דימוי העוצמה." },
+                { id: 6, title: "הפרוקסים של איראן כמעט משותקים", status: "lie", statusText: "הטעיה", analysis: "חיזבאללה אכן היה מחוץ למשחק, אך זה תוצאה של המערכה הקודמת. החות'ים, לעומת זאת, היו פעילים לאורך כל הלחימה. זו הכללה מטעה.", technique: "השוואה כוזבת וייחוס שגוי." },
+                { id: 7, title: "ספגנו 29 הרוגים, רק 7% מהערכות (400)", status: "lie", statusText: "מניפולציה צינית", analysis: "'התחזית' ל-400 הרוגים היא ככל הנראה המצאה שנועדה להפוך אסון להישג. לא הייתה תחזית רשמית כזו. מדובר בניסיון בוטה להנדס את התודעה ולהציג אובדן חיים כהצלחה.", technique: "כשל איש הקש. המצאת תחזית אימה כדי שהתוצאה תיראה טובה." },
+                { id: 8, title: "המבחן עכשיו: חידוש ייצור הטילים", status: "half-truth", statusText: "הזזת שערים", analysis: "זו בעצם הודאה שהאיום לא הוסר. אחרי שטענו ל'חיסול' ו'פגיעה קשה', מסיטים את הדיון לעתיד כדי להימנע מביקורת על כך שהמטרה לא הושגה במלואה.", technique: "הסטת המיקוד מהכישלון החלקי לאתגר עתידי." },
+                { id: 9, title: "...להכניע את חמאס ולהחזיר החטופים!", status: "lie", statusText: "הסטת דיון", analysis: "הכנסת מטרות המלחמה בעזה לסיכום המלחמה באיראן היא מהלך פוליטי שקוף שנועד לקשור בין הזירות ולגייס תמיכה למערכה שאינה קשורה.", technique: "דג מלוח אדום (Red Herring). שינוי נושא ציני." },
+                { id: 10, title: "להרים ראש!! עד הניצחון המוחלט!!!", status: "lie", statusText: "הנדסת תודעה", analysis: "קריאה רגשית שנועדה להשתיק ביקורת. היא ממסגרת כל שאלה או ספק כחוסר פטריוטיות, ודורשת יישור קו עם הנרטיב הרשמי. הסיסמה ריקה מתוכן.", technique: "קריאה לפעולה ואכיפת קונצנזוס." }
+            ],
+            charts: {
+                casualties: { labels: ['הרוגים', 'פצועים'], datasets: [{ label: 'איראן', data: [970, 2000], backgroundColor: '#c53030' }, { label: 'ישראל', data: [29, 2517], backgroundColor: '#63b3ed' }] },
+                missiles: { labels: ['טילים שנותרו (כ-1000)', 'טילים ששוגרו (כ-600)', 'טילים שהושמדו (הערכה)'], datasets: [{ data: [1000, 600, 400], backgroundColor: ['#48bb78', '#c53030', '#ed8936'] }] },
+                forecast: { labels: ['נפגעים בעורף הישראלי'], datasets: [{ label: '"תחזית" מומצאת', data: [400], backgroundColor: '#c53030' }, { label: 'הרוגים בפועל', data: [29], backgroundColor: '#63b3ed' }] }
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const claimsContainer = document.getElementById('claims-container');
+            appData.claims.forEach(claim => {
+                const card = document.createElement('div');
+                card.className = 'claim-card rounded-lg shadow-md border-2 border-transparent p-4 cursor-pointer';
+                const badgeClass = claim.status === 'truth' ? 'truth-badge' : (claim.status === 'lie' ? 'lie-badge' : 'tech-badge');
+                card.innerHTML = `
+                    <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2">
+                        <div class="flex items-start flex-1 min-w-0">
+                            <span class="font-bold text-2xl text-gray-600 ml-3 pt-1">${claim.id}</span>
+                            <h3 class="text-lg font-semibold text-gray-100">${claim.title}</h3>
+                        </div>
+                        <div class="flex items-center self-end sm:self-center flex-shrink-0">
+                            <span class="${badgeClass} text-xs sm:text-sm font-bold px-2 sm:px-3 py-1 rounded-full whitespace-nowrap">${claim.statusText}</span>
+                            <span class="ml-2 sm:ml-4 text-2xl text-gray-400 transition-transform duration-300 transform">&#9662;</span>
+                        </div>
+                    </div>
+                    <div class="analysis mt-4 pt-4 border-t border-gray-600 text-gray-300">
+                        <p class="mb-4 leading-relaxed">${claim.analysis}</p>
+                        <div class="text-sm">
+                            <span class="font-bold tech-badge text-xs px-2 py-1 rounded-md">טכניקה רטורית:</span>
+                            <div class="text-gray-400 mt-2">${claim.technique}</div>
+                        </div>
+                    </div>`;
+                claimsContainer.appendChild(card);
+                card.addEventListener('click', () => {
+                    const isActive = card.classList.contains('active');
+                    document.querySelectorAll('.claim-card').forEach(c => c.classList.remove('active'));
+                    if(!isActive) card.classList.add('active');
+                });
+            });
+
+            Chart.defaults.font.family = "'Assistant', sans-serif";
+            Chart.defaults.color = '#e2e8f0';
+            Chart.defaults.borderColor = '#4a5568';
+            
+            const tooltipLabel = (context) => `${context.dataset.label || ''}: ${new Intl.NumberFormat('he-IL').format(context.parsed.y)}`;
+            const tooltipLabelDonut = (context) => `${context.label || ''}: ${new Intl.NumberFormat('he-IL').format(context.parsed)}`;
+
+            const chartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'top', labels: { color: '#e2e8f0' } }, tooltip: { rtl: true, textDirection: 'rtl', bodyFont: { family: "'Assistant', sans-serif" }, backgroundColor: '#1a202c', titleColor: '#e2e8f0', bodyColor: '#e2e8f0' } },
+                scales: { y: { beginAtZero: true, ticks: { color: '#e2e8f0' }, grid: { color: '#4a5568' } }, x: { ticks: { color: '#e2e8f0' }, grid: { color: '#4a5568' } } }
+            };
+
+            new Chart(document.getElementById('casualtiesChart'), { type: 'bar', data: appData.charts.casualties, options: { ...chartOptions, plugins: { ...chartOptions.plugins, tooltip: {...chartOptions.plugins.tooltip, callbacks: {label: tooltipLabel} } } } });
+            new Chart(document.getElementById('missileChart'), { type: 'doughnut', data: appData.charts.missiles, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: chartOptions.plugins.legend, tooltip: {...chartOptions.plugins.tooltip, callbacks: {label: tooltipLabelDonut} } } } });
+            new Chart(document.getElementById('forecastChart'), { type: 'bar', data: appData.charts.forecast, options: { ...chartOptions, plugins: { ...chartOptions.plugins, tooltip: {...chartOptions.plugins.tooltip, callbacks: {label: tooltipLabel} } } } });
+        });
+    </script>
+</body>
+</html>
