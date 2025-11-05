@@ -2,7 +2,7 @@
   "name": "tanakh",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://aryeh1.github.io/tanakh",
+  "homepage": "https://aryeh1.github.io/tanakh-deploy",
   "dependencies": {
     "gh-pages": "^6.3.0",
     "react": "^19.2.0",

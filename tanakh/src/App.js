@@ -247,7 +247,7 @@ function TanakhApp() {
 
 function App() {
   return (
-    <Router basename="/tanakh">
+    <Router basename="/tanakh-deploy">
       <Routes>
         <Route path="/" element={<TanakhApp />} />
         <Route path="/:book/:chapter" element={<TanakhApp />} />
