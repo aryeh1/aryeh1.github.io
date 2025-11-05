@@ -66,23 +66,50 @@ tanakh/
 
 ## Current Status
 
-**Sample Data Included:**
-- Genesis chapters 1-2 (as demonstration)
-- Full book index with all 24 books
+**✅ FULLY FUNCTIONAL:**
+- Complete Hebrew Bible text (all 39 books, 929 chapters)
+- Book index with metadata for all books
+- All navigation features working
+- Search functionality operational
+- Commentary integration via Sefaria API
 
-**To Add Full Dataset:**
+**Deployed at:** https://aryeh1.github.io/tanakh-deploy/
 
-The project currently includes sample data (Genesis 1-2) for demonstration. To add the complete Bible text:
+## Recent Fix (2025-11-05)
 
-### Option 1: Use Sefaria API (Recommended)
+**Issue:** Site displayed "Failed to load book index" error
 
-1. The included `scripts/fetchBibleText.js` script can fetch all 24 books from Sefaria API
-2. It automatically strips nikud from the text
-3. Run it when you have internet access:
+**Root Cause:** The required `public/data/index.json` file was missing. The app expects this file to contain metadata about all books (names, keys, chapter counts) organized by section.
+
+**Solution:** Created `index.json` with complete metadata for all 39 books of the Hebrew Bible, organized into three sections (Torah, Prophets, Writings).
+
+**Files Changed:**
+- `tanakh/public/data/index.json` - Added book index metadata
+- `tanakh-deploy/data/index.json` - Deployed version
+
+## Rebuilding After Changes
+
+If you make changes to the source code or data:
+
+### Option 1: Quick Rebuild (After Code Changes)
+
+```bash
+cd tanakh
+npm run build
+rm -rf ../tanakh-deploy/*
+cp -r build/* ../tanakh-deploy/
+```
+
+Then commit and push the changes to deploy to GitHub Pages.
+
+### Option 2: Fetch New Bible Text (If Needed)
+
+To re-fetch Bible text from Sefaria API:
 
 ```bash
 cd tanakh
 node scripts/fetchBibleText.js
+# Then rebuild as shown above
 ```
 
 This will create JSON files for all 929 chapters of the Tanakh.
