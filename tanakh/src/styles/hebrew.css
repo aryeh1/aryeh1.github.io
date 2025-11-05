@@ -1,0 +1,254 @@
+/* Hebrew text styling with proper RTL support */
+
+@import url('https://fonts.googleapis.com/css2?family=David+Libre:wght@400;700&family=Alef:wght@400;700&display=swap');
+
+.hebrew-text {
+  direction: rtl;
+  text-align: right;
+  font-family: 'David Libre', 'Frank Ruehl CLM', 'Times New Roman', serif;
+  font-size: 20px;
+  line-height: 2;
+  letter-spacing: 0; /* CRITICAL: Never add letter-spacing to Hebrew */
+  word-break: keep-all;
+}
+
+.hebrew-large {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.hebrew-medium {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.verse-container {
+  direction: rtl;
+  text-align: right;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  transition: background-color 0.2s;
+}
+
+.verse-container:hover {
+  background-color: #f5f5f5;
+  border-radius: 4px;
+}
+
+.verse-number {
+  font-weight: bold;
+  color: #666;
+  margin-left: 0.5rem; /* Note: margin-left because of RTL */
+  font-size: 0.9em;
+}
+
+.verse-text {
+  display: inline;
+}
+
+.parsha-marker {
+  font-weight: bold;
+  color: #999;
+  margin: 0 0.25rem;
+}
+
+/* Chapter and book titles */
+.book-title {
+  direction: rtl;
+  text-align: center;
+  font-size: 36px;
+  font-weight: 700;
+  margin: 2rem 0 1rem 0;
+  color: #333;
+  font-family: 'David Libre', serif;
+}
+
+.chapter-title {
+  direction: rtl;
+  text-align: center;
+  font-size: 28px;
+  font-weight: 600;
+  margin: 1rem 0;
+  color: #555;
+}
+
+/* Copy button */
+.copy-button {
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+  margin: 0 0.25rem;
+}
+
+.copy-button:hover {
+  background-color: #357abd;
+}
+
+.copy-button:active {
+  background-color: #2868a8;
+}
+
+.copy-success {
+  background-color: #4caf50 !important;
+}
+
+/* Navigation controls */
+.nav-controls {
+  display: flex;
+  gap: 1rem;
+  margin: 1rem 0;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.select-control {
+  padding: 0.5rem;
+  font-size: 16px;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+}
+
+.select-control:focus {
+  outline: none;
+  border-color: #4a90e2;
+}
+
+/* Search box */
+.search-box {
+  padding: 0.5rem 1rem;
+  font-size: 16px;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.search-box:focus {
+  outline: none;
+  border-color: #4a90e2;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+  display: flex;
+  gap: 0.5rem;
+  margin: 1rem 0;
+  font-size: 14px;
+  color: #666;
+  flex-wrap: wrap;
+}
+
+.breadcrumb a {
+  color: #4a90e2;
+  text-decoration: none;
+}
+
+.breadcrumb a:hover {
+  text-decoration: underline;
+}
+
+.breadcrumb-separator {
+  color: #999;
+}
+
+/* Navigation buttons */
+.nav-buttons {
+  display: flex;
+  gap: 1rem;
+  margin: 2rem 0;
+  justify-content: center;
+}
+
+.nav-button {
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.2s;
+}
+
+.nav-button:hover {
+  background-color: #357abd;
+}
+
+.nav-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Commentary panel */
+.commentary-panel {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+}
+
+.commentary-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.commentary-text {
+  direction: rtl;
+  text-align: right;
+  font-family: 'David Libre', serif;
+  line-height: 1.8;
+  font-size: 18px;
+}
+
+/* Loading and error states */
+.loading {
+  text-align: center;
+  padding: 2rem;
+  font-size: 18px;
+  color: #666;
+}
+
+.error {
+  background-color: #ffebee;
+  border: 1px solid #ef5350;
+  border-radius: 4px;
+  padding: 1rem;
+  margin: 1rem 0;
+  color: #c62828;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .hebrew-text {
+    font-size: 18px;
+    line-height: 1.8;
+  }
+
+  .book-title {
+    font-size: 28px;
+  }
+
+  .chapter-title {
+    font-size: 22px;
+  }
+
+  .nav-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .select-control,
+  .search-box {
+    width: 100%;
+  }
+}

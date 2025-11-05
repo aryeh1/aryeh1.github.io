@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/tanakh/static/css/main.6fcdd725.css",
+    "main.js": "/tanakh/static/js/main.dd7c0fd7.js",
+    "index.html": "/tanakh/index.html",
+    "main.6fcdd725.css.map": "/tanakh/static/css/main.6fcdd725.css.map",
+    "main.dd7c0fd7.js.map": "/tanakh/static/js/main.dd7c0fd7.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.6fcdd725.css",
+    "static/js/main.dd7c0fd7.js"
+  ]
+}
