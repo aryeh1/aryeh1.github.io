@@ -1,14 +1,24 @@
-# Hebrew Bible (Tanakh) Reader
+# Tanakh Hebrew Bible Reader - Complete Documentation
 
 A clean, functional Hebrew Bible website built with React 19. Read, navigate, and search through all 24 books of the Tanakh with access to Rashi commentary via Sefaria API.
 
 ## Project Status
 
-**✅ FULLY FUNCTIONAL** - Complete Hebrew Bible implementation with all core features working.
+**✅ FULLY FUNCTIONAL** - Production-ready Hebrew Bible implementation with all core features working.
 
 **Live URL**: https://aryeh1.github.io/tanakh-deploy/
 
-## Features
+**Last Updated**: 2025-11-06
+
+---
+
+## Overview
+
+Complete Hebrew Bible (Torah, Prophets, Writings) with 929 chapters across 24 books. Features include hierarchical navigation, free-text search, Rashi commentary integration via Sefaria API, and clean Hebrew text display without nikud.
+
+---
+
+## Core Features
 
 ### 1. Complete Text Content
 - **All 24 Books**: Complete Hebrew Bible (Torah, Prophets, Writings)
@@ -18,6 +28,7 @@ A clean, functional Hebrew Bible website built with React 19. Read, navigate, an
 - **Structured Data**: JSON format for all books and chapters
 
 ### 2. Navigation System
+
 **A. Hierarchical Dropdown Navigation:**
 - Section selector (Torah, Prophets, Writings)
 - Book selector with Hebrew and English names
@@ -34,6 +45,7 @@ A clean, functional Hebrew Bible website built with React 19. Read, navigate, an
 - Previous/Next chapter buttons
 - Breadcrumb trail (Home > Book > Chapter)
 - URL deep-linking support (`/tanakh-deploy/genesis/1`)
+- Direct URLs work on page refresh
 
 ### 3. Text Display
 - **RTL Support**: Proper right-to-left Hebrew display
@@ -44,22 +56,22 @@ A clean, functional Hebrew Bible website built with React 19. Read, navigate, an
 - **Visual Hierarchy**: Clear book titles and chapter numbers
 
 ### 4. Copy Functionality
-- **Verse Copy**: Button next to each verse
+- **Verse Copy**: Button next to each verse (Hebrew text only)
 - **Chapter Copy**: Button at top of chapter (copies ALL verses at once)
 - **Clean Hebrew-Only Text**: No verse numbers, just pure Hebrew
 - **Proper Spacing**: Blank lines between verses, parsha markers preserved
-- **Confirmation**: Visual feedback (checkmark ✓)
+- **Visual Feedback**: Checkmark confirmation (✓)
 - **Clean Text**: Copies Hebrew without HTML formatting
 
 ### 5. Commentary Integration
 - **Rashi Commentary**: Via Sefaria API
-- **Click to View**: Button on each verse
-- **Floating Modal Display**: Appears as overlay on current page
+- **Floating Modal Display**: Prominent overlay on current page
 - **Close Options**: Close button (×), ESC key, or click outside
 - **Hebrew Display**: Commentary shown without nikud (preserves maqaf)
 - **Animations**: Smooth fade-in and slide-up effects
-- **Error Handling**: Graceful fallback if unavailable
+- **Error Handling**: Graceful fallback if commentary unavailable
 - **Mobile Responsive**: Adapts to all screen sizes
+- **Body Scroll Lock**: Prevents background scrolling when modal open
 
 ### 6. Responsive Design
 - Mobile-friendly layout
@@ -67,14 +79,18 @@ A clean, functional Hebrew Bible website built with React 19. Read, navigate, an
 - Readable on all screen sizes
 - Clean, minimalist interface
 
+---
+
 ## Technology Stack
 
 - **React 19**: Latest React with modern hooks and patterns
 - **React Router 7**: Client-side routing with deep-linking
-- **Sefaria API**: Commentary integration
-- **GitHub Pages**: Static hosting
+- **Sefaria API**: Commentary integration (no authentication required)
+- **GitHub Pages**: Static hosting with SPA redirect pattern
 - **JSON Data**: Static files for all Bible text
 - **CSS**: Custom RTL Hebrew typography
+
+---
 
 ## Project Structure
 
@@ -85,14 +101,15 @@ tanakh/
 │   │   ├── index.json           # Book index and metadata
 │   │   ├── genesis/             # Genesis chapters 1-50
 │   │   ├── exodus/              # Exodus chapters 1-40
-│   │   └── ...                  # All other books
-│   └── index.html
+│   │   └── ...                  # All other books (929 chapters total)
+│   ├── 404.html                 # SPA redirect for GitHub Pages
+│   └── index.html               # Handles redirected query params
 ├── src/
-│   ├── App.js                   # Main application
+│   ├── App.js                   # Main application with routing
 │   ├── components/
 │   │   ├── Navigation/          # BookSelector, ChapterSelector, SearchBar
 │   │   ├── Display/             # ChapterView, VerseView, CopyButton
-│   │   └── Commentary/          # CommentaryPanel
+│   │   └── Commentary/          # CommentaryPanel (modal)
 │   ├── services/
 │   │   ├── textLoader.js        # Load JSON files, parse references
 │   │   └── sefariaAPI.js        # Sefaria API integration
@@ -104,6 +121,152 @@ tanakh/
 │   └── downloadFullBible.js     # Alternative fetch script
 └── package.json
 ```
+
+---
+
+## Development Workflow
+
+### Prerequisites
+- Node.js (v14 or higher)
+- npm or yarn
+
+### Install Dependencies
+```bash
+cd tanakh
+npm install
+```
+
+### Run Development Server
+```bash
+npm start
+```
+Open http://localhost:3000 to view in browser.
+
+### Build for Production
+```bash
+npm run build
+```
+Creates optimized build in `build/` folder.
+
+### Deploy to GitHub Pages
+```bash
+# Build the application
+cd tanakh
+npm run build
+
+# Copy to deployment directory
+rm -rf ../tanakh-deploy/*
+cp -r build/* ../tanakh-deploy/
+
+# Commit and push
+cd ..
+git add tanakh/ tanakh-deploy/
+git commit -m "Deploy Tanakh site updates"
+git push
+```
+
+---
+
+## Critical Bug Fixes (Completed)
+
+### Bug #1: Copy Function Included Verse Numbers ✅
+**Problem**: Copied text included verse numbers like "1. בראשית ברא..."
+
+**Solution**: Modified `/tanakh/src/components/Display/ChapterView.jsx` to copy only Hebrew text without numbers.
+
+**Result**: Clean Hebrew-only copy with proper spacing between verses.
+
+---
+
+### Bug #2: URLs Broke on Page Refresh ✅
+**Problem**: Navigating to `/tanakh-deploy/deuteronomy/8` and refreshing returned 404 error.
+
+**Solution**: Implemented GitHub Pages SPA redirect pattern:
+1. **404.html**: Converts path to query parameters
+2. **index.html**: Restores original URL using `history.replaceState()`
+3. **React Router**: Configured with `basename="/tanakh-deploy"`
+
+**Technical Details**:
+- Uses SPA pattern from https://github.com/rafgraph/spa-github-pages
+- `pathSegmentsToKeep = 1` for `/tanakh-deploy/` subpath
+- Works by redirecting 404s to index.html with path as query param
+
+**Result**: All URLs work on refresh, deep-linking fully functional.
+
+---
+
+### Bug #3: Rashi Commentary Not Displaying ✅
+**Problem**: Commentary fetched successfully but appeared as inline content, not visible to users.
+
+**Solution**: Redesigned as floating modal overlay:
+1. **Modal UI**: Backdrop, close button (×), ESC key handler
+2. **Floating CSS**: Full-screen overlay with z-index 9999
+3. **Animations**: Smooth fade-in and slide-up effects
+4. **Mobile Responsive**: Adapts to all screen sizes
+5. **Maqaf Preservation**: Fixed `stripNikud()` to preserve מקף (־)
+
+**Features**:
+- Click outside or ESC to close
+- Scrollable for long commentaries
+- Body scroll lock when modal open
+- Professional animations
+
+**Result**: Prominent, user-friendly commentary display.
+
+---
+
+### Bug #4: Rashi Commentary Blank Page ✅
+**Problem**: Some verses showed blank commentary panel when Sefaria API returned array response.
+
+**Solution**: Updated `/tanakh/src/services/sefariaAPI.js` to handle both object and array responses from Sefaria API.
+
+**Technical Details**:
+- Check if `data.he` is array, extract first element
+- Check if `data.text` is array, extract first element
+- Ensures proper text extraction regardless of API response format
+
+**Result**: Commentary displays correctly for all verses.
+
+---
+
+## Configuration
+
+### package.json
+- `homepage`: Set to `https://aryeh1.github.io/tanakh-deploy`
+- Adjust if deploying elsewhere
+
+### React Router (App.js)
+- `basename="/tanakh-deploy"` on line 270
+- Routes: `/` and `/:book/:chapter`
+- Modify if deploying to different path
+
+### GitHub Pages SPA Routing
+- **404.html**: Located at `/tanakh/public/404.html` (gets built to `/tanakh-deploy/404.html`)
+- **index.html**: Contains redirect handler script
+- **pathSegmentsToKeep**: Set to `1` for subpath deployment
+
+---
+
+## Testing
+
+### Run Tests
+```bash
+npm test
+```
+
+### Test Coverage
+- ChapterView: Copy functionality without verse numbers
+- CommentaryPanel: Modal display, close functionality, ESC key
+- CopyButton: Copy success feedback
+- sefariaAPI: stripNikud preserves maqaf
+- Navigation components
+- Search parsing
+- Text display
+- URL routing
+
+**Test Results**: 64 tests passing ✅
+
+---
 
 ## Data Format Specifications
 
@@ -147,66 +310,32 @@ tanakh/
 }
 ```
 
-## Development
+---
 
-### Prerequisites
-- Node.js (v14 or higher)
-- npm or yarn
+## Hebrew Text Guidelines
 
-### Install Dependencies
+**CRITICAL for proper display**:
+- Text must be without nikud (vowel points)
+- No letter-spacing in CSS (breaks Hebrew rendering)
+- Use RTL direction and right alignment
+- Recommended fonts: David Libre, Frank Ruehl CLM, Alef
+- Preserve maqaf (־) character in text
+- Avoid hyphens/dashes in text (use naked Hebrew text)
 
-```bash
-cd tanakh
-npm install
-```
+---
 
-### Run Development Server
+## Sefaria API Integration
 
-```bash
-npm start
-```
+**Endpoint**: `https://www.sefaria.org/api/texts/Rashi_on_{Book}.{Chapter}.{Verse}`
 
-Open [http://localhost:3000](http://localhost:3000) to view in browser.
+**Notes**:
+- No authentication required
+- CORS enabled for browser requests
+- Returns Hebrew and English text
+- Strip nikud from response for consistency
+- Handle both object and array responses
 
-### Build for Production
-
-```bash
-npm run build
-```
-
-Creates optimized production build in `build/` folder.
-
-### Deploy to GitHub Pages
-
-```bash
-# Build the application
-npm run build
-
-# Copy to deployment directory
-rm -rf ../tanakh-deploy/*
-cp -r build/* ../tanakh-deploy/
-
-# Commit and push
-cd ..
-git add tanakh-deploy/
-git commit -m "Deploy updated Tanakh site"
-git push
-```
-
-## Rebuilding After Changes
-
-If you make changes to source code or data:
-
-```bash
-cd tanakh
-npm run build
-rm -rf ../tanakh-deploy/*
-cp -r build/* ../tanakh-deploy/
-cd ..
-git add tanakh/ tanakh-deploy/
-git commit -m "Update Tanakh site"
-git push
-```
+---
 
 ## Fetching Bible Text
 
@@ -223,35 +352,7 @@ This will:
 - Create 929 chapter JSON files
 - Takes ~90 seconds with internet access
 
-## Hebrew Text Guidelines
-
-**CRITICAL for proper display:**
-- Text must be without nikud (vowel points)
-- No letter-spacing in CSS (breaks Hebrew rendering)
-- Use RTL direction and right alignment
-- Recommended fonts: David Libre, Frank Ruehl CLM, Alef
-- Avoid hyphens/dashes in text (use naked Hebrew text)
-
-## Sefaria API Integration
-
-**Endpoints used:**
-- Commentary: `https://www.sefaria.org/api/texts/Rashi_on_{Book}.{Chapter}.{Verse}`
-
-**Notes:**
-- No authentication required
-- CORS enabled for browser requests
-- Returns Hebrew and English text
-- Strip nikud from response for consistency
-
-## Configuration
-
-**package.json:**
-- `homepage`: Set to `https://aryeh1.github.io/tanakh-deploy`
-- Adjust if deploying elsewhere
-
-**React Router:**
-- Set to `basename="/tanakh-deploy"` in `src/App.js`
-- Modify if deploying to different path
+---
 
 ## Browser Support
 
@@ -261,48 +362,31 @@ Tested and working on:
 - Safari (latest)
 - Mobile browsers (iOS Safari, Chrome Android)
 
-## Testing
-
-Run the test suite:
-
-```bash
-npm test
-```
-
-Tests cover:
-- Navigation components
-- Search parsing
-- Copy functionality
-- Text display
-- Commentary loading
-- URL routing
+---
 
 ## Known Limitations
 
-1. **Search**: Hebrew chapter numbers (א, ב, ג) not yet supported in search (use numeric: 1, 2, 3)
-2. **Commentary**: Only Rashi available (Ibn Ezra, Ramban can be added)
+1. **Hebrew Chapter Numbers**: Not yet supported in search (use numeric: 1, 2, 3)
+2. **Single Commentary**: Only Rashi available (Ibn Ezra, Ramban can be added)
 3. **Offline**: Requires internet for commentary features
-4. **Full-text search**: Not yet implemented (only reference-based navigation)
+4. **Full-text Search**: Not yet implemented (only reference-based navigation)
 
-## Bug Fixes
-
-See [BUG_FIXES_SUMMARY.md](../BUG_FIXES_SUMMARY.md) for detailed information on recent critical bug fixes:
-- Copy function (verse numbers excluded)
-- URL routing (deep-linking working)
-- Rashi commentary display (floating modal with close button)
+---
 
 ## Future Enhancements
 
 Potential improvements:
-- [ ] Hebrew chapter number parsing in search (א, ב, ג)
-- [ ] Full-text Hebrew search across all books
-- [ ] Additional commentaries (Ibn Ezra, Ramban, etc.)
-- [ ] Bookmarking system
-- [ ] Print-friendly view
-- [ ] Dark mode
-- [ ] Audio playback
-- [ ] Study notes feature
-- [ ] Parallel translation view
+- Hebrew chapter number parsing (א, ב, ג)
+- Full-text Hebrew search across all books
+- Additional commentaries (Ibn Ezra, Ramban)
+- Bookmarking system
+- Print-friendly view
+- Dark mode
+- Audio playback
+- Study notes feature
+- Parallel translation view
+
+---
 
 ## Recent Updates
 
@@ -310,10 +394,12 @@ Potential improvements:
 - **Fixed:** Copy function now excludes verse numbers (copies only Hebrew text)
 - **Fixed:** URL routing works on refresh (deep-linking fully functional)
 - **Fixed:** Rashi commentary displays in prominent floating modal with close button
+- **Fixed:** Rashi commentary blank page issue (handle array responses from API)
 - **Fixed:** stripNikud preserves maqaf (־) character
 - **Enhanced:** Commentary modal with animations, ESC key support, click-outside-to-close
 - **Added:** Comprehensive test coverage (64 tests passing)
 - **Added:** Mobile-responsive commentary modal
+- **Added:** Body scroll lock when modal open
 
 ### November 2024 - Complete Bible Dataset
 - Added all 39 books (929 chapters) of Hebrew Bible
@@ -328,22 +414,62 @@ Potential improvements:
 - Created responsive design
 - Set up GitHub Pages deployment
 
-## Acceptance Criteria ✅
+---
 
-All core requirements met:
-- ✅ User can navigate to any book/chapter using dropdowns
-- ✅ User can search for text like "Genesis 1:1" and navigate there
-- ✅ All Hebrew text displays correctly (right-to-left, proper spacing)
-- ✅ User can click "copy" button and paste verse text elsewhere
-- ✅ User can view Rashi commentary on verses (via Sefaria API)
-- ✅ Site is deployed and working on GitHub Pages
+## Acceptance Criteria (All Met) ✅
+
+- ✅ Navigate to any book/chapter using dropdowns
+- ✅ Search for text like "Genesis 1:1" and navigate there
+- ✅ All Hebrew text displays correctly (RTL, proper spacing)
+- ✅ Copy button pastes verse text without numbers
+- ✅ View Rashi commentary on verses (via Sefaria API)
+- ✅ Site deployed and working on GitHub Pages
 - ✅ Responsive design works on mobile and desktop
 - ✅ Complete dataset for all 24 books
+- ✅ URLs work on direct access and reload (deep-linking)
+- ✅ Commentary displays in prominent modal overlay
+
+---
+
+## Quick Reference
+
+### Development Commands
+```bash
+npm install              # Install dependencies
+npm start                # Run dev server (localhost:3000)
+npm test                 # Run test suite
+npm run build            # Build for production
+```
+
+### Deployment Steps
+```bash
+cd tanakh
+npm run build
+rm -rf ../tanakh-deploy/*
+cp -r build/* ../tanakh-deploy/
+cd ..
+git add tanakh/ tanakh-deploy/
+git commit -m "Update Tanakh site"
+git push
+```
+
+### Important Files
+- `/tanakh/src/App.js` - Main application with routing (line 270: basename)
+- `/tanakh/src/services/sefariaAPI.js` - API integration
+- `/tanakh/src/components/Display/ChapterView.jsx` - Copy functionality
+- `/tanakh/src/components/Commentary/CommentaryPanel.jsx` - Modal display
+- `/tanakh/src/styles/hebrew.css` - Hebrew typography
+- `/tanakh/public/404.html` - SPA redirect script
+- `/tanakh/public/data/index.json` - Book index
+
+---
 
 ## License
 
 Text from Sefaria.org - see their licensing terms.
 Code is free to use and modify.
+
+---
 
 ## Credits
 
@@ -352,6 +478,8 @@ Code is free to use and modify.
 - **Built with**: React 19, React Router 7
 - **Fonts**: Google Fonts (David Libre, Alef)
 - **Hosting**: GitHub Pages
+
+---
 
 ## Contact
 
