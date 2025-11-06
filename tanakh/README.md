@@ -45,16 +45,21 @@ A clean, functional Hebrew Bible website built with React 19. Read, navigate, an
 
 ### 4. Copy Functionality
 - **Verse Copy**: Button next to each verse
-- **Chapter Copy**: Button at top of chapter
-- **Confirmation**: Visual feedback ("הועתק!" / "Copied!")
+- **Chapter Copy**: Button at top of chapter (copies ALL verses at once)
+- **Clean Hebrew-Only Text**: No verse numbers, just pure Hebrew
+- **Proper Spacing**: Blank lines between verses, parsha markers preserved
+- **Confirmation**: Visual feedback (checkmark ✓)
 - **Clean Text**: Copies Hebrew without HTML formatting
 
 ### 5. Commentary Integration
 - **Rashi Commentary**: Via Sefaria API
 - **Click to View**: Button on each verse
-- **Display Panel**: Below chapter text
-- **Hebrew Display**: Commentary shown without nikud
+- **Floating Modal Display**: Appears as overlay on current page
+- **Close Options**: Close button (×), ESC key, or click outside
+- **Hebrew Display**: Commentary shown without nikud (preserves maqaf)
+- **Animations**: Smooth fade-in and slide-up effects
 - **Error Handling**: Graceful fallback if unavailable
+- **Mobile Responsive**: Adapts to all screen sizes
 
 ### 6. Responsive Design
 - Mobile-friendly layout
@@ -279,6 +284,13 @@ Tests cover:
 3. **Offline**: Requires internet for commentary features
 4. **Full-text search**: Not yet implemented (only reference-based navigation)
 
+## Bug Fixes
+
+See [BUG_FIXES_SUMMARY.md](../BUG_FIXES_SUMMARY.md) for detailed information on recent critical bug fixes:
+- Copy function (verse numbers excluded)
+- URL routing (deep-linking working)
+- Rashi commentary display (floating modal with close button)
+
 ## Future Enhancements
 
 Potential improvements:
@@ -293,6 +305,15 @@ Potential improvements:
 - [ ] Parallel translation view
 
 ## Recent Updates
+
+### November 2025 - Critical Bug Fixes
+- **Fixed:** Copy function now excludes verse numbers (copies only Hebrew text)
+- **Fixed:** URL routing works on refresh (deep-linking fully functional)
+- **Fixed:** Rashi commentary displays in prominent floating modal with close button
+- **Fixed:** stripNikud preserves maqaf (־) character
+- **Enhanced:** Commentary modal with animations, ESC key support, click-outside-to-close
+- **Added:** Comprehensive test coverage (64 tests passing)
+- **Added:** Mobile-responsive commentary modal
 
 ### November 2024 - Complete Bible Dataset
 - Added all 39 books (929 chapters) of Hebrew Bible

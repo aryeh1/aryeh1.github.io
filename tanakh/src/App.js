@@ -102,6 +102,10 @@ function TanakhApp() {
     setCommentaryVerse(verseNumber);
   };
 
+  const handleCloseCommentary = () => {
+    setCommentaryVerse(null);
+  };
+
   const currentBook = selectedBook ? findBookByKey(bookIndex, selectedBook) : null;
 
   return (
@@ -200,6 +204,7 @@ function TanakhApp() {
                 bookName={chapterData.book}
                 chapter={chapterData.chapter}
                 verse={commentaryVerse}
+                onClose={handleCloseCommentary}
               />
             )}
           </>

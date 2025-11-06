@@ -47,7 +47,8 @@ describe('CopyButton', () => {
     fireEvent.click(button);
 
     await waitFor(() => {
-      expect(screen.getByText(/הועתק!/)).toBeInTheDocument();
+      expect(screen.getByText('✓')).toBeInTheDocument();
+      expect(button).toHaveAttribute('title', 'הועתק!');
     });
   });
 
@@ -60,7 +61,7 @@ describe('CopyButton', () => {
     fireEvent.click(button);
 
     await waitFor(() => {
-      expect(screen.getByText(/הועתק!/)).toBeInTheDocument();
+      expect(screen.getByText('✓')).toBeInTheDocument();
     });
 
     // Fast-forward time

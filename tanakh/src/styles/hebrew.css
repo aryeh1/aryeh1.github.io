@@ -190,28 +190,100 @@
   cursor: not-allowed;
 }
 
-/* Commentary panel */
-.commentary-panel {
-  background-color: #f9f9f9;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 1.5rem;
-  margin: 2rem 0;
+/* Commentary modal - floating overlay */
+.commentary-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 1rem;
+  animation: fadeIn 0.2s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.commentary-modal {
+  background-color: white;
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 700px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  position: relative;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.commentary-close-button {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background: none;
+  border: none;
+  font-size: 36px;
+  line-height: 1;
+  color: #999;
+  cursor: pointer;
+  padding: 0;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.commentary-close-button:hover {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.commentary-close-button:active {
+  background-color: #e0e0e0;
 }
 
 .commentary-title {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 600;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
   color: #333;
+  direction: rtl;
+  text-align: right;
+  padding-right: 2rem; /* Space for close button */
 }
 
 .commentary-text {
   direction: rtl;
   text-align: right;
   font-family: 'David Libre', serif;
-  line-height: 1.8;
-  font-size: 18px;
+  line-height: 1.9;
+  font-size: 19px;
+  color: #222;
 }
 
 /* Loading and error states */
@@ -254,5 +326,34 @@
   .select-control,
   .search-box {
     width: 100%;
+  }
+
+  /* Mobile commentary modal adjustments */
+  .commentary-backdrop {
+    padding: 0.5rem;
+  }
+
+  .commentary-modal {
+    max-width: 100%;
+    max-height: 90vh;
+    padding: 1.5rem;
+  }
+
+  .commentary-title {
+    font-size: 19px;
+    padding-right: 2.5rem;
+  }
+
+  .commentary-text {
+    font-size: 17px;
+    line-height: 1.8;
+  }
+
+  .commentary-close-button {
+    top: 0.75rem;
+    left: 0.75rem;
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
   }
 }
