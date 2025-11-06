@@ -33,7 +33,7 @@ function CommentaryPanel({ bookName, chapter, verse, onClose }) {
     loadCommentary();
   }, [bookName, chapter, verse]);
 
-  // Handle ESC key to close modal
+  // Handle ESC key to close modal and body scroll lock
   useEffect(() => {
     const handleEscape = (e) => {
       if (e.key === 'Escape' && onClose) {
@@ -42,8 +42,15 @@ function CommentaryPanel({ bookName, chapter, verse, onClose }) {
     };
 
     if (bookName && chapter && verse) {
+      // Prevent body scroll when modal is open
+      document.body.style.overflow = 'hidden';
       document.addEventListener('keydown', handleEscape);
-      return () => document.removeEventListener('keydown', handleEscape);
+
+      return () => {
+        // Restore body scroll when modal closes
+        document.body.style.overflow = '';
+        document.removeEventListener('keydown', handleEscape);
+      };
     }
   }, [bookName, chapter, verse, onClose]);
 
@@ -58,13 +65,21 @@ function CommentaryPanel({ bookName, chapter, verse, onClose }) {
     }
   };
 
+  const handleModalClick = (e) => {
+    // Prevent clicks inside modal from closing it
+    e.stopPropagation();
+  };
+
   return (
     <div className="commentary-backdrop" onClick={handleBackdropClick}>
-      <div className="commentary-modal">
+      <div className="commentary-modal" onClick={handleModalClick}>
         {/* Close button */}
         <button
           className="commentary-close-button"
-          onClick={onClose}
+          onClick={(e) => {
+            e.stopPropagation();
+            if (onClose) onClose();
+          }}
           aria-label="סגור"
           title="סגור (ESC)"
         >
@@ -93,6 +108,13 @@ function CommentaryPanel({ bookName, chapter, verse, onClose }) {
             <div className="commentary-text hebrew-text">
               {stripNikud(commentary.hebrew)}
             </div>
+          </>
+        )}
+
+        {!loading && !error && !commentary && (
+          <>
+            <div className="commentary-title">פירוש רש"י</div>
+            <div className="error">לא נמצא פירוש לפסוק זה</div>
           </>
         )}
       </div>

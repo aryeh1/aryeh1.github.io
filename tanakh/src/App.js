@@ -20,24 +20,39 @@ function TanakhApp() {
   const navigate = useNavigate();
   const params = useParams();
 
-  // Load book index on mount
+  // Load book index on mount (only once)
   useEffect(() => {
     loadBookIndex()
       .then(index => {
         setBookIndex(index);
-        // If we have URL params, load that book/chapter
-        if (params.book) {
-          setSelectedBook(params.book);
-          if (params.chapter) {
-            setSelectedChapter(parseInt(params.chapter, 10));
-          }
-        }
       })
       .catch(err => {
         console.error('Failed to load book index:', err);
         setError('Failed to load book index');
       });
-  }, [params.book, params.chapter]);
+  }, []);
+
+  // Load chapter from URL params when bookIndex is ready
+  useEffect(() => {
+    if (!bookIndex) return;
+
+    if (params.book) {
+      const book = findBookByKey(bookIndex, params.book);
+      if (book) {
+        setSelectedBook(params.book);
+        if (params.chapter) {
+          const chapterNum = parseInt(params.chapter, 10);
+          if (chapterNum > 0 && chapterNum <= book.chapters) {
+            setSelectedChapter(chapterNum);
+          } else {
+            setError(`Invalid chapter number: ${params.chapter}. ${book.english} has ${book.chapters} chapters.`);
+          }
+        }
+      } else {
+        setError(`Book not found: ${params.book}`);
+      }
+    }
+  }, [bookIndex, params.book, params.chapter]);
 
   // Load chapter when book/chapter selection changes
   useEffect(() => {

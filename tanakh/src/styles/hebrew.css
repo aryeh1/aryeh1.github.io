@@ -201,9 +201,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 9999;
   padding: 1rem;
   animation: fadeIn 0.2s ease-in;
+  /* Ensure the backdrop is clickable and visible */
+  pointer-events: auto;
 }
 
 @keyframes fadeIn {
@@ -225,6 +227,9 @@
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
   position: relative;
   animation: slideUp 0.3s ease-out;
+  /* Ensure the modal is visible and interactive */
+  z-index: 10000;
+  pointer-events: auto;
 }
 
 @keyframes slideUp {
