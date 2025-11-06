@@ -136,7 +136,7 @@ function TanakhApp() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
           <div>
             <h1 style={{ margin: 0, fontSize: '2rem' }}>תנ"ך - Hebrew Bible</h1>
-            <p style={{ margin: '0.5rem 0 0 0', fontSize: '1rem', opacity: 0.9' }}>
+            <p style={{ margin: '0.5rem 0 0 0', fontSize: '1rem', opacity: 0.9 }}>
               כל עשרים וארבעה ספרי התנ"ך
             </p>
           </div>
