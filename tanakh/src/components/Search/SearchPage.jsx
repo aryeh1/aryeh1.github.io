@@ -4,7 +4,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { loadBookIndex, loadChapter } from '../../services/textLoader';
+import { loadBookIndex } from '../../services/textLoader';
 import { searchAllBooks } from '../../services/searchService';
 import SearchForm from './SearchForm';
 import SearchResults from './SearchResults';
@@ -63,9 +63,7 @@ function SearchPage() {
         searchTerm,
         searchMode,
         stripPrefixes,
-        null, // No filter
-        bookIndex,
-        loadChapter
+        null // No filter
       );
 
       // Calculate result counts per book

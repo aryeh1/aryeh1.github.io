@@ -205,61 +205,61 @@ describe('searchService', () => {
   });
 
   describe('searchAllBooks', () => {
-    const mockBookIndex = {
-      sections: {
-        torah: {
-          books: [
-            { key: 'genesis', english: 'Genesis', hebrew: 'בראשית', chapters: 2 },
-            { key: 'exodus', english: 'Exodus', hebrew: 'שמות', chapters: 1 }
-          ]
-        }
-      }
-    };
-
-    const mockChapterData = {
-      'genesis/1': {
+    const mockSearchIndex = [
+      {
         book: 'Genesis',
+        bookKey: 'genesis',
         bookHebrew: 'בראשית',
         chapter: 1,
-        verses: [
-          { number: 1, hebrew: 'בראשית ברא אלהים את השמים' },
-          { number: 2, hebrew: 'והארץ היתה תהו ובהו' }
-        ]
+        verse: 1,
+        text: 'בראשית ברא אלהים את השמים'
       },
-      'genesis/2': {
+      {
         book: 'Genesis',
+        bookKey: 'genesis',
+        bookHebrew: 'בראשית',
+        chapter: 1,
+        verse: 2,
+        text: 'והארץ היתה תהו ובהו'
+      },
+      {
+        book: 'Genesis',
+        bookKey: 'genesis',
         bookHebrew: 'בראשית',
         chapter: 2,
-        verses: [
-          { number: 1, hebrew: 'ויכלו השמים והארץ' }
-        ]
+        verse: 1,
+        text: 'ויכלו השמים והארץ'
       },
-      'exodus/1': {
+      {
         book: 'Exodus',
+        bookKey: 'exodus',
         bookHebrew: 'שמות',
         chapter: 1,
-        verses: [
-          { number: 1, hebrew: 'ואלה שמות בני ישראל' }
-        ]
+        verse: 1,
+        text: 'ואלה שמות בני ישראל'
       }
-    };
+    ];
 
-    const mockLoadChapter = async (bookKey, chapter) => {
-      const key = `${bookKey}/${chapter}`;
-      if (mockChapterData[key]) {
-        return mockChapterData[key];
-      }
-      throw new Error('Chapter not found');
-    };
+    beforeEach(() => {
+      // Mock fetch to return our search index
+      global.fetch = jest.fn(() =>
+        Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(mockSearchIndex)
+        })
+      );
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
 
     it('should search across all books', async () => {
       const results = await searchAllBooks(
         'השמים',
         'exact',
         false,
-        null,
-        mockBookIndex,
-        mockLoadChapter
+        null
       );
       expect(results.length).toBeGreaterThan(0);
     });
@@ -269,9 +269,7 @@ describe('searchService', () => {
         'השמים',
         'exact',
         false,
-        ['genesis'],
-        mockBookIndex,
-        mockLoadChapter
+        ['genesis']
       );
       expect(results.length).toBeGreaterThan(0);
       expect(results.every(r => r.bookKey === 'genesis')).toBe(true);
@@ -282,9 +280,7 @@ describe('searchService', () => {
         'בראשית',
         'exact',
         false,
-        null,
-        mockBookIndex,
-        mockLoadChapter
+        null
       );
       expect(results.length).toBeGreaterThan(0);
       expect(results[0]).toHaveProperty('bookKey');
@@ -301,9 +297,7 @@ describe('searchService', () => {
         'השמ',
         'fuzzy',
         false,
-        null,
-        mockBookIndex,
-        mockLoadChapter
+        null
       );
       expect(results.length).toBeGreaterThan(0);
     });
@@ -314,18 +308,14 @@ describe('searchService', () => {
         'הארץ',
         'exact',
         false,
-        null,
-        mockBookIndex,
-        mockLoadChapter
+        null
       );
       // Search for "ארץ" with prefix stripping should find both "ארץ" and "הארץ"
       const withStrip = await searchAllBooks(
         'ארץ',
         'exact',
         true,
-        null,
-        mockBookIndex,
-        mockLoadChapter
+        null
       );
       // withStrip should find more results than withoutStrip
       expect(withStrip.length).toBeGreaterThan(0);
@@ -336,9 +326,7 @@ describe('searchService', () => {
         'xyz123',
         'exact',
         false,
-        null,
-        mockBookIndex,
-        mockLoadChapter
+        null
       );
       expect(results).toEqual([]);
     });
@@ -348,9 +336,7 @@ describe('searchService', () => {
         'השמים',
         'fuzzy',
         false,
-        null,
-        mockBookIndex,
-        mockLoadChapter
+        null
       );
       // Should be ordered: genesis/1/1, genesis/2/1, ...
       for (let i = 0; i < results.length - 1; i++) {

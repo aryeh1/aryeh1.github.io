@@ -143,80 +143,94 @@ function escapeRegExp(string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-/**
- * Get all books from book index
- */
-function getAllBooks(bookIndex) {
-  if (!bookIndex || !bookIndex.sections) return [];
+// Cache for the pre-built search index
+let searchIndexCache = null;
 
-  const allBooks = [];
-  Object.values(bookIndex.sections).forEach(section => {
-    if (section.books) {
-      allBooks.push(...section.books);
+/**
+ * Load the pre-built search index
+ * Loads once and caches in memory for subsequent searches
+ *
+ * @returns {Promise<Array>} - Array of all verses
+ */
+async function loadSearchIndex() {
+  if (searchIndexCache) {
+    return searchIndexCache;
+  }
+
+  try {
+    const response = await fetch('/data/search-index.json');
+    if (!response.ok) {
+      throw new Error(`Failed to load search index: ${response.status}`);
     }
-  });
-  return allBooks;
+
+    searchIndexCache = await response.json();
+    console.log(`Search index loaded: ${searchIndexCache.length} verses`);
+    return searchIndexCache;
+  } catch (error) {
+    console.error('Error loading search index:', error);
+    throw error;
+  }
 }
 
 /**
- * Search across all books in the Tanakh
+ * Convert search index verse format to match expected result format
+ */
+function formatSearchResult(indexVerse, searchTerm) {
+  return {
+    bookKey: indexVerse.bookKey,
+    bookName: indexVerse.book,
+    bookNameHebrew: indexVerse.bookHebrew,
+    chapter: indexVerse.chapter,
+    verse: indexVerse.verse,
+    verseText: indexVerse.text,
+    highlightedText: highlightMatch(indexVerse.text, searchTerm)
+  };
+}
+
+/**
+ * Search across all books in the Tanakh using pre-built search index
  *
  * @param {string} searchTerm - The Hebrew text to search for
  * @param {string} searchMode - 'exact' or 'fuzzy'
  * @param {boolean} stripPrefixes - Whether to strip prefix letters
  * @param {Array<string>} bookFilter - Array of book keys to search, or null for all
- * @param {Object} bookIndex - The book index object
- * @param {Function} loadChapterFunc - Function to load chapter data (bookKey, chapterNum)
  * @returns {Promise<Array>} - Array of search results
  */
 export async function searchAllBooks(
   searchTerm,
   searchMode,
   stripPrefixes,
-  bookFilter,
-  bookIndex,
-  loadChapterFunc
+  bookFilter
 ) {
-  if (!searchTerm || !bookIndex || !loadChapterFunc) {
+  if (!searchTerm) {
     return [];
   }
 
-  const allBooks = getAllBooks(bookIndex);
-  const booksToSearch = bookFilter && bookFilter.length > 0
-    ? allBooks.filter(book => bookFilter.includes(book.key))
-    : allBooks;
+  // Load the search index (cached after first load)
+  const searchIndex = await loadSearchIndex();
 
-  const results = [];
+  // Filter by books if specified
+  const versesToSearch = bookFilter && bookFilter.length > 0
+    ? searchIndex.filter(v => bookFilter.includes(v.bookKey))
+    : searchIndex;
 
-  // Search each book
-  for (const book of booksToSearch) {
-    // Search each chapter in the book
-    for (let chapterNum = 1; chapterNum <= book.chapters; chapterNum++) {
-      try {
-        const chapterData = await loadChapterFunc(book.key, chapterNum);
+  // Convert to format expected by search functions
+  const verses = versesToSearch.map(v => ({
+    number: v.verse,
+    hebrew: v.text
+  }));
 
-        // Search verses in chapter
-        const searchFunc = searchMode === 'fuzzy' ? searchFuzzy : searchExact;
-        const matchingVerses = searchFunc(chapterData.verses, searchTerm, stripPrefixes);
+  // Search verses
+  const searchFunc = searchMode === 'fuzzy' ? searchFuzzy : searchExact;
+  const matchingVerses = searchFunc(verses, searchTerm, stripPrefixes);
 
-        // Add results
-        for (const verse of matchingVerses) {
-          results.push({
-            bookKey: book.key,
-            bookName: book.english,
-            bookNameHebrew: book.hebrew,
-            chapter: chapterNum,
-            verse: verse.number,
-            verseText: verse.hebrew,
-            highlightedText: highlightMatch(verse.hebrew, searchTerm)
-          });
-        }
-      } catch (error) {
-        // Skip chapters that fail to load
-        console.warn(`Failed to load ${book.key} chapter ${chapterNum}:`, error);
-      }
-    }
-  }
+  // Map back to original index verses and format results
+  const results = matchingVerses.map(verse => {
+    const indexVerse = versesToSearch.find(
+      v => v.text === verse.hebrew
+    );
+    return formatSearchResult(indexVerse, searchTerm);
+  });
 
   // Results are already sorted by order of appearance (books, then chapters, then verses)
   return results;
