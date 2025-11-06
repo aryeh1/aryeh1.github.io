@@ -14,37 +14,60 @@ A clean, functional Hebrew Bible website built with React 19. Read, navigate, an
 
 ## 🤖 Agent Guidelines
 
-**IMPORTANT: All AI agents working on this project must follow these steps:**
+**CRITICAL: All AI agents MUST follow these guidelines. Read this section FIRST before making any changes.**
 
-### Development Workflow (MANDATORY)
-1. **Follow TDD**: Write tests FIRST, then implement features
-2. **Run Tests**: Execute `npm test` to verify all tests pass
-3. **Build Search Index** (if chapter data changed): Run `npm run build-search-index`
-4. **Build**: Run `npm run build` to create production build
-5. **Deploy**: Copy build to deployment directory:
+### BEFORE YOU START (MANDATORY)
+**⚠️ STEP 0: READ THE ENTIRE README FIRST**
+- Read this README completely before making any changes
+- Understand the project structure, features, and constraints
+- Review the Development Workflow and Critical Rules below
+- Understand why TDD is mandatory for this project
+
+### Development Workflow (MANDATORY - TDD REQUIRED)
+1. **READ README FIRST**: Ensure you've read the entire README before proceeding
+2. **TEST-DRIVEN DEVELOPMENT (TDD)**: Write tests FIRST, then implement features
+   - Write failing tests
+   - Implement feature to make tests pass
+   - Refactor if needed
+   - NO feature implementation without tests first
+3. **Run Tests**: Execute `npm test` to verify all tests pass
+4. **Build Search Index** (if chapter data changed): Run `npm run build-search-index`
+5. **Build**: Run `npm run build` to create production build
+6. **DEPLOY TO TANAKH-DEPLOY (CRITICAL)**: Must copy build to deployment directory:
    ```bash
-   rm -rf ../tanakh-deploy/*
-   cp -r build/* ../tanakh-deploy/
+   cd /home/user/aryeh1.github.io
+   rm -rf tanakh-deploy/*
+   cp -r tanakh/build/* tanakh-deploy/
    ```
-6. **Update README**: Document ALL new features and changes
-7. **Commit & Push**: Stage all changes (including tanakh-deploy), commit with descriptive message, and push
+   **⚠️ THIS STEP IS MANDATORY - NEVER SKIP IT**
+7. **Update README**: Document ALL new features and changes
+8. **Commit & Push**: Stage ALL changes (both tanakh/ and tanakh-deploy/), commit with descriptive message, and push
 
-### Critical Rules
-- ✅ **ALWAYS** build and deploy after code changes
+### Critical Rules (MUST FOLLOW)
+- ✅ **ALWAYS** read the README completely before starting work
+- ✅ **ALWAYS** follow TDD: Write tests FIRST, then implement
+- ✅ **ALWAYS** build and deploy to `tanakh-deploy/` after code changes
 - ✅ **ALWAYS** run full test suite before committing
 - ✅ **ALWAYS** update README with new features
-- ✅ **ALWAYS** commit both `tanakh/` and `tanakh-deploy/` directories
+- ✅ **ALWAYS** commit both `tanakh/` and `tanakh-deploy/` directories together
 - ✅ **ALWAYS** verify zero regression (all existing tests pass)
-- ❌ **NEVER** skip the build/deploy step
+- ❌ **NEVER** skip the deployment step to `tanakh-deploy/`
+- ❌ **NEVER** commit without deploying to `tanakh-deploy/`
 - ❌ **NEVER** commit without updating README
 - ❌ **NEVER** break existing functionality
+- ❌ **NEVER** skip writing tests before implementing features
 
-### Deployment Checklist
+### Deployment Checklist (CHECK EVERY ITEM)
+- [ ] Read README completely before starting
+- [ ] Wrote tests FIRST before implementing features
 - [ ] Tests pass (`npm test`)
 - [ ] Build succeeds (`npm run build`)
-- [ ] Deployed to `tanakh-deploy/`
-- [ ] README updated with changes
-- [ ] All changes committed and pushed
+- [ ] **DEPLOYED to `tanakh-deploy/`** (DO NOT SKIP!)
+- [ ] Verified `tanakh-deploy/` contains updated files
+- [ ] README updated with all changes
+- [ ] Both `tanakh/` and `tanakh-deploy/` directories staged for commit
+- [ ] All changes committed with descriptive message
+- [ ] Changes pushed to remote
 - [ ] Zero regression verified
 
 ---

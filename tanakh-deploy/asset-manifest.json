@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/tanakh-deploy/static/css/main.e547ba32.css",
-    "main.js": "/tanakh-deploy/static/js/main.7306c69f.js",
+    "main.js": "/tanakh-deploy/static/js/main.e53af333.js",
     "index.html": "/tanakh-deploy/index.html",
     "main.e547ba32.css.map": "/tanakh-deploy/static/css/main.e547ba32.css.map",
-    "main.7306c69f.js.map": "/tanakh-deploy/static/js/main.7306c69f.js.map"
+    "main.e53af333.js.map": "/tanakh-deploy/static/js/main.e53af333.js.map"
   },
   "entrypoints": [
     "static/css/main.e547ba32.css",
-    "static/js/main.7306c69f.js"
+    "static/js/main.e53af333.js"
   ]
 }
