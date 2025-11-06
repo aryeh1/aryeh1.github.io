@@ -108,10 +108,25 @@ export async function fetchAvailableCommentaries(bookName, chapter, verse) {
 /**
  * Strip nikud from Hebrew text (for display purposes)
  * Preserves maqaf (U+05BE) which is a hyphen used in Hebrew
+ * Handles both strings and arrays (from Sefaria API)
  */
 export function stripNikud(text) {
   if (!text) return text;
-  // Remove Hebrew vowel points and cantillation marks
-  // Exclude maqaf (U+05BE) by splitting the range
-  return text.replace(/[\u0591-\u05BD\u05BF-\u05C7]/g, '');
+
+  // Handle arrays (Sefaria API returns arrays for commentary)
+  if (Array.isArray(text)) {
+    return text.map(item => stripNikud(item)).join('\n\n');
+  }
+
+  // Handle strings
+  if (typeof text === 'string') {
+    // Remove Hebrew vowel points and cantillation marks
+    // Exclude maqaf (U+05BE) by splitting the range
+    // Also strip HTML tags for clean display
+    return text
+      .replace(/<[^>]*>/g, '') // Remove HTML tags
+      .replace(/[\u0591-\u05BD\u05BF-\u05C7]/g, ''); // Remove nikud
+  }
+
+  return text;
 }
