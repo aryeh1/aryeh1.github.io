@@ -12,6 +12,42 @@ A clean, functional Hebrew Bible website built with React 19. Read, navigate, an
 
 ---
 
+## 🤖 Agent Guidelines
+
+**IMPORTANT: All AI agents working on this project must follow these steps:**
+
+### Development Workflow (MANDATORY)
+1. **Follow TDD**: Write tests FIRST, then implement features
+2. **Run Tests**: Execute `npm test` to verify all tests pass
+3. **Build**: Run `npm run build` to create production build
+4. **Deploy**: Copy build to deployment directory:
+   ```bash
+   rm -rf ../tanakh-deploy/*
+   cp -r build/* ../tanakh-deploy/
+   ```
+5. **Update README**: Document ALL new features and changes
+6. **Commit & Push**: Stage all changes (including tanakh-deploy), commit with descriptive message, and push
+
+### Critical Rules
+- ✅ **ALWAYS** build and deploy after code changes
+- ✅ **ALWAYS** run full test suite before committing
+- ✅ **ALWAYS** update README with new features
+- ✅ **ALWAYS** commit both `tanakh/` and `tanakh-deploy/` directories
+- ✅ **ALWAYS** verify zero regression (all existing tests pass)
+- ❌ **NEVER** skip the build/deploy step
+- ❌ **NEVER** commit without updating README
+- ❌ **NEVER** break existing functionality
+
+### Deployment Checklist
+- [ ] Tests pass (`npm test`)
+- [ ] Build succeeds (`npm run build`)
+- [ ] Deployed to `tanakh-deploy/`
+- [ ] README updated with changes
+- [ ] All changes committed and pushed
+- [ ] Zero regression verified
+
+---
+
 ## Overview
 
 Complete Hebrew Bible (Torah, Prophets, Writings) with 929 chapters across 24 books. Features include hierarchical navigation, free-text search, Rashi commentary integration via Sefaria API, and clean Hebrew text display without nikud.
