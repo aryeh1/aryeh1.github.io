@@ -14,6 +14,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "build:deploy": "npm run build && rm -rf ../tanakh-build && cp -r build ../tanakh-build",
+    "build-search-index": "node scripts/buildSearchIndex.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

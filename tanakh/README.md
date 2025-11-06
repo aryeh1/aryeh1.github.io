@@ -19,14 +19,15 @@ A clean, functional Hebrew Bible website built with React 19. Read, navigate, an
 ### Development Workflow (MANDATORY)
 1. **Follow TDD**: Write tests FIRST, then implement features
 2. **Run Tests**: Execute `npm test` to verify all tests pass
-3. **Build**: Run `npm run build` to create production build
-4. **Deploy**: Copy build to deployment directory:
+3. **Build Search Index** (if chapter data changed): Run `npm run build-search-index`
+4. **Build**: Run `npm run build` to create production build
+5. **Deploy**: Copy build to deployment directory:
    ```bash
    rm -rf ../tanakh-deploy/*
    cp -r build/* ../tanakh-deploy/
    ```
-5. **Update README**: Document ALL new features and changes
-6. **Commit & Push**: Stage all changes (including tanakh-deploy), commit with descriptive message, and push
+6. **Update README**: Document ALL new features and changes
+7. **Commit & Push**: Stage all changes (including tanakh-deploy), commit with descriptive message, and push
 
 ### Critical Rules
 - ✅ **ALWAYS** build and deploy after code changes
@@ -120,8 +121,9 @@ Complete Hebrew Bible (Torah, Prophets, Writings) with 929 chapters across 24 bo
 - **Book Filtering**: Filter results by individual books with result counts
 - **Direct Navigation**: Click result to jump to verse in context with temporary highlight
 - **Results Display**: Shows book name, chapter:verse reference, and full verse text
-- **Fast Performance**: Client-side search completes in <2 seconds
+- **Fast Performance**: Pre-built search index enables instant search (<1 second) across all 23,206 verses
 - **Mobile Responsive**: Works seamlessly on all devices
+- **Optimized Index**: 5.77 MB search index loaded once and cached in memory
 
 **How to Use Search:**
 1. Click "🔍 חיפוש בתנ"ך" in the header
@@ -173,6 +175,7 @@ tanakh/
 │   └── styles/
 │       └── hebrew.css           # Hebrew-specific RTL styles
 ├── scripts/
+│   ├── buildSearchIndex.js      # Build search index from chapter files
 │   ├── fetchBibleText.js        # Script to fetch Bible text from Sefaria
 │   ├── processBibleData.js      # Data processing utilities
 │   └── downloadFullBible.js     # Alternative fetch script
@@ -199,6 +202,13 @@ npm start
 ```
 Open http://localhost:3000 to view in browser.
 
+### Build Search Index
+The search feature requires a pre-built index. This should be run after any changes to the chapter JSON files:
+```bash
+npm run build-search-index
+```
+This creates `public/data/search-index.json` with all 23,206 verses (5.77 MB).
+
 ### Build for Production
 ```bash
 npm run build
@@ -207,8 +217,11 @@ Creates optimized build in `build/` folder.
 
 ### Deploy to GitHub Pages
 ```bash
-# Build the application
+# Build the search index (if chapter data changed)
 cd tanakh
+npm run build-search-index
+
+# Build the application
 npm run build
 
 # Copy to deployment directory
@@ -445,6 +458,14 @@ Potential improvements:
 
 ## Recent Updates
 
+### November 2025 - Search Performance Optimization
+- **Optimized:** Search now uses pre-built index for instant results (<1 second)
+- **Added:** `buildSearchIndex.js` script consolidates all 929 chapters into single search index
+- **Added:** `npm run build-search-index` command for rebuilding search index
+- **Improved:** Search index cached in memory after first load (5.77 MB, 23,206 verses)
+- **Removed:** Individual chapter file loading during search (major performance boost)
+- **Updated:** All tests passing (38 searchService tests)
+
 ### November 2025 - Critical Bug Fixes
 - **Fixed:** Copy function now excludes verse numbers (copies only Hebrew text)
 - **Fixed:** URL routing works on refresh (deep-linking fully functional)
@@ -493,12 +514,14 @@ Potential improvements:
 npm install              # Install dependencies
 npm start                # Run dev server (localhost:3000)
 npm test                 # Run test suite
+npm run build-search-index  # Build search index (run after chapter data changes)
 npm run build            # Build for production
 ```
 
 ### Deployment Steps
 ```bash
 cd tanakh
+npm run build-search-index  # Only needed if chapter data changed
 npm run build
 rm -rf ../tanakh-deploy/*
 cp -r build/* ../tanakh-deploy/
@@ -545,7 +568,8 @@ For issues or questions about the implementation, refer to the main GitHub repos
 **Quick Start:**
 1. `npm install` - Install dependencies
 2. `npm start` - Run development server
-3. `npm run build` - Build for production
-4. Copy `build/*` to `../tanakh-deploy/` - Deploy
+3. `npm run build-search-index` - Build search index (if needed)
+4. `npm run build` - Build for production
+5. Copy `build/*` to `../tanakh-deploy/` - Deploy
 
 **Enjoy reading the Hebrew Bible!** 📖
