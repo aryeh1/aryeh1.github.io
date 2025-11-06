@@ -73,7 +73,28 @@ Complete Hebrew Bible (Torah, Prophets, Writings) with 929 chapters across 24 bo
 - **Mobile Responsive**: Adapts to all screen sizes
 - **Body Scroll Lock**: Prevents background scrolling when modal open
 
-### 6. Responsive Design
+### 6. Full-Text Search
+- **Dedicated Search Page**: Separate `/search` route for comprehensive search
+- **Two Search Modes**:
+  - **Exact Match**: Finds complete word matches only (e.g., "בראשית" finds "בראשית" but not "ובראשית")
+  - **Fuzzy Match**: Finds partial matches within words (e.g., "ברא" finds "בראשית", "ברא", "יברא")
+- **Prefix Letter Stripping**: Optional feature to ignore Hebrew prefix letters (ו, ה, ב, כ, ל, מ, י)
+- **Search Across All Books**: Searches through all 929 chapters of the Tanakh
+- **Highlighted Results**: Search term highlighted in yellow within verse text
+- **Book Filtering**: Filter results by individual books with result counts
+- **Direct Navigation**: Click result to jump to verse in context with temporary highlight
+- **Results Display**: Shows book name, chapter:verse reference, and full verse text
+- **Fast Performance**: Client-side search completes in <2 seconds
+- **Mobile Responsive**: Works seamlessly on all devices
+
+**How to Use Search:**
+1. Click "🔍 חיפוש בתנ"ך" in the header
+2. Enter Hebrew text (e.g., "בראשית" or "אלהים")
+3. Choose search mode (exact or fuzzy)
+4. Optionally enable prefix stripping
+5. View results and click to navigate to verse
+
+### 7. Responsive Design
 - Mobile-friendly layout
 - Flexible navigation controls
 - Readable on all screen sizes
@@ -366,18 +387,16 @@ Tested and working on:
 
 ## Known Limitations
 
-1. **Hebrew Chapter Numbers**: Not yet supported in search (use numeric: 1, 2, 3)
+1. **Hebrew Chapter Numbers**: Not yet supported in reference search (use numeric: 1, 2, 3)
 2. **Single Commentary**: Only Rashi available (Ibn Ezra, Ramban can be added)
 3. **Offline**: Requires internet for commentary features
-4. **Full-text Search**: Not yet implemented (only reference-based navigation)
 
 ---
 
 ## Future Enhancements
 
 Potential improvements:
-- Hebrew chapter number parsing (א, ב, ג)
-- Full-text Hebrew search across all books
+- Hebrew chapter number parsing (א, ב, ג) for reference search
 - Additional commentaries (Ibn Ezra, Ramban)
 - Bookmarking system
 - Print-friendly view
