@@ -15,9 +15,8 @@ function VerseView({ verse, onCommentaryRequest }) {
           <button
             className="copy-button"
             onClick={() => onCommentaryRequest(number)}
-            style={{ backgroundColor: '#9c27b0' }}
           >
-            📖 רש"י
+            רש"י
           </button>
         )}
       </div>
