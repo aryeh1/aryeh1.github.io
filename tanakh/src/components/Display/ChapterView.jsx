@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import VerseView from './VerseView';
 import CopyButton from './CopyButton';
 import { checkRashiAvailability } from '../../services/sefariaAPI';
 
 function ChapterView({ chapterData, onCommentaryRequest }) {
   const [rashiAvailability, setRashiAvailability] = useState(new Set());
+  const [highlightedVerse, setHighlightedVerse] = useState(null);
+  const verseRefs = useRef({});
 
   // Extract data safely
   const bookHebrew = chapterData?.bookHebrew;
@@ -24,6 +26,33 @@ function ChapterView({ chapterData, onCommentaryRequest }) {
       .catch(err => {
         console.error('Failed to check Rashi availability:', err);
       });
+  }, [chapterData]);
+
+  // Handle URL anchors for verse navigation from search results
+  useEffect(() => {
+    if (!chapterData) return;
+
+    // Check for anchor in URL (e.g., #verse-5)
+    const hash = window.location.hash;
+    if (hash && hash.startsWith('#verse-')) {
+      const verseNumber = parseInt(hash.replace('#verse-', ''), 10);
+
+      // Wait for component to render, then scroll to verse
+      setTimeout(() => {
+        const verseElement = verseRefs.current[verseNumber];
+        if (verseElement) {
+          verseElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+          // Highlight the verse temporarily
+          setHighlightedVerse(verseNumber);
+
+          // Remove highlight after 3 seconds
+          setTimeout(() => {
+            setHighlightedVerse(null);
+          }, 3000);
+        }
+      }, 100);
+    }
   }, [chapterData]);
 
   if (!chapterData) {
@@ -66,12 +95,18 @@ function ChapterView({ chapterData, onCommentaryRequest }) {
 
       <div className="verses-container">
         {verses.map(verse => (
-          <VerseView
+          <div
             key={verse.number}
-            verse={verse}
-            onCommentaryRequest={onCommentaryRequest}
-            hasRashi={rashiAvailability.has(verse.number)}
-          />
+            id={`verse-${verse.number}`}
+            ref={el => verseRefs.current[verse.number] = el}
+            className={highlightedVerse === verse.number ? 'verse-highlighted' : ''}
+          >
+            <VerseView
+              verse={verse}
+              onCommentaryRequest={onCommentaryRequest}
+              hasRashi={rashiAvailability.has(verse.number)}
+            />
+          </div>
         ))}
       </div>
     </div>

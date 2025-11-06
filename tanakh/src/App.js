@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate, useParams } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate, useParams, Link } from 'react-router-dom';
 import { loadBookIndex, loadChapter, findBookByKey } from './services/textLoader';
 import BookSelector from './components/Navigation/BookSelector';
 import ChapterSelector from './components/Navigation/ChapterSelector';
 import SearchBar from './components/Navigation/SearchBar';
 import ChapterView from './components/Display/ChapterView';
 import CommentaryPanel from './components/Commentary/CommentaryPanel';
+import SearchPage from './components/Search/SearchPage';
 import './styles/hebrew.css';
 
 function TanakhApp() {
@@ -132,10 +133,27 @@ function TanakhApp() {
         textAlign: 'center',
         boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
       }}>
-        <h1 style={{ margin: 0, fontSize: '2rem' }}>תנ"ך - Hebrew Bible</h1>
-        <p style={{ margin: '0.5rem 0 0 0', fontSize: '1rem', opacity: 0.9 }}>
-          כל עשרים וארבעה ספרי התנ"ך
-        </p>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
+          <div>
+            <h1 style={{ margin: 0, fontSize: '2rem' }}>תנ"ך - Hebrew Bible</h1>
+            <p style={{ margin: '0.5rem 0 0 0', fontSize: '1rem', opacity: 0.9' }}>
+              כל עשרים וארבעה ספרי התנ"ך
+            </p>
+          </div>
+          <Link
+            to="/search"
+            style={{
+              color: 'white',
+              textDecoration: 'none',
+              padding: '0.5rem 1rem',
+              background: 'rgba(255,255,255,0.2)',
+              borderRadius: '4px',
+              fontSize: '1.1rem'
+            }}
+          >
+            🔍 חיפוש בתנ"ך
+          </Link>
+        </div>
       </header>
 
       <main style={{
@@ -270,6 +288,7 @@ function App() {
     <Router basename="/tanakh-deploy">
       <Routes>
         <Route path="/" element={<TanakhApp />} />
+        <Route path="/search" element={<SearchPage />} />
         <Route path="/:book/:chapter" element={<TanakhApp />} />
       </Routes>
     </Router>
