@@ -52,6 +52,35 @@ const books = [
   { english: 'II Chronicles', hebrew: 'דברי הימים ב', sefaria: 'II_Chronicles', chapters: 36 }
 ];
 
+// Function to extract parsha marker from verse text
+// Returns { text: cleaned text, parsha: 'פ' | 'ס' | null }
+function extractParsha(text) {
+  if (!text) return { text: text, parsha: null };
+
+  let parsha = null;
+
+  // Check for parsha markers in HTML format: <span class="mam-spi-pe">{פ}</span> or {ס}
+  const parshaMatch = text.match(/<span class="mam-spi-pe">\{([פס])\}<\/span>/);
+  if (parshaMatch) {
+    parsha = parshaMatch[1]; // Either 'פ' or 'ס'
+  }
+
+  // Remove all HTML tags and clean the text
+  let cleanedText = text.replace(/<[^>]*>/g, '');
+
+  // Remove curly braces around parsha markers
+  cleanedText = cleanedText.replace(/\{[פס]\}/g, '');
+
+  // Decode HTML entities
+  cleanedText = cleanedText
+    .replace(/&thinsp;/g, '')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&ldquo;/g, '"')
+    .replace(/&rdquo;/g, '"');
+
+  return { text: cleanedText, parsha: parsha };
+}
+
 // Function to strip nikud and ta'amim (vowel points and cantillation marks)
 function stripNikud(text) {
   if (!text) return text;
@@ -115,14 +144,28 @@ async function fetchAllBooks() {
       try {
         const response = await fetchFromSefaria(book.sefaria, chapter);
 
-        // Extract Hebrew text and strip nikud
+        // Extract Hebrew text, strip nikud, and extract parsha markers
         const verses = [];
         if (response.he && Array.isArray(response.he)) {
           response.he.forEach((verseText, index) => {
-            verses.push({
+            // Extract parsha marker and clean text
+            const { text: cleanedText, parsha } = extractParsha(verseText);
+
+            // Strip nikud from cleaned text
+            const hebrewText = stripNikud(cleanedText);
+
+            // Build verse object
+            const verse = {
               number: index + 1,
-              hebrew: stripNikud(verseText)
-            });
+              hebrew: hebrewText
+            };
+
+            // Only add parsha field if marker is present
+            if (parsha) {
+              verse.parsha = parsha;
+            }
+
+            verses.push(verse);
           });
         }
 
@@ -140,8 +183,8 @@ async function fetchAllBooks() {
 
         console.log(`  Chapter ${chapter}/${book.chapters} saved`);
 
-        // Add delay to avoid rate limiting (100ms between requests)
-        await delay(100);
+        // Add delay to avoid rate limiting (500ms between requests)
+        await delay(500);
 
       } catch (error) {
         console.error(`  Error fetching chapter ${chapter}:`, error.message);

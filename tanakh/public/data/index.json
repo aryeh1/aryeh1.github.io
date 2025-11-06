@@ -135,7 +135,13 @@
           "hebrew": "נחום",
           "key": "nahum",
           "chapters": 3
-        },
+        }
+      ]
+    },
+    "writings": {
+      "name": "Writings",
+      "hebrewName": "כתובים",
+      "books": [
         {
           "english": "Habakkuk",
           "hebrew": "חבקוק",
@@ -165,13 +171,7 @@
           "hebrew": "מלאכי",
           "key": "malachi",
           "chapters": 3
-        }
-      ]
-    },
-    "writings": {
-      "name": "Writings",
-      "hebrewName": "כתובים",
-      "books": [
+        },
         {
           "english": "Psalms",
           "hebrew": "תהלים",
