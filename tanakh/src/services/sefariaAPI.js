@@ -106,6 +106,52 @@ export async function fetchAvailableCommentaries(bookName, chapter, verse) {
 }
 
 /**
+ * Check if Rashi commentary exists for a specific verse
+ * This is a lightweight check that doesn't fetch the full commentary
+ * @param {string} bookName - English book name (e.g., "Genesis")
+ * @param {number} chapter - Chapter number
+ * @param {number} verse - Verse number
+ * @returns {Promise<boolean>} - True if commentary exists, false otherwise
+ */
+export async function hasRashiCommentary(bookName, chapter, verse) {
+  try {
+    const sefariaBookName = mapBookNameForSefaria(bookName);
+    const url = `${SEFARIA_API_BASE}/texts/Rashi_on_${sefariaBookName}.${chapter}.${verse}`;
+
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      return false;
+    }
+
+    const data = await response.json();
+
+    // Check if we actually got commentary text
+    return !!(data.he || data.text);
+  } catch (error) {
+    console.error('Error checking Rashi commentary:', error);
+    return false;
+  }
+}
+
+/**
+ * Check Rashi availability for all verses in a chapter
+ * @param {string} bookName - English book name
+ * @param {number} chapter - Chapter number
+ * @param {number[]} verseNumbers - Array of verse numbers to check
+ * @returns {Promise<Set<number>>} - Set of verse numbers that have Rashi commentary
+ */
+export async function checkRashiAvailability(bookName, chapter, verseNumbers) {
+  const availabilityPromises = verseNumbers.map(async (verseNum) => {
+    const hasRashi = await hasRashiCommentary(bookName, chapter, verseNum);
+    return hasRashi ? verseNum : null;
+  });
+
+  const results = await Promise.all(availabilityPromises);
+  return new Set(results.filter(v => v !== null));
+}
+
+/**
  * Strip nikud from Hebrew text (for display purposes)
  * Preserves maqaf (U+05BE) which is a hyphen used in Hebrew
  * Handles both strings and arrays (from Sefaria API)
