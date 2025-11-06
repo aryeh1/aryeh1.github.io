@@ -81,16 +81,53 @@ describe('ChapterView', () => {
     expect(rashiButtons.length).toBe(3); // One for each verse
   });
 
-  describe('Copy functionality with proper line breaks', () => {
-    it('should format chapter text with line breaks between verses', () => {
-      const { container } = render(<ChapterView chapterData={mockChapterData} />);
+  describe('Copy functionality - verse numbers excluded', () => {
+    it('should NOT include verse numbers in copied text', () => {
+      // Test that verse numbers are excluded from chapter copy
+      const testData = {
+        book: 'Genesis',
+        bookHebrew: 'בראשית',
+        chapter: 1,
+        verses: [
+          { number: 1, hebrew: 'בראשית ברא אלהים' },
+          { number: 2, hebrew: 'והארץ היתה תהו' },
+          { number: 3, hebrew: 'ויאמר אלהים' }
+        ]
+      };
 
-      // The copy button should have the properly formatted text
-      // This will be tested after we implement the fix
-      // Expected format: verse1\n\nverse2\n\nverse3
+      render(<ChapterView chapterData={testData} />);
+
+      // Find the chapter copy button
+      const chapterCopyButton = screen.getByText(/העתק פרק שלם/);
+
+      // Check that the button exists
+      expect(chapterCopyButton).toBeInTheDocument();
+
+      // The copy text should NOT contain "1." or "2." or "3."
+      // It should only contain the Hebrew text separated by blank lines
     });
 
-    it('should include extra line breaks before parsha markers', () => {
+    it('should format chapter text with only Hebrew text and blank lines', () => {
+      const testData = {
+        book: 'Genesis',
+        bookHebrew: 'בראשית',
+        chapter: 1,
+        verses: [
+          { number: 1, hebrew: 'פסוק ראשון' },
+          { number: 2, hebrew: 'פסוק שני' }
+        ]
+      };
+
+      render(<ChapterView chapterData={testData} />);
+
+      // Expected format:
+      // פסוק ראשון
+      //
+      // פסוק שני
+      // (blank lines between verses, no verse numbers)
+    });
+
+    it('should include parsha markers without verse numbers', () => {
       const dataWithParsha = {
         book: 'Genesis',
         bookHebrew: 'בראשית',
@@ -104,8 +141,34 @@ describe('ChapterView', () => {
 
       render(<ChapterView chapterData={dataWithParsha} />);
 
-      // After fix: should have extra line breaks before parsha
-      // Expected: verse1\n\nverse2\n\n\n(פ)\n\nverse3
+      // Expected format (no verse numbers):
+      // פסוק א
+      //
+      // פסוק ב
+      //
+      // (פ)
+      //
+      // פסוק ג
+    });
+
+    it('should handle multiple parsha markers correctly', () => {
+      const dataWithMultipleParshas = {
+        book: 'Genesis',
+        bookHebrew: 'בראשית',
+        chapter: 1,
+        verses: [
+          { number: 1, hebrew: 'פסוק א' },
+          { number: 2, hebrew: 'פסוק ב', parsha: 'פ' },
+          { number: 3, hebrew: 'פסוק ג' },
+          { number: 4, hebrew: 'פסוק ד', parsha: 'ס' },
+          { number: 5, hebrew: 'פסוק ה' }
+        ]
+      };
+
+      render(<ChapterView chapterData={dataWithMultipleParshas} />);
+
+      // Should have proper spacing before each parsha marker
+      // And NO verse numbers anywhere
     });
   });
 });

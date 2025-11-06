@@ -107,9 +107,11 @@ export async function fetchAvailableCommentaries(bookName, chapter, verse) {
 
 /**
  * Strip nikud from Hebrew text (for display purposes)
+ * Preserves maqaf (U+05BE) which is a hyphen used in Hebrew
  */
 export function stripNikud(text) {
   if (!text) return text;
   // Remove Hebrew vowel points and cantillation marks
-  return text.replace(/[\u0591-\u05C7]/g, '');
+  // Exclude maqaf (U+05BE) by splitting the range
+  return text.replace(/[\u0591-\u05BD\u05BF-\u05C7]/g, '');
 }
