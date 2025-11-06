@@ -19,7 +19,7 @@ function CopyButton({ text, label = "העתק" }) {
       onClick={handleCopy}
       title={copied ? 'הועתק!' : 'העתק לזיכרון'}
     >
-      {copied ? '✓ הועתק!' : `📋 ${label}`}
+      {copied ? '✓' : label}
     </button>
   );
 }

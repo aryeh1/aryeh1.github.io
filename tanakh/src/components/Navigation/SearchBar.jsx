@@ -29,7 +29,7 @@ function SearchBar({ bookIndex, onNavigate }) {
         <input
           type="text"
           className="search-box"
-          placeholder="חפש: Genesis 1:1 או בראשית א"
+          placeholder="חפש: Genesis 1:1 או בראשית א:א"
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
           style={{ flex: 1 }}

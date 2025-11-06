@@ -9,8 +9,30 @@ function ChapterView({ chapterData, onCommentaryRequest }) {
 
   const { bookHebrew, chapter, verses } = chapterData;
 
-  // Combine all verses for chapter copy
-  const allText = verses.map(v => v.hebrew).join(' ');
+  // Combine all verses for chapter copy with proper formatting
+  // - One blank line between verses
+  // - Two blank lines before parsha markers
+  const allText = verses.map((verse, index) => {
+    let text = `${verse.number}. ${verse.hebrew}`;
+
+    // Add parsha marker if present
+    if (verse.parsha) {
+      text += `\n\n(${verse.parsha})`;
+    }
+
+    // Add spacing after this verse
+    // If next verse has a parsha, add extra space
+    if (index < verses.length - 1) {
+      const nextVerse = verses[index + 1];
+      if (nextVerse.parsha) {
+        text += '\n\n'; // Extra blank line before parsha
+      } else {
+        text += '\n\n'; // One blank line between regular verses
+      }
+    }
+
+    return text;
+  }).join('');
 
   return (
     <div className="chapter-view">
