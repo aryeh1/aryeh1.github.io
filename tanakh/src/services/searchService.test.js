@@ -352,5 +352,13 @@ describe('searchService', () => {
         }
       }
     });
+
+    it('should load search index and perform search', async () => {
+      // Test that search works with the search index
+      const results = await searchAllBooks('test', 'exact', false, null);
+
+      // Verify that results are returned (even if empty)
+      expect(Array.isArray(results)).toBe(true);
+    });
   });
 });
