@@ -158,7 +158,9 @@ async function loadSearchIndex() {
   }
 
   try {
-    const response = await fetch('/data/search-index.json');
+    // Use PUBLIC_URL to ensure correct path in production (e.g., /tanakh-deploy/data/...)
+    const publicUrl = process.env.PUBLIC_URL || '';
+    const response = await fetch(`${publicUrl}/data/search-index.json`);
     if (!response.ok) {
       throw new Error(`Failed to load search index: ${response.status}`);
     }

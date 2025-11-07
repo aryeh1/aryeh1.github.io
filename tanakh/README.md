@@ -322,6 +322,24 @@ git push
 
 ---
 
+### Bug #5: Search Index Failed to Load (Error: "שגיאה בביצוע החיפוש") ✅
+**Problem**: Full-text search feature returned error "שגיאה בביצוע החיפוש" (Error performing search) for all searches.
+
+**Root Cause**: Search index fetch used absolute path `/data/search-index.json` which didn't include the app's base path (`/tanakh-deploy/`), causing 404 errors in production.
+
+**Solution**: Updated `/tanakh/src/services/searchService.js` to use `process.env.PUBLIC_URL` when fetching the search index.
+
+**Technical Details**:
+- Changed: `fetch('/data/search-index.json')`
+- To: `fetch(\`\${process.env.PUBLIC_URL}/data/search-index.json\`)`
+- In development: PUBLIC_URL is empty, fetches from `/data/search-index.json`
+- In production: PUBLIC_URL is `/tanakh-deploy`, fetches from `/tanakh-deploy/data/search-index.json`
+- Added test coverage to verify search index loading
+
+**Result**: Search feature now works correctly in both development and production environments.
+
+---
+
 ## Configuration
 
 ### package.json
@@ -480,6 +498,13 @@ Potential improvements:
 ---
 
 ## Recent Updates
+
+### November 2025 - Search Bug Fix
+- **Fixed:** Search index loading error (שגיאה בביצוע החיפוש)
+- **Root Cause:** Absolute path for search index didn't include app base path
+- **Solution:** Use `process.env.PUBLIC_URL` for correct path in production
+- **Impact:** Full-text search now works correctly in production environment
+- **Tests:** All 39 searchService tests passing
 
 ### November 2025 - Search Performance Optimization
 - **Optimized:** Search now uses pre-built index for instant results (<1 second)
