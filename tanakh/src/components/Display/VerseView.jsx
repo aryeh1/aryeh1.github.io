@@ -22,6 +22,9 @@ function VerseView({ verse, onCommentaryRequest, hasRashi }) {
       <div className="hebrew-text">
         <span className="verse-number">{number}</span>
         <span className="verse-text">{hebrew}</span>
+        {parsha && (
+          <span className="parsha-marker"> {parsha} </span>
+        )}
         {onCommentaryRequest && hasRashi && (
           <button
             className="copy-button"
