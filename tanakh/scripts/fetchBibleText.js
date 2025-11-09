@@ -61,6 +61,30 @@ function stripNikud(text) {
   return text.replace(/[\u0591-\u05C7]/g, '');
 }
 
+// Function to extract parsha marker and clean text from HTML
+function extractParshaAndText(htmlText) {
+  if (!htmlText) return { text: '', parsha: null };
+
+  // Look for parsha markers in HTML spans
+  // פ (petucha/open) - <span class="mam-spi-pe">{פ}</span>
+  // ס (setuma/closed) - <span class="mam-spi-samekh">{ס}</span>
+  let parsha = null;
+
+  if (htmlText.includes('mam-spi-pe')) {
+    parsha = 'פ';
+  } else if (htmlText.includes('mam-spi-samekh')) {
+    parsha = 'ס';
+  }
+
+  // Remove all HTML tags and clean the text
+  let cleanText = htmlText.replace(/<[^>]*>/g, '');
+
+  // Strip nikud from the cleaned text
+  cleanText = stripNikud(cleanText);
+
+  return { text: cleanText, parsha: parsha };
+}
+
 // Function to fetch data from Sefaria API
 function fetchFromSefaria(bookName, chapter) {
   return new Promise((resolve, reject) => {
@@ -115,14 +139,20 @@ async function fetchAllBooks() {
       try {
         const response = await fetchFromSefaria(book.sefaria, chapter);
 
-        // Extract Hebrew text and strip nikud
+        // Extract Hebrew text, strip nikud, and extract parsha markers
         const verses = [];
         if (response.he && Array.isArray(response.he)) {
           response.he.forEach((verseText, index) => {
-            verses.push({
+            const { text, parsha } = extractParshaAndText(verseText);
+            const verseObj = {
               number: index + 1,
-              hebrew: stripNikud(verseText)
-            });
+              hebrew: text
+            };
+            // Only include parsha field if marker exists
+            if (parsha) {
+              verseObj.parsha = parsha;
+            }
+            verses.push(verseObj);
           });
         }
 

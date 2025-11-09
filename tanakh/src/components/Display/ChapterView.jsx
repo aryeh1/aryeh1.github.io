@@ -61,10 +61,16 @@ function ChapterView({ chapterData, onCommentaryRequest }) {
 
   // Combine all verses for chapter copy with proper formatting
   // ONLY Hebrew text - no verse numbers
+  // - Include parsha markers (פ or ס) inline after verse
   // - Blank line between verses
   // - Additional spacing for parsha markers (ס = 1 extra line, פ = 2 extra lines)
   const allText = verses.map((verse, index) => {
     let text = verse.hebrew;
+
+    // Add parsha marker inline if present
+    if (verse.parsha) {
+      text += ' ' + verse.parsha;
+    }
 
     // Add spacing after this verse (if not the last verse)
     if (index < verses.length - 1) {

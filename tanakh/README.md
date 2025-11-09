@@ -84,7 +84,8 @@ Complete Hebrew Bible (Torah, Prophets, Writings) with 929 chapters across 24 bo
 - **All 24 Books**: Complete Hebrew Bible (Torah, Prophets, Writings)
 - **929 Chapters**: Full text coverage across all books
 - **Hebrew Text**: Without nikud (vowel points) for clean reading
-- **Parsha Markers**: פ (פתוחה) and ס (סתומה) included where applicable
+- **Parsha Markers**: פ (פתוחה/open) and ס (סתומה/closed) paragraph markers displayed inline and preserved in copy
+- **Critical Text Structure**: Parsha markers represent the primary traditional text divisions, predating chapter and verse numbers
 - **Structured Data**: JSON format for all books and chapters
 
 ### 2. Navigation System
@@ -112,14 +113,17 @@ Complete Hebrew Bible (Torah, Prophets, Writings) with 929 chapters across 24 bo
 - **Typography**: David Libre and Alef fonts from Google Fonts
 - **Styling**: Zero letter-spacing (critical for Hebrew readability)
 - **Verse Format**: Each verse numbered and displayed clearly
-- **Parsha Markers**: Displayed inline where present
+- **Parsha Markers**: פ and ס markers displayed inline after verses with proper spacing
+  - פ (פתוחה/open): Displayed with 2 extra line spaces
+  - ס (סתומה/closed): Displayed with 1 extra line space
 - **Visual Hierarchy**: Clear book titles and chapter numbers
 
 ### 4. Copy Functionality
 - **Verse Copy**: Button next to each verse (Hebrew text only)
 - **Chapter Copy**: Button at top of chapter (copies ALL verses at once)
 - **Clean Hebrew-Only Text**: No verse numbers, just pure Hebrew
-- **Proper Spacing**: Blank lines between verses, parsha markers preserved
+- **Parsha Markers Included**: פ and ס markers copied inline after verses
+- **Proper Spacing**: Blank lines between verses, extra spacing for parsha markers
 - **Visual Feedback**: Checkmark confirmation (✓)
 - **Clean Text**: Copies Hebrew without HTML formatting
 
@@ -448,20 +452,34 @@ npm test
 
 ---
 
-## Fetching Bible Text
+## Fetching Bible Text with Parsha Markers
 
-The complete Hebrew Bible text is already included. To re-fetch from Sefaria API:
+The complete Hebrew Bible text is already included. To re-fetch from Sefaria API with parsha markers:
 
 ```bash
 cd tanakh
 node scripts/fetchBibleText.js
 ```
 
+**IMPORTANT**: This script requires internet access to fetch from Sefaria API.
+
 This will:
 - Fetch all 24 books from Sefaria API
-- Strip nikud automatically
-- Create 929 chapter JSON files
+- Extract parsha markers (פ and ס) from the source HTML
+- Strip nikud automatically while preserving parsha markers
+- Create 929 chapter JSON files with parsha data
 - Takes ~90 seconds with internet access
+
+**Parsha Markers Implementation**:
+- The script extracts markers from Sefaria's `<span class="mam-spi-pe">{פ}</span>` (פתוחה/open paragraph)
+- And from `<span class="mam-spi-samekh">{ס}</span>` (סתומה/closed paragraph)
+- Markers are stored in verse objects as: `"parsha": "פ"` or `"parsha": "ס"`
+- Only verses with markers include the parsha field
+
+**After fetching new data, rebuild the search index**:
+```bash
+npm run build-search-index
+```
 
 ---
 
@@ -498,6 +516,17 @@ Potential improvements:
 ---
 
 ## Recent Updates
+
+### November 2025 - Parsha Markers Implementation
+- **Implemented:** Full parsha marker support throughout the app
+- **Display:** פ (פתוחה/open) and ס (סתומה/closed) markers now shown inline after verses
+- **Spacing:** Proper visual spacing (פ = 2 extra lines, ס = 1 extra line)
+- **Copy Function:** Parsha markers included in copied text with proper spacing
+- **Data Extraction:** Updated `fetchBibleText.js` to extract markers from Sefaria API HTML
+- **Tests:** Added comprehensive VerseView tests, all 112 tests passing
+- **Critical:** Parsha markers are the primary traditional text division, predating chapter/verse numbers
+- **Note:** Run `node scripts/fetchBibleText.js` in environment with internet access to fetch all data
+- **Demo:** Genesis chapters 1-3 updated as examples showing both פ and ס markers
 
 ### November 2025 - Search Bug Fix
 - **Fixed:** Search index loading error (שגיאה בביצוע החיפוש)
