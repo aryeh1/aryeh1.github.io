@@ -68,6 +68,20 @@
             letter-spacing: 2px;
             text-shadow: 0 1px 2px black;
         }
+
+        .multiplier-popup {
+            position: absolute;
+            pointer-events: none;
+            font-weight: bold;
+            font-size: 18px;
+            text-shadow: 0 0 10px currentColor;
+            animation: floatUp 0.8s ease-out forwards;
+        }
+
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-40px) scale(1.3); }
+        }
     </style>
 </head>
 <body>
@@ -77,6 +91,17 @@
         const { useState, useEffect, useRef, useCallback } = React;
         const WORKER_URL = "https://game-backend.ary108.workers.dev/";
 
+        // חישוב מכפיל לפי מספר לחיצות
+        const getMultiplier = (clicks) => {
+            if (clicks < 100) return 1;
+            if (clicks < 200) return 2;
+            if (clicks < 400) return 4;
+            if (clicks < 800) return 8;
+            if (clicks < 1600) return 16;
+            if (clicks < 3200) return 32;
+            return 64;
+        };
+
         // --- מנוע פיזיקלי ---
         const OrganicCanvas = ({ absorbedValue, onParticleAbsorbed, setCanvasRef }) => {
             const canvasRef = useRef(null);
@@ -85,6 +110,7 @@
                 particles: [],
                 sparks: [],
                 ripples: [],
+                serverBlobs: [], // גושים מעדכוני שרת
                 blobRadius: 4,
                 targetRadius: 4,
                 wobble: 0,
@@ -110,22 +136,52 @@
                             const centerY = canvasRef.current.height / 2;
 
                             const angle = Math.atan2(centerY - relY, centerX - relX);
+                            const distToCenter = Math.sqrt(Math.pow(centerX - relX, 2) + Math.pow(centerY - relY, 2));
                             
                             const speed = 0.1 + Math.random() * 0.1; 
                             
                             const shapes = ['square', 'triangle', 'diamond', 'circle'];
                             const shape = shapes[Math.floor(Math.random() * shapes.length)];
 
+                            const baseSize = 3 + Math.random() * 3;
+
                             stateRef.current.particles.push({
                                 x: relX, y: relY,
                                 vx: Math.cos(angle) * speed,
                                 vy: Math.sin(angle) * speed,
                                 type,
-                                amount, // כמה שווה החלקיק הזה
+                                amount,
                                 shape,
-                                size: 3 + Math.random() * 3,
+                                baseSize, // גודל מקורי
+                                size: baseSize,
+                                startDist: distToCenter, // מרחק התחלתי
                                 rotation: Math.random() * Math.PI,
                                 rotSpeed: (Math.random() - 0.5) * 0.05
+                            });
+                        },
+                        // גוש מעדכון שרת
+                        spawnServerBlob: (delta) => {
+                            const canvas = canvasRef.current;
+                            const centerX = canvas.width / 2;
+                            // יוצא מאזור המספר (למעלה באמצע)
+                            const startY = 80;
+                            const centerY = canvas.height / 2;
+                            
+                            const type = delta >= 0 ? 'blue' : 'red';
+                            const size = Math.min(50, 8 + Math.pow(Math.abs(delta), 0.4) * 2);
+                            
+                            const angle = Math.atan2(centerY - startY, 0);
+                            const speed = 0.8 + Math.random() * 0.3;
+
+                            stateRef.current.serverBlobs.push({
+                                x: centerX,
+                                y: startY,
+                                vx: 0,
+                                vy: speed,
+                                type,
+                                amount: delta,
+                                size,
+                                opacity: 0.8
                             });
                         }
                     });
@@ -187,6 +243,11 @@
                         const dy = cy - p.y;
                         const dist = Math.sqrt(dx*dx + dy*dy);
                         
+                        // גדילה ליניארית - פי 3 מהגודל המקורי כשמגיע לליבה
+                        const traveled = p.startDist - dist;
+                        const progress = Math.max(0, Math.min(1, traveled / p.startDist));
+                        p.size = p.baseSize * (1 + 1.1 * progress);
+                        
                         // פגיעה במרכז
                         if (dist < state.blobRadius + state.wobble + 5) {
                             
@@ -224,6 +285,61 @@
                         } else if (p.shape === 'diamond') {
                             ctx.moveTo(0, -s*1.5); ctx.lineTo(s, 0); ctx.lineTo(0, s*1.5); ctx.lineTo(-s, 0);
                         } else ctx.arc(0, 0, s, 0, Math.PI*2);
+                        ctx.fill();
+                        ctx.restore();
+                    }
+
+                    // גושי שרת
+                    for (let i = state.serverBlobs.length - 1; i >= 0; i--) {
+                        const b = state.serverBlobs[i];
+                        b.x += b.vx;
+                        b.y += b.vy;
+                        
+                        const dx = cx - b.x;
+                        const dy = cy - b.y;
+                        const dist = Math.sqrt(dx*dx + dy*dy);
+                        
+                        // פגיעה במרכז
+                        if (dist < state.blobRadius + 10) {
+                            if (onAbsorbedRef.current) {
+                                onAbsorbedRef.current(b.amount);
+                            }
+                            
+                            // פיצוץ גדול יותר
+                            for(let k=0; k<20; k++) {
+                                state.sparks.push({
+                                    x: b.x, y: b.y,
+                                    vx: (Math.random() - 0.5) * 6,
+                                    vy: (Math.random() - 0.5) * 6,
+                                    life: 1.0,
+                                    color: b.type === 'blue' ? '#93c5fd' : '#fca5a5'
+                                });
+                            }
+                            
+                            state.wobble += Math.min(15, b.size / 2);
+                            state.ripples.push({ r: state.blobRadius, opacity: 0.7, type: b.type });
+                            state.serverBlobs.splice(i, 1);
+                            continue;
+                        }
+                        
+                        // ציור גוש שרת - עיגול גדול עם זוהר
+                        ctx.save();
+                        ctx.globalAlpha = b.opacity;
+                        ctx.beginPath();
+                        ctx.arc(b.x, b.y, b.size, 0, Math.PI * 2);
+                        const blobGrad = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.size);
+                        if (b.type === 'blue') {
+                            blobGrad.addColorStop(0, '#93c5fd');
+                            blobGrad.addColorStop(0.5, '#3b82f6');
+                            blobGrad.addColorStop(1, '#1e40af');
+                        } else {
+                            blobGrad.addColorStop(0, '#fca5a5');
+                            blobGrad.addColorStop(0.5, '#ef4444');
+                            blobGrad.addColorStop(1, '#991b1b');
+                        }
+                        ctx.fillStyle = blobGrad;
+                        ctx.shadowColor = b.type === 'blue' ? '#60a5fa' : '#f87171';
+                        ctx.shadowBlur = 20;
                         ctx.fill();
                         ctx.restore();
                     }
@@ -324,23 +440,21 @@
             const [serverTotal, setServerTotal] = useState(0);
             const [displayBuffer, setDisplayBuffer] = useState(0);
             const [pendingBuffer, setPendingBuffer] = useState(0);
-            const [absorbedLocal, setAbsorbedLocal] = useState(0); // מה שנספג בפועל (לגודל הליבה)
+            const [absorbedLocal, setAbsorbedLocal] = useState(0);
             const [username, setUsername] = useState('');
             const [devMode, setDevMode] = useState(false);
+            const [multiplierPopups, setMultiplierPopups] = useState([]);
             
             const localBufferRef = useRef(0);
             const isSyncingRef = useRef(false);
-            const cheatClicksRef = useRef([]); 
+            const cheatClicksRef = useRef([]);
+            const clickCountsRef = useRef({ blue: 0, red: 0 }); // מונה לחיצות לכל צד
             
             const organicCanvasApi = useRef(null);
             
-            // הערך המוצג (מה שהמשתמש הפעיל)
             const displayValue = serverTotal + pendingBuffer + displayBuffer;
-            
-            // הערך הנספג (לגודל הליבה) - serverTotal + מה שנספג מקומית
             const absorbedValue = serverTotal + absorbedLocal;
 
-            // קולבק כשחלקיק נספג בליבה
             const handleParticleAbsorbed = useCallback((amount) => {
                 setAbsorbedLocal(prev => prev + amount);
             }, []);
@@ -356,25 +470,17 @@
                 fetch(WORKER_URL).then(r=>r.json()).then(d => setServerTotal(d.entropy)).catch(()=>{});
             }, []);
 
+            // סנכרון כל 30 שניות, ללא polling פסיבי
             useEffect(() => {
                 const syncLoop = setInterval(async () => {
                     if (devMode) return;
                     
-                    if (isSyncingRef.current || localBufferRef.current === 0) {
-                        if (localBufferRef.current === 0 && !isSyncingRef.current && Math.random() < 0.15) {
-                            try {
-                                const res = await fetch(WORKER_URL);
-                                const data = await res.json();
-                                setServerTotal(data.entropy);
-                                // כשמקבלים עדכון מהשרת, מאפסים את הספיגה המקומית
-                                // כי היא כבר נכללת ב-serverTotal
-                            } catch(e){}
-                        }
-                        return;
-                    }
+                    // רק אם יש מה לשלוח
+                    if (isSyncingRef.current || localBufferRef.current === 0) return;
                     
                     isSyncingRef.current = true;
                     const amountToSend = localBufferRef.current;
+                    const prevServerTotal = serverTotal;
                     
                     localBufferRef.current = 0;
                     setDisplayBuffer(0);
@@ -387,10 +493,17 @@
                             body: JSON.stringify({ delta: amountToSend })
                         });
                         const data = await res.json();
+                        
+                        // בדיקה אם יש עדכון מאחרים
+                        const expectedTotal = prevServerTotal + amountToSend;
+                        const deltaFromOthers = data.entropy - expectedTotal;
+                        
+                        if (Math.abs(deltaFromOthers) > 0 && organicCanvasApi.current) {
+                            organicCanvasApi.current.spawnServerBlob(deltaFromOthers);
+                        }
+                        
                         setServerTotal(data.entropy);
                         setPendingBuffer(0);
-                        // אחרי סנכרון מוצלח, מאפסים את הספיגה המקומית
-                        // כי מה שנספג כבר נכלל ב-serverTotal החדש
                         setAbsorbedLocal(0);
                     } catch (e) {
                         localBufferRef.current += amountToSend;
@@ -399,8 +512,22 @@
                     } finally {
                         isSyncingRef.current = false;
                     }
-                }, 1500);
+                }, 30000);
                 return () => clearInterval(syncLoop);
+            }, [devMode, serverTotal]);
+
+            // dev mode: סימולציה של עדכוני שרת כל 10 שניות
+            useEffect(() => {
+                if (!devMode) return;
+                
+                const simLoop = setInterval(() => {
+                    if (organicCanvasApi.current) {
+                        const fakeDelta = Math.floor((Math.random() - 0.5) * 1000);
+                        organicCanvasApi.current.spawnServerBlob(fakeDelta);
+                    }
+                }, 10000);
+                
+                return () => clearInterval(simLoop);
             }, [devMode]);
 
             const handleTouch = useCallback((e) => {
@@ -411,16 +538,38 @@
                 const width = window.innerWidth;
                 const isRightSide = clientX > width / 2;
                 const type = isRightSide ? 'blue' : 'red';
-                const val = isRightSide ? 1 : -1;
+                const baseVal = isRightSide ? 1 : -1;
 
-                const amount = devMode ? val * 100 : val;
+                // עדכון מונה לחיצות
+                clickCountsRef.current[type]++;
+                const clickCount = clickCountsRef.current[type];
+                
+                // חישוב מכפיל
+                const prevMultiplier = getMultiplier(clickCount - 1);
+                const currentMultiplier = getMultiplier(clickCount);
+                
+                // חיווי כשעוברים רמה
+                if (currentMultiplier > prevMultiplier) {
+                    const popupId = Date.now();
+                    setMultiplierPopups(prev => [...prev, {
+                        id: popupId,
+                        x: clientX,
+                        y: clientY,
+                        multiplier: currentMultiplier,
+                        type
+                    }]);
+                    setTimeout(() => {
+                        setMultiplierPopups(prev => prev.filter(p => p.id !== popupId));
+                    }, 800);
+                    if (navigator.vibrate) navigator.vibrate([20, 30, 20]);
+                }
 
-                // 1. שיגור חלקיק ויזואלי - עכשיו עם amount
+                const amount = devMode ? baseVal * 100 : baseVal * currentMultiplier;
+
                 if (organicCanvasApi.current) {
                     organicCanvasApi.current.spawnParticle(clientX, clientY, type, amount);
                 }
 
-                // 2. עדכון ניקוד מיידי (לתצוגה בלבד - לא לגודל הליבה!)
                 localBufferRef.current += amount;
                 setDisplayBuffer(localBufferRef.current);
 
@@ -449,6 +598,10 @@
                 }
             }, []);
 
+            // חישוב מכפיל נוכחי לתצוגה
+            const blueMultiplier = getMultiplier(clickCountsRef.current.blue);
+            const redMultiplier = getMultiplier(clickCountsRef.current.red);
+
             return (
                 <div className="app-container text-gray-300">
                     <div className="game-area" onPointerDown={handleTouch}>
@@ -457,6 +610,21 @@
                             onParticleAbsorbed={handleParticleAbsorbed}
                             setCanvasRef={(api) => organicCanvasApi.current = api}
                         />
+                        
+                        {/* Multiplier popups */}
+                        {multiplierPopups.map(p => (
+                            <div 
+                                key={p.id}
+                                className="multiplier-popup"
+                                style={{
+                                    left: p.x,
+                                    top: p.y,
+                                    color: p.type === 'blue' ? '#3b82f6' : '#ef4444'
+                                }}
+                            >
+                                ×{p.multiplier}
+                            </div>
+                        ))}
                         
                         <div className="ui-layer">
                             <div className="header" onClick={(e) => { e.stopPropagation(); handleCheatClick(); }}>
@@ -472,8 +640,12 @@
                             </div>
 
                             <div className="footer">
-                                <span className="text-blue-500">BLUE</span>
-                                <span className="text-red-500">RED</span>
+                                <span className="text-blue-500">
+                                    BLUE {blueMultiplier > 1 && <span className="text-blue-400">×{blueMultiplier}</span>}
+                                </span>
+                                <span className="text-red-500">
+                                    {redMultiplier > 1 && <span className="text-red-400">×{redMultiplier}</span>} RED
+                                </span>
                             </div>
                         </div>
                     </div>
