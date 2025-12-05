@@ -95,11 +95,11 @@
         const getMultiplier = (clicks) => {
             if (clicks < 100) return 1;
             if (clicks < 200) return 2;
-            if (clicks < 400) return 4;
-            if (clicks < 800) return 8;
-            if (clicks < 1600) return 16;
-            if (clicks < 3200) return 32;
-            return 64;
+            if (clicks < 400) return 3;
+            if (clicks < 800) return 4;
+            if (clicks < 1600) return 5;
+            if (clicks < 3200) return 6;
+            return 7;
         };
 
         // --- מנוע פיזיקלי ---
