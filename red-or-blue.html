@@ -15,56 +15,58 @@
         * { box-sizing: border-box; }
         
         body { 
-            background-color: #050505; 
+            background-color: #020202; 
             margin: 0; 
             overflow: hidden; 
             touch-action: none; 
             -webkit-user-select: none; 
             user-select: none; 
-            font-family: monospace; 
+            font-family: 'Courier New', monospace; 
         }
         
         .app-container {
-            min-height: 100vh;
-            min-height: 100dvh;
-            padding-bottom: env(safe-area-inset-bottom, 0px);
+            height: 100vh;
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
         }
-        
-        .viewport-container {
+
+        .game-area {
+            flex: 1;
             position: relative;
-            width: 100%;
-            max-width: 400px;
-            aspect-ratio: 1/1;
-            margin: 0 auto;
-            border: 2px solid #222;
-            background: #000;
             overflow: hidden;
-            border-radius: 8px;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-        
-        .viewport-container.flash-red {
-            border-color: rgba(239, 68, 68, 0.8);
-            box-shadow: 0 0 30px rgba(239, 68, 68, 0.3);
-        }
-        .viewport-container.flash-blue {
-            border-color: rgba(59, 130, 246, 0.8);
-            box-shadow: 0 0 30px rgba(59, 130, 246, 0.3);
+            cursor: crosshair;
         }
 
-        canvas { width: 100%; height: 100%; display: block; }
+        canvas { display: block; width: 100%; height: 100%; }
 
-        .breathing-bg {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            z-index: -1;
-            transition: background-color 1.5s ease;
+        .ui-layer {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 24px;
+            z-index: 10;
         }
-        
-        /* מספר עם מינוס בצד הנכון */
-        .value-display {
-            direction: ltr;
-            unicode-bidi: bidi-override;
+
+        .header {
+            text-align: center;
+            opacity: 0.9;
+            mix-blend-mode: exclusion;
+            pointer-events: auto;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            opacity: 0.4;
+            letter-spacing: 2px;
+            text-shadow: 0 1px 2px black;
         }
     </style>
 </head>
@@ -75,293 +77,273 @@
         const { useState, useEffect, useRef, useCallback } = React;
         const WORKER_URL = "https://game-backend.ary108.workers.dev/";
 
-        // --- מנוע ויזואלי עם משמעות לכל לחיצה ---
-        const GameCanvas = ({ value, onAction }) => {
+        // --- מנוע פיזיקלי ---
+        const OrganicCanvas = ({ absorbedValue, onParticleAbsorbed, setCanvasRef }) => {
             const canvasRef = useRef(null);
-            const containerRef = useRef(null);
             
-            const ambientParticles = useRef([]);
-            const actionParticles = useRef([]);
-            const crystalShards = useRef([]);
+            const stateRef = useRef({
+                particles: [],
+                sparks: [],
+                ripples: [],
+                blobRadius: 4,
+                targetRadius: 4,
+                wobble: 0,
+                wobblePhase: 0,
+                noiseOffset: 0
+            });
             
+            // Callback ref to avoid stale closure
+            const onAbsorbedRef = useRef(onParticleAbsorbed);
             useEffect(() => {
-                ambientParticles.current = Array.from({ length: 60 }, () => ({
-                    x: Math.random() * 400,
-                    y: Math.random() * 400,
-                    vx: (Math.random() - 0.5) * 0.5,
-                    vy: (Math.random() - 0.5) * 0.5,
-                    size: Math.random() * 1.5 + 0.5,
-                    phase: Math.random() * Math.PI * 2
-                }));
-            }, []);
-
-            const addAction = useCallback((type) => {
-                const isBlue = type === 'blue';
-                const cx = 200, cy = 200;
-                
-                if (isBlue) {
-                    const angle = Math.random() * Math.PI * 2;
-                    const dist = 180;
-                    actionParticles.current.push({
-                        x: cx + Math.cos(angle) * dist,
-                        y: cy + Math.sin(angle) * dist,
-                        targetX: cx + (Math.random() - 0.5) * 40,
-                        targetY: cy + (Math.random() - 0.5) * 40,
-                        type: 'blue',
-                        life: 1,
-                        speed: 8 + Math.random() * 4,
-                        size: 4 + Math.random() * 3
-                    });
-                } else {
-                    const angle = Math.random() * Math.PI * 2;
-                    actionParticles.current.push({
-                        x: cx + (Math.random() - 0.5) * 30,
-                        y: cy + (Math.random() - 0.5) * 30,
-                        vx: Math.cos(angle) * (6 + Math.random() * 4),
-                        vy: Math.sin(angle) * (6 + Math.random() * 4),
-                        type: 'red',
-                        life: 1,
-                        size: 3 + Math.random() * 3,
-                        rotation: Math.random() * Math.PI
-                    });
-                    
-                    if (crystalShards.current.length > 0) {
-                        crystalShards.current.pop();
-                    }
-                }
-                
-                if (containerRef.current) {
-                    containerRef.current.classList.remove('flash-red', 'flash-blue');
-                    void containerRef.current.offsetWidth;
-                    containerRef.current.classList.add(isBlue ? 'flash-blue' : 'flash-red');
-                    setTimeout(() => {
-                        containerRef.current?.classList.remove('flash-red', 'flash-blue');
-                    }, 200);
-                }
-            }, []);
+                onAbsorbedRef.current = onParticleAbsorbed;
+            }, [onParticleAbsorbed]);
 
             useEffect(() => {
-                if (onAction) onAction.current = addAction;
-            }, [addAction, onAction]);
+                if (setCanvasRef) {
+                    setCanvasRef({
+                        spawnParticle: (x, y, type, amount) => {
+                            const rect = canvasRef.current.getBoundingClientRect();
+                            const relX = (x - rect.left) * (canvasRef.current.width / rect.width);
+                            const relY = (y - rect.top) * (canvasRef.current.height / rect.height);
+                            
+                            const centerX = canvasRef.current.width / 2;
+                            const centerY = canvasRef.current.height / 2;
+
+                            const angle = Math.atan2(centerY - relY, centerX - relX);
+                            
+                            const speed = 0.1 + Math.random() * 0.1; 
+                            
+                            const shapes = ['square', 'triangle', 'diamond', 'circle'];
+                            const shape = shapes[Math.floor(Math.random() * shapes.length)];
+
+                            stateRef.current.particles.push({
+                                x: relX, y: relY,
+                                vx: Math.cos(angle) * speed,
+                                vy: Math.sin(angle) * speed,
+                                type,
+                                amount, // כמה שווה החלקיק הזה
+                                shape,
+                                size: 3 + Math.random() * 3,
+                                rotation: Math.random() * Math.PI,
+                                rotSpeed: (Math.random() - 0.5) * 0.05
+                            });
+                        }
+                    });
+                }
+            }, [setCanvasRef]);
+
+            // גודל הליבה מבוסס על מה שנספג בפועל
+            useEffect(() => {
+                const absVal = Math.abs(absorbedValue);
+                const minSize = 4;
+                let calculatedRadius = minSize + Math.pow(absVal, 0.45) * 1.2;
+                const maxScreen = Math.max(window.innerWidth, window.innerHeight) * 0.8;
+                stateRef.current.targetRadius = Math.min(calculatedRadius, maxScreen);
+            }, [absorbedValue]);
 
             useEffect(() => {
                 const canvas = canvasRef.current;
-                const ctx = canvas.getContext('2d');
+                const ctx = canvas.getContext('2d', { alpha: false });
                 let frameId;
-                let t = 0;
-
-                const resize = () => {
-                    const rect = containerRef.current.getBoundingClientRect();
-                    canvas.width = rect.width;
-                    canvas.height = rect.height;
-                };
-                window.addEventListener('resize', resize);
-                resize();
 
                 const render = () => {
-                    t += 0.02;
+                    const state = stateRef.current;
                     const w = canvas.width;
                     const h = canvas.height;
                     const cx = w / 2;
                     const cy = h / 2;
-                    const scale = w / 400;
 
-                    const normalized = Math.max(-1, Math.min(1, value / 1000));
-                    const isRed = normalized < 0;
-                    const intensity = Math.abs(normalized);
+                    // פיזיקה
+                    state.blobRadius += (state.targetRadius - state.blobRadius) * 0.05;
+                    state.wobble *= 0.9;
+                    state.wobblePhase += 0.1;
+                    state.noiseOffset += 0.01;
 
-                    const breathe = Math.sin(t * 0.3) * 0.5 + 0.5;
-                    const bgBase = 8 + breathe * 4;
-                    if (isRed) {
-                        ctx.fillStyle = `rgb(${bgBase + intensity * 15}, ${bgBase * 0.3}, ${bgBase * 0.3})`;
-                    } else {
-                        ctx.fillStyle = `rgb(${bgBase * 0.3}, ${bgBase * 0.3}, ${bgBase + intensity * 15})`;
-                    }
+                    // ציור
+                    ctx.fillStyle = '#020202';
                     ctx.fillRect(0, 0, w, h);
 
-                    const blueR = 59, blueG = 130, blueB = 246;
-                    const redR = 239, redG = 68, redB = 68;
+                    // רקע עדין
+                    const gradRed = ctx.createLinearGradient(0, 0, w * 0.25, 0);
+                    gradRed.addColorStop(0, 'rgba(40, 0, 0, 0.15)');
+                    gradRed.addColorStop(1, 'transparent');
+                    ctx.fillStyle = gradRed;
+                    ctx.fillRect(0, 0, w/2, h);
 
-                    ambientParticles.current.forEach(p => {
-                        p.x += p.vx + Math.sin(t + p.phase) * 0.2;
-                        p.y += p.vy + Math.cos(t * 0.7 + p.phase) * 0.2;
+                    const gradBlue = ctx.createLinearGradient(w, 0, w * 0.75, 0);
+                    gradBlue.addColorStop(0, 'rgba(0, 0, 40, 0.15)');
+                    gradBlue.addColorStop(1, 'transparent');
+                    ctx.fillStyle = gradBlue;
+                    ctx.fillRect(w/2, 0, w/2, h);
+
+                    // חלקיקים
+                    for (let i = state.particles.length - 1; i >= 0; i--) {
+                        const p = state.particles[i];
+                        p.x += p.vx;
+                        p.y += p.vy;
+                        p.rotation += p.rotSpeed;
                         
-                        if (p.x < 0) p.x = 400;
-                        if (p.x > 400) p.x = 0;
-                        if (p.y < 0) p.y = 400;
-                        if (p.y > 400) p.y = 0;
-
-                        const alpha = 0.15 + intensity * 0.1;
-                        if (isRed) {
-                            ctx.fillStyle = `rgba(${redR}, ${redG}, ${redB}, ${alpha})`;
-                        } else {
-                            ctx.fillStyle = `rgba(${blueR}, ${blueG}, ${blueB}, ${alpha})`;
-                        }
-                        ctx.beginPath();
-                        ctx.arc(p.x * scale, p.y * scale, p.size * scale, 0, Math.PI * 2);
-                        ctx.fill();
-                    });
-
-                    const coreSize = 15 + Math.abs(value) * 0.03;
-                    const coreBreath = Math.sin(t * 2) * 3;
-                    
-                    const haloGradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, (coreSize + 40) * scale);
-                    if (isRed) {
-                        haloGradient.addColorStop(0, `rgba(${redR}, ${redG}, ${redB}, 0.2)`);
-                    } else {
-                        haloGradient.addColorStop(0, `rgba(${blueR}, ${blueG}, ${blueB}, 0.2)`);
-                    }
-                    haloGradient.addColorStop(1, 'transparent');
-                    ctx.beginPath();
-                    ctx.arc(cx, cy, (coreSize + 40) * scale, 0, Math.PI * 2);
-                    ctx.fillStyle = haloGradient;
-                    ctx.fill();
-
-                    crystalShards.current.forEach((shard, i) => {
-                        const angle = shard.angle + Math.sin(t * 0.5 + i) * 0.1;
-                        const dist = shard.dist + Math.sin(t + i * 0.5) * 2;
-                        const sx = cx + Math.cos(angle) * dist * scale;
-                        const sy = cy + Math.sin(angle) * dist * scale;
+                        const dx = cx - p.x;
+                        const dy = cy - p.y;
+                        const dist = Math.sqrt(dx*dx + dy*dy);
                         
-                        ctx.save();
-                        ctx.translate(sx, sy);
-                        ctx.rotate(angle + Math.PI / 4);
-                        
-                        const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, shard.size * scale);
-                        gradient.addColorStop(0, `rgba(255, 255, 255, 0.8)`);
-                        gradient.addColorStop(0.5, `rgba(${blueR}, ${blueG}, ${blueB}, 0.6)`);
-                        gradient.addColorStop(1, `rgba(${blueR}, ${blueG}, ${blueB}, 0)`);
-                        
-                        ctx.fillStyle = gradient;
-                        ctx.fillRect(-shard.size * scale, -shard.size * scale, shard.size * 2 * scale, shard.size * 2 * scale);
-                        ctx.restore();
-                    });
-
-                    const coreGradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, (coreSize + coreBreath) * scale);
-                    if (isRed) {
-                        coreGradient.addColorStop(0, `rgba(255, 200, 200, 0.9)`);
-                        coreGradient.addColorStop(0.5, `rgba(${redR}, ${redG}, ${redB}, 0.6)`);
-                        coreGradient.addColorStop(1, `rgba(${redR}, ${redG}, ${redB}, 0)`);
-                    } else {
-                        coreGradient.addColorStop(0, `rgba(200, 220, 255, 0.9)`);
-                        coreGradient.addColorStop(0.5, `rgba(${blueR}, ${blueG}, ${blueB}, 0.6)`);
-                        coreGradient.addColorStop(1, `rgba(${blueR}, ${blueG}, ${blueB}, 0)`);
-                    }
-                    ctx.beginPath();
-                    ctx.arc(cx, cy, (coreSize + coreBreath) * scale, 0, Math.PI * 2);
-                    ctx.fillStyle = coreGradient;
-                    ctx.fill();
-
-                    actionParticles.current = actionParticles.current.filter(p => {
-                        if (p.type === 'blue') {
-                            const dx = p.targetX - p.x;
-                            const dy = p.targetY - p.y;
-                            const dist = Math.sqrt(dx * dx + dy * dy);
+                        // פגיעה במרכז
+                        if (dist < state.blobRadius + state.wobble + 5) {
                             
-                            if (dist < 5) {
-                                crystalShards.current.push({
-                                    angle: Math.atan2(p.y - 200, p.x - 200),
-                                    dist: 20 + Math.random() * 30,
-                                    size: 4 + Math.random() * 4
-                                });
-                                if (crystalShards.current.length > 50) {
-                                    crystalShards.current.shift();
-                                }
-                                return false;
+                            // עדכון הספיגה - זה מה שמשפיע על גודל הליבה!
+                            if (onAbsorbedRef.current) {
+                                onAbsorbedRef.current(p.amount);
                             }
                             
-                            p.x += (dx / dist) * p.speed;
-                            p.y += (dy / dist) * p.speed;
-                            p.life -= 0.02;
+                            // פיצוץ
+                            for(let k=0; k<8; k++) {
+                                state.sparks.push({
+                                    x: p.x, y: p.y,
+                                    vx: (Math.random() - 0.5) * 4,
+                                    vy: (Math.random() - 0.5) * 4,
+                                    life: 1.0,
+                                    color: p.type === 'blue' ? '#dbeafe' : '#fee2e2'
+                                });
+                            }
                             
-                            const gradient = ctx.createRadialGradient(
-                                p.x * scale, p.y * scale, 0,
-                                p.x * scale, p.y * scale, p.size * scale * 2
-                            );
-                            gradient.addColorStop(0, `rgba(255, 255, 255, ${p.life})`);
-                            gradient.addColorStop(0.3, `rgba(${blueR}, ${blueG}, ${blueB}, ${p.life * 0.8})`);
-                            gradient.addColorStop(1, 'transparent');
-                            
-                            ctx.beginPath();
-                            ctx.arc(p.x * scale, p.y * scale, p.size * scale * 2, 0, Math.PI * 2);
-                            ctx.fillStyle = gradient;
-                            ctx.fill();
-                            
-                            ctx.beginPath();
-                            ctx.moveTo(p.x * scale, p.y * scale);
-                            ctx.lineTo((p.x - dx / dist * 15) * scale, (p.y - dy / dist * 15) * scale);
-                            ctx.strokeStyle = `rgba(${blueR}, ${blueG}, ${blueB}, ${p.life * 0.5})`;
-                            ctx.lineWidth = 2 * scale;
-                            ctx.stroke();
-                            
-                        } else {
-                            p.x += p.vx;
-                            p.y += p.vy;
-                            p.vx *= 0.98;
-                            p.vy *= 0.98;
-                            p.rotation += 0.1;
-                            p.life -= 0.025;
-                            
-                            if (p.life <= 0) return false;
-                            
-                            ctx.save();
-                            ctx.translate(p.x * scale, p.y * scale);
-                            ctx.rotate(p.rotation);
-                            
-                            const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, p.size * scale);
-                            gradient.addColorStop(0, `rgba(255, 200, 200, ${p.life})`);
-                            gradient.addColorStop(0.5, `rgba(${redR}, ${redG}, ${redB}, ${p.life * 0.7})`);
-                            gradient.addColorStop(1, 'transparent');
-                            
-                            ctx.fillStyle = gradient;
-                            ctx.beginPath();
-                            ctx.moveTo(0, -p.size * scale);
-                            ctx.lineTo(p.size * scale * 0.7, p.size * scale * 0.5);
-                            ctx.lineTo(-p.size * scale * 0.7, p.size * scale * 0.5);
-                            ctx.closePath();
-                            ctx.fill();
-                            
-                            ctx.restore();
+                            state.wobble += 3;
+                            state.ripples.push({ r: state.blobRadius, opacity: 0.5, type: p.type });
+                            state.particles.splice(i, 1);
+                            continue;
                         }
-                        
-                        return p.life > 0;
-                    });
+
+                        ctx.save();
+                        ctx.translate(p.x, p.y);
+                        ctx.rotate(p.rotation);
+                        ctx.fillStyle = p.type === 'blue' ? '#3b82f6' : '#ef4444';
+                        ctx.beginPath();
+                        const s = p.size;
+                        if (p.shape === 'square') ctx.rect(-s, -s, s*2, s*2);
+                        else if (p.shape === 'triangle') {
+                            ctx.moveTo(0, -s); ctx.lineTo(s, s); ctx.lineTo(-s, s);
+                        } else if (p.shape === 'diamond') {
+                            ctx.moveTo(0, -s*1.5); ctx.lineTo(s, 0); ctx.lineTo(0, s*1.5); ctx.lineTo(-s, 0);
+                        } else ctx.arc(0, 0, s, 0, Math.PI*2);
+                        ctx.fill();
+                        ctx.restore();
+                    }
+
+                    // ניצוצות
+                    for (let i = state.sparks.length - 1; i >= 0; i--) {
+                        const s = state.sparks[i];
+                        s.x += s.vx;
+                        s.y += s.vy;
+                        s.life -= 0.04;
+                        if (s.life <= 0) {
+                            state.sparks.splice(i, 1);
+                            continue;
+                        }
+                        ctx.globalAlpha = s.life;
+                        ctx.fillStyle = s.color;
+                        ctx.beginPath();
+                        ctx.rect(s.x, s.y, 2, 2);
+                        ctx.fill();
+                        ctx.globalAlpha = 1;
+                    }
+
+                    // גלי הדף
+                    ctx.lineWidth = 1;
+                    for (let i = state.ripples.length - 1; i >= 0; i--) {
+                        const r = state.ripples[i];
+                        r.r += 0.8;
+                        r.opacity *= 0.95;
+                        if (r.opacity < 0.05) {
+                            state.ripples.splice(i, 1);
+                            continue;
+                        }
+                        ctx.beginPath();
+                        ctx.arc(cx, cy, r.r, 0, Math.PI * 2);
+                        ctx.strokeStyle = r.type === 'blue' 
+                            ? `rgba(96, 165, 250, ${r.opacity})` 
+                            : `rgba(248, 113, 113, ${r.opacity})`;
+                        ctx.stroke();
+                    }
+
+                    // הליבה - צבע מבוסס על absorbedValue
+                    ctx.save();
+                    ctx.translate(cx, cy);
+                    ctx.beginPath();
+                    const segments = 60; 
+                    for (let i = 0; i <= segments; i++) {
+                        const theta = (i / segments) * Math.PI * 2;
+                        const noise = Math.sin(theta * 5 + state.noiseOffset) * 2;
+                        const impactWobble = Math.sin(theta * 4 + state.wobblePhase) * state.wobble;
+                        const r = Math.max(1, state.blobRadius + noise + impactWobble);
+                        const x = Math.cos(theta) * r;
+                        const y = Math.sin(theta) * r;
+                        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+                    }
+                    ctx.closePath();
+                    const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, Math.max(1, state.blobRadius));
+                    if (absorbedValue >= 0) {
+                        gradient.addColorStop(0, '#fff');
+                        gradient.addColorStop(0.4, '#3b82f6');
+                        gradient.addColorStop(1, '#172554');
+                        ctx.shadowColor = '#60a5fa';
+                    } else {
+                        gradient.addColorStop(0, '#fff');
+                        gradient.addColorStop(0.4, '#ef4444');
+                        gradient.addColorStop(1, '#450a0a');
+                        ctx.shadowColor = '#f87171';
+                    }
+                    ctx.fillStyle = gradient;
+                    ctx.shadowBlur = Math.max(5, state.wobble * 3); 
+                    ctx.fill();
+                    ctx.restore();
 
                     frameId = requestAnimationFrame(render);
                 };
+
+                const resize = () => {
+                    const parent = canvas.parentElement;
+                    if (parent) {
+                        canvas.width = parent.clientWidth;
+                        canvas.height = parent.clientHeight;
+                    }
+                };
+                window.addEventListener('resize', resize);
+                resize();
                 render();
-                
+
                 return () => {
                     cancelAnimationFrame(frameId);
                     window.removeEventListener('resize', resize);
                 };
-            }, [value]);
+            }, [absorbedValue]);
 
-            return (
-                <div ref={containerRef} className="viewport-container">
-                    <canvas ref={canvasRef} />
-                </div>
-            );
+            return <canvas ref={canvasRef} />;
         };
 
-        // --- אפליקציה ראשית ---
+        // --- האפליקציה הראשית ---
         function App() {
             const [serverTotal, setServerTotal] = useState(0);
             const [displayBuffer, setDisplayBuffer] = useState(0);
-            const [pendingBuffer, setPendingBuffer] = useState(0); // מה שבדרך לשרת
-            const [sessionCount, setSessionCount] = useState(0); // כמה היוזר תרם בסשן
+            const [pendingBuffer, setPendingBuffer] = useState(0);
+            const [absorbedLocal, setAbsorbedLocal] = useState(0); // מה שנספג בפועל (לגודל הליבה)
             const [username, setUsername] = useState('');
             const [devMode, setDevMode] = useState(false);
             
             const localBufferRef = useRef(0);
             const isSyncingRef = useRef(false);
-            const actionRef = useRef(null);
-            const cheatRef = useRef({ count: 0, timer: null });
-
+            const cheatClicksRef = useRef([]); 
+            
+            const organicCanvasApi = useRef(null);
+            
+            // הערך המוצג (מה שהמשתמש הפעיל)
             const displayValue = serverTotal + pendingBuffer + displayBuffer;
-            const bgColor = displayValue < 0 
-                ? `rgba(40, 5, 5, ${Math.min(0.4, Math.abs(displayValue) / 2000)})`
-                : `rgba(5, 5, 40, ${Math.min(0.4, displayValue / 2000)})`;
+            
+            // הערך הנספג (לגודל הליבה) - serverTotal + מה שנספג מקומית
+            const absorbedValue = serverTotal + absorbedLocal;
+
+            // קולבק כשחלקיק נספג בליבה
+            const handleParticleAbsorbed = useCallback((amount) => {
+                setAbsorbedLocal(prev => prev + amount);
+            }, []);
 
             useEffect(() => {
                 if (window.Telegram?.WebApp) {
@@ -369,23 +351,23 @@
                     if (user?.first_name) setUsername(user.first_name);
                     window.Telegram.WebApp.ready();
                     window.Telegram.WebApp.expand();
-                    window.Telegram.WebApp.setHeaderColor('#050505');
+                    window.Telegram.WebApp.setHeaderColor('#020202');
                 }
                 fetch(WORKER_URL).then(r=>r.json()).then(d => setServerTotal(d.entropy)).catch(()=>{});
             }, []);
 
-            // סנכרון - רק אם לא במצב DEV
             useEffect(() => {
                 const syncLoop = setInterval(async () => {
-                    // במצב DEV - לא מסנכרנים
                     if (devMode) return;
                     
                     if (isSyncingRef.current || localBufferRef.current === 0) {
-                        if (localBufferRef.current === 0 && !isSyncingRef.current && Math.random() < 0.1) {
+                        if (localBufferRef.current === 0 && !isSyncingRef.current && Math.random() < 0.15) {
                             try {
                                 const res = await fetch(WORKER_URL);
                                 const data = await res.json();
                                 setServerTotal(data.entropy);
+                                // כשמקבלים עדכון מהשרת, מאפסים את הספיגה המקומית
+                                // כי היא כבר נכללת ב-serverTotal
                             } catch(e){}
                         }
                         return;
@@ -394,7 +376,6 @@
                     isSyncingRef.current = true;
                     const amountToSend = localBufferRef.current;
                     
-                    // העברה מ-local ל-pending (שומר על הסכום הויזואלי)
                     localBufferRef.current = 0;
                     setDisplayBuffer(0);
                     setPendingBuffer(amountToSend);
@@ -406,130 +387,95 @@
                             body: JSON.stringify({ delta: amountToSend })
                         });
                         const data = await res.json();
-                        
-                        // השרת החזיר ערך שכבר כולל את מה ששלחנו
                         setServerTotal(data.entropy);
                         setPendingBuffer(0);
-                        
+                        // אחרי סנכרון מוצלח, מאפסים את הספיגה המקומית
+                        // כי מה שנספג כבר נכלל ב-serverTotal החדש
+                        setAbsorbedLocal(0);
                     } catch (e) {
-                        // כישלון - מחזירים ל-local
                         localBufferRef.current += amountToSend;
                         setDisplayBuffer(localBufferRef.current);
                         setPendingBuffer(0);
                     } finally {
                         isSyncingRef.current = false;
                     }
-                }, 2000);
-
+                }, 1500);
                 return () => clearInterval(syncLoop);
             }, [devMode]);
 
-            const handleAction = useCallback((val, type) => {
+            const handleTouch = useCallback((e) => {
+                const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+                const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+                if (!clientX) return;
+
+                const width = window.innerWidth;
+                const isRightSide = clientX > width / 2;
+                const type = isRightSide ? 'blue' : 'red';
+                const val = isRightSide ? 1 : -1;
+
                 const amount = devMode ? val * 100 : val;
+
+                // 1. שיגור חלקיק ויזואלי - עכשיו עם amount
+                if (organicCanvasApi.current) {
+                    organicCanvasApi.current.spawnParticle(clientX, clientY, type, amount);
+                }
+
+                // 2. עדכון ניקוד מיידי (לתצוגה בלבד - לא לגודל הליבה!)
                 localBufferRef.current += amount;
                 setDisplayBuffer(localBufferRef.current);
-                setSessionCount(prev => prev + amount);
-                
-                if (actionRef.current) {
-                    actionRef.current(type);
-                }
-                
-                if (navigator.vibrate) navigator.vibrate(type === 'red' ? [15, 10, 15] : 12);
+
+                if (navigator.vibrate) navigator.vibrate(3); 
             }, [devMode]);
 
-            // צ'יט - 6 לחיצות על האזור השמאלי עליון
-            const toggleCheat = useCallback(() => {
-                cheatRef.current.count++;
-                clearTimeout(cheatRef.current.timer);
-                cheatRef.current.timer = setTimeout(() => cheatRef.current.count = 0, 1000);
+            const handleCheatClick = useCallback(() => {
+                const now = Date.now();
+                const clicks = cheatClicksRef.current;
+                clicks.push(now);
                 
-                if (cheatRef.current.count === 6) {
-                    setDevMode(prev => {
-                        if (prev) {
-                            // יוצאים ממצב DEV - מאפסים לשרת
-                            localBufferRef.current = 0;
-                            setDisplayBuffer(0);
-                            setPendingBuffer(0);
-                            setSessionCount(0); // מאפסים גם את קאונטר הסשן
-                            // מושכים מצב נוכחי מהשרת
-                            fetch(WORKER_URL).then(r=>r.json()).then(d => setServerTotal(d.entropy)).catch(()=>{});
-                        }
-                        return !prev;
-                    });
-                    if (navigator.vibrate) navigator.vibrate([50, 30, 50, 30, 50]);
-                    cheatRef.current.count = 0;
+                if (clicks.length > 6) clicks.shift();
+
+                if (clicks.length === 6) {
+                    const [t1, t2, t3, t4, t5, t6] = clicks;
+                    
+                    const burst1 = (t3 - t1) < 800;
+                    const burst2 = (t6 - t4) < 800;
+                    const pause = (t4 - t3) > 1000 && (t4 - t3) < 3000;
+
+                    if (burst1 && burst2 && pause) {
+                        setDevMode(prev => !prev);
+                        if (navigator.vibrate) navigator.vibrate([50, 50, 50, 100, 50]);
+                        cheatClicksRef.current = [];
+                    }
                 }
             }, []);
 
-            // פורמט מספר עם מינוס בצד שמאל
-            const formatValue = (val) => {
-                const absVal = Math.abs(val).toLocaleString();
-                if (val < 0) return `${absVal}-`;
-                return absVal;
-            };
-
             return (
-                <div className="app-container flex flex-col bg-[#050505] text-gray-300">
-                    <div className="breathing-bg" style={{ backgroundColor: bgColor }}></div>
-                    
-                    {/* עליון */}
-                    <div className="flex justify-between p-5 pt-6">
-                        <div className="relative">
-                            <div className="text-xs font-mono text-gray-500 tracking-widest">{username || 'אנונימי'}</div>
-                            {sessionCount !== 0 && (
-                                <div className={`text-[11px] mt-1 ${sessionCount > 0 ? 'text-blue-400/70' : 'text-red-400/70'}`}>
-                                    {sessionCount > 0 ? '+' : ''}{sessionCount.toLocaleString()} בסשן
+                <div className="app-container text-gray-300">
+                    <div className="game-area" onPointerDown={handleTouch}>
+                        <OrganicCanvas 
+                            absorbedValue={absorbedValue}
+                            onParticleAbsorbed={handleParticleAbsorbed}
+                            setCanvasRef={(api) => organicCanvasApi.current = api}
+                        />
+                        
+                        <div className="ui-layer">
+                            <div className="header" onClick={(e) => { e.stopPropagation(); handleCheatClick(); }}>
+                                <div className="text-xs font-mono text-gray-500 tracking-widest uppercase mb-1">
+                                    {username || 'Entity'}
                                 </div>
-                            )}
-                            {devMode && <div className="text-[10px] text-yellow-500 mt-1">⚡ מצב פיתוח</div>}
-                            {/* אזור לחיצה לצ'יט */}
-                            <div 
-                                className="absolute -inset-4 z-50 cursor-pointer" 
-                                onClick={toggleCheat}
-                            ></div>
-                        </div>
+                                <div className={`text-4xl font-bold font-mono tracking-tighter transition-colors duration-500
+                                    ${displayValue > 0 ? 'text-blue-500' : 'text-red-500'}`}
+                                    style={{ textShadow: `0 0 20px ${displayValue > 0 ? 'rgba(59,130,246,0.4)' : 'rgba(239,68,68,0.4)'}` }}>
+                                    {Math.abs(displayValue).toLocaleString()}
+                                </div>
+                                {devMode && <div className="text-[9px] text-yellow-600 mt-1 tracking-widest">DEV OVERRIDE</div>}
+                            </div>
 
-                        <div className="text-right">
-                            <div className="text-[10px] uppercase tracking-widest text-gray-600 mb-1">מצב עולמי</div>
-                            <div 
-                                className={`text-4xl font-mono font-bold transition-all duration-300 value-display
-                                    ${displayValue > 0 ? 'text-blue-400' : (displayValue < 0 ? 'text-red-400' : 'text-gray-400')}`}
-                                style={{ 
-                                    textShadow: displayValue !== 0 
-                                        ? `0 0 20px ${displayValue > 0 ? 'rgba(59,130,246,0.5)' : 'rgba(239,68,68,0.5)'}` 
-                                        : 'none' 
-                                }}>
-                                {formatValue(displayValue)}
+                            <div className="footer">
+                                <span className="text-blue-500">BLUE</span>
+                                <span className="text-red-500">RED</span>
                             </div>
                         </div>
-                    </div>
-
-                    {/* קנבס */}
-                    <div className="flex-1 flex items-center justify-center p-4">
-                        <GameCanvas value={displayValue} onAction={actionRef} />
-                    </div>
-
-                    {/* כפתורים */}
-                    <div className="p-5 flex gap-4" style={{ paddingBottom: 'max(2rem, env(safe-area-inset-bottom))' }}>
-                        <button 
-                            className="flex-1 h-20 rounded-lg bg-gradient-to-b from-red-950/60 to-red-950/30 border-2 border-red-900/50 
-                                       active:from-red-800/60 active:to-red-900/50 active:border-red-400 active:scale-[0.97] 
-                                       transition-all duration-75 flex items-center justify-center shadow-lg shadow-red-950/30"
-                            onTouchStart={(e) => { e.preventDefault(); handleAction(-1, 'red'); }}
-                            onClick={(e) => { if (e.detail > 0) return; handleAction(-1, 'red'); }}
-                        >
-                            <span className="text-4xl drop-shadow-lg">🔴</span>
-                        </button>
-
-                        <button 
-                            className="flex-1 h-20 rounded-lg bg-gradient-to-b from-blue-950/60 to-blue-950/30 border-2 border-blue-900/50 
-                                       active:from-blue-800/60 active:to-blue-900/50 active:border-blue-400 active:scale-[0.97] 
-                                       transition-all duration-75 flex items-center justify-center shadow-lg shadow-blue-950/30"
-                            onTouchStart={(e) => { e.preventDefault(); handleAction(1, 'blue'); }}
-                            onClick={(e) => { if (e.detail > 0) return; handleAction(1, 'blue'); }}
-                        >
-                            <span className="text-4xl drop-shadow-lg">🔵</span>
-                        </button>
                     </div>
                 </div>
             );
