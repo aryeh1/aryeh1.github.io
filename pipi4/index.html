@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>יוכבד רבינוביץ | מומחים לשינה</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&family=Assistant:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Base Settings */
+        body { 
+            font-family: 'Assistant', sans-serif; 
+            background-color: #f8fafc; 
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .font-display { font-family: 'Heebo', sans-serif; }
+        
+        /* Smooth Fade Animation */
+        .fade-enter { opacity: 0; transform: translateY(10px); }
+        .fade-enter-active { opacity: 1; transform: translateY(0); transition: opacity 0.3s ease-out, transform 0.3s ease-out; }
+
+        /* Mobile Safe Areas */
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+        .pt-safe { padding-top: env(safe-area-inset-top); }
+
+        /* Hide Scrollbar but keep functionality */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Glass Effect */
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+    </style>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1', 
+                        secondary: '#ec4899',
+                        dark: '#1e293b'
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+                        'glow': '0 0 15px rgba(99, 102, 241, 0.3)'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="text-slate-800 antialiased min-h-screen bg-slate-50">
+
+    <!-- Top Navigation (Fixed) -->
+    <nav class="fixed top-0 left-0 right-0 h-16 glass-nav z-40 px-4 flex items-center justify-between pt-safe transition-all duration-300" id="navbar">
+        <div class="flex items-center gap-3" onclick="app.router('home')">
+            <div class="w-9 h-9 bg-gradient-to-tr from-primary to-secondary rounded-xl flex items-center justify-center text-white shadow-glow">
+                <i data-lucide="moon" class="w-5 h-5 fill-white"></i>
+            </div>
+            <div>
+                <h1 class="font-display font-bold text-lg leading-none text-slate-900">יוכבד רבינוביץ</h1>
+                <span class="text-[11px] text-slate-500 font-medium">מומחים לגמילה</span>
+            </div>
+        </div>
+        
+        <button onclick="app.toggleCart()" class="relative p-2 rounded-full hover:bg-slate-100 transition-colors">
+            <i data-lucide="shopping-bag" class="w-6 h-6 text-slate-700"></i>
+            <span id="cart-badge" class="absolute top-1 right-1 w-4 h-4 bg-secondary text-white text-[10px] font-bold rounded-full flex items-center justify-center scale-0 transition-transform">0</span>
+        </button>
+    </nav>
+
+    <!-- Main Scrollable Area -->
+    <main id="main-view" class="pt-20 pb-32 px-4 max-w-lg mx-auto min-h-screen">
+        <!-- Dynamic Content loads here -->
+    </main>
+
+    <!-- Bottom Navigation (Fixed) -->
+    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 pb-safe z-40 shadow-[0_-5px_20px_rgba(0,0,0,0.03)]">
+        <div class="flex justify-around items-center h-16 max-w-lg mx-auto">
+            <button onclick="app.router('home')" class="nav-btn w-full flex flex-col items-center justify-center gap-1 text-primary">
+                <i data-lucide="home" class="w-6 h-6"></i>
+                <span class="text-[10px] font-bold">בית</span>
+            </button>
+            
+            <button onclick="app.router('quiz')" class="nav-btn w-full flex flex-col items-center justify-center gap-1 text-slate-400">
+                <i data-lucide="brain-circuit" class="w-6 h-6"></i>
+                <span class="text-[10px] font-medium">אבחון</span>
+            </button>
+
+            <button onclick="app.router('store')" class="relative -top-6">
+                <div class="w-14 h-14 bg-slate-900 rounded-full flex items-center justify-center text-white shadow-xl shadow-slate-400/40 transform transition-transform active:scale-95">
+                    <i data-lucide="store" class="w-6 h-6"></i>
+                </div>
+            </button>
+
+            <button onclick="app.router('community')" class="nav-btn w-full flex flex-col items-center justify-center gap-1 text-slate-400">
+                <i data-lucide="users" class="w-6 h-6"></i>
+                <span class="text-[10px] font-medium">קהילה</span>
+            </button>
+            
+            <button onclick="app.router('builder')" class="nav-btn w-full flex flex-col items-center justify-center gap-1 text-slate-400">
+                <i data-lucide="settings-2" class="w-6 h-6"></i>
+                <span class="text-[10px] font-medium">הרכבה</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Live Notification Toast -->
+    <div id="toast" class="fixed top-24 left-4 z-30 bg-white/95 backdrop-blur border border-slate-100 shadow-xl rounded-xl p-3 max-w-[200px] transform -translate-x-[200%] transition-transform duration-500 flex items-center gap-3">
+        <div class="bg-green-100 p-1.5 rounded-full shrink-0">
+            <i data-lucide="shopping-bag" class="w-3 h-3 text-green-600"></i>
+        </div>
+        <div>
+            <p class="text-xs font-bold text-slate-800 leading-tight" id="toast-text">שרה רכשה ערכה</p>
+            <p class="text-[10px] text-slate-400">לפני דקה</p>
+        </div>
+    </div>
+
+    <!-- Cart Drawer Overlay -->
+    <div id="cart-overlay" onclick="app.toggleCart()" class="fixed inset-0 bg-black/40 z-50 hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm"></div>
+    
+    <!-- Cart Drawer Panel -->
+    <div id="cart-panel" class="fixed inset-y-0 left-0 w-[85%] max-w-[320px] bg-white z-[51] transform translate-x-[110%] transition-transform duration-300 shadow-2xl flex flex-col pb-safe">
+        <div class="p-5 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
+            <h2 class="font-bold text-lg text-slate-800">הסל שלי</h2>
+            <button onclick="app.toggleCart()" class="p-2 bg-white rounded-full text-slate-400 hover:text-red-500 shadow-sm"><i data-lucide="x" class="w-5 h-5"></i></button>
+        </div>
+        
+        <div id="cart-items" class="flex-1 overflow-y-auto p-4 space-y-3">
+            <!-- Items injected here -->
+        </div>
+
+        <div class="p-5 border-t border-slate-100 bg-white">
+            <div class="flex justify-between items-center mb-4">
+                <span class="text-slate-500">סה"כ לתשלום</span>
+                <span id="cart-total" class="text-xl font-black text-slate-900">0 ₪</span>
+            </div>
+            <button onclick="app.checkout()" class="w-full bg-slate-900 text-white font-bold py-4 rounded-xl shadow-lg active:scale-95 transition-transform flex justify-center gap-2">
+                <span>מעבר לתשלום טלפוני</span>
+                <i data-lucide="arrow-left" class="w-5 h-5"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="modal" class="fixed inset-0 z-[60] hidden flex items-center justify-center px-4">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="app.closeModal()"></div>
+        <div class="bg-white rounded-3xl p-8 w-full max-w-sm relative z-10 text-center animate-[bounce_0.5s_ease-out]">
+            <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i data-lucide="check" class="w-10 h-10 text-green-600"></i>
+            </div>
+            <h3 class="text-2xl font-black text-slate-900 mb-2">תודה רבה!</h3>
+            <p class="text-slate-500 mb-8 leading-relaxed">
+                הפרטים שלך נקלטו בהצלחה.
+                <br>
+                יוכבד או נציגה מטעמה תחזור אליך בשעות הקרובות להשלמת ההזמנה.
+            </p>
+            <button onclick="app.closeModal()" class="w-full bg-slate-100 text-slate-900 font-bold py-3 rounded-xl hover:bg-slate-200 transition-colors">
+                חזרה לאפליקציה
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA STORE ---
+        const store = {
+            cart: [],
+            products: [
+                { id: 1, name: "ערכת בייסיק", price: 250, desc: "המכשיר המקורי + טבלאות", tag: "פופולרי", icon: "bell" },
+                { id: 2, name: "ערכת פרימיום", price: 320, desc: "כולל ליווי אישי בוואטסאפ", tag: "מומלץ", icon: "crown" },
+                { id: 3, name: "ערכת תאומים", price: 450, desc: "2 מכשירים במחיר מוזל", tag: "חסכוני", icon: "users" },
+                { id: 4, name: "זמזם בלבד", price: 180, desc: "ללא ערכה נלווית", tag: null, icon: "zap" }
+            ],
+            addons: [
+                { id: 101, name: 'ספר ילדים "לילה יבש"', price: 45 },
+                { id: 102, name: 'סוללות ספייר לשנה', price: 25 },
+                { id: 103, name: 'טבלת כוכבים מגנטית', price: 35 }
+            ],
+            reviews: [
+                { name: "רחלי כ.", text: "תוך שבועיים היינו יבשים לגמרי!", time: "לפני שעה" },
+                { name: "מירי ש.", text: "הליווי של יוכבד הציל אותנו.", time: "לפני 3 שעות" },
+                { name: "אסתי ל.", text: "הילד שלי קיבל את הביטחון בחזרה.", time: "אתמול" }
+            ]
+        };
+
+        // --- APP CONTROLLER ---
+        const app = {
+            init() {
+                this.router('home');
+                this.startLiveTicker();
+                lucide.createIcons();
+            },
+
+            // Navigation Router
+            router(page) {
+                const main = document.getElementById('main-view');
+                window.scrollTo(0,0);
+                
+                // Update Bottom Nav Styling
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                    const isActive = btn.getAttribute('onclick').includes(page);
+                    btn.className = `nav-btn w-full flex flex-col items-center justify-center gap-1 transition-colors ${isActive ? 'text-primary' : 'text-slate-400'}`;
+                    if(isActive) {
+                        btn.querySelector('span').classList.add('font-bold');
+                        btn.querySelector('span').classList.remove('font-medium');
+                    } else {
+                        btn.querySelector('span').classList.remove('font-bold');
+                        btn.querySelector('span').classList.add('font-medium');
+                    }
+                });
+
+                // Render Content
+                main.innerHTML = `<div class="fade-enter fade-enter-active">${pages[page]()}</div>`;
+                lucide.createIcons();
+            },
+
+            // Cart Logic
+            toggleCart() {
+                const overlay = document.getElementById('cart-overlay');
+                const panel = document.getElementById('cart-panel');
+                const isOpen = !panel.classList.contains('translate-x-[110%]');
+
+                if (isOpen) {
+                    panel.classList.add('translate-x-[110%]');
+                    overlay.classList.remove('opacity-100');
+                    overlay.classList.add('opacity-0');
+                    setTimeout(() => overlay.classList.add('hidden'), 300);
+                } else {
+                    overlay.classList.remove('hidden');
+                    // Force reflow
+                    void overlay.offsetWidth;
+                    overlay.classList.remove('opacity-0');
+                    overlay.classList.add('opacity-100');
+                    panel.classList.remove('translate-x-[110%]');
+                }
+            },
+
+            addToCart(id, isAddon = false) {
+                let item;
+                if(isAddon) {
+                    item = store.addons.find(p => p.id === id);
+                } else {
+                    item = store.products.find(p => p.id === id);
+                }
+                
+                store.cart.push(item);
+                this.updateCartUI();
+                
+                // Visual feedback
+                if(!document.getElementById('cart-panel').classList.contains('translate-x-[110%]')) {
+                    // If cart is open, scroll to bottom
+                } else {
+                    this.toggleCart();
+                }
+            },
+
+            removeFromCart(index) {
+                store.cart.splice(index, 1);
+                this.updateCartUI();
+            },
+
+            updateCartUI() {
+                const container = document.getElementById('cart-items');
+                const badge = document.getElementById('cart-badge');
+                const totalEl = document.getElementById('cart-total');
+
+                badge.innerText = store.cart.length;
+                store.cart.length > 0 ? badge.classList.remove('scale-0') : badge.classList.add('scale-0');
+
+                if (store.cart.length === 0) {
+                    container.innerHTML = `
+                        <div class="flex flex-col items-center justify-center h-64 text-slate-400">
+                            <i data-lucide="shopping-cart" class="w-12 h-12 mb-2 opacity-20"></i>
+                            <p class="text-sm">הסל שלך ריק כרגע</p>
+                        </div>`;
+                    totalEl.innerText = '0 ₪';
+                    return;
+                }
+
+                container.innerHTML = store.cart.map((item, i) => `
+                    <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow-sm text-slate-700">
+                                <i data-lucide="${item.icon || 'box'}" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-sm text-slate-800">${item.name}</h4>
+                                <p class="text-xs text-slate-500">${item.price} ₪</p>
+                            </div>
+                        </div>
+                        <button onclick="app.removeFromCart(${i})" class="text-red-400 p-2"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </div>
+                `).join('');
+
+                const total = store.cart.reduce((sum, item) => sum + item.price, 0);
+                totalEl.innerText = total + ' ₪';
+                lucide.createIcons();
+            },
+
+            // Builder Logic
+            toggleBuilderItem(el, id) {
+                const isChecked = el.querySelector('input').checked;
+                // Just visual toggle in UI, logic handled on button press
+                if(isChecked) {
+                    el.classList.add('border-primary', 'bg-indigo-50');
+                    el.classList.remove('border-slate-200');
+                } else {
+                    el.classList.remove('border-primary', 'bg-indigo-50');
+                    el.classList.add('border-slate-200');
+                }
+                
+                // Calculate live total
+                const basePrice = 180;
+                let addonsTotal = 0;
+                document.querySelectorAll('.addon-check:checked').forEach(input => {
+                    addonsTotal += parseInt(input.dataset.price);
+                });
+                document.getElementById('builder-total').innerText = (basePrice + addonsTotal) + ' ₪';
+            },
+
+            addBuilderToCart() {
+                // Add base
+                this.addToCart(4); // ID 4 is base buzzer
+                // Add checked addons
+                document.querySelectorAll('.addon-check:checked').forEach(input => {
+                    this.addToCart(parseInt(input.dataset.id), true);
+                });
+                this.router('home');
+            },
+
+            // Quiz Logic
+            nextStep(hideId, showId) {
+                document.getElementById(hideId).classList.add('hidden');
+                document.getElementById(showId).classList.remove('hidden');
+                document.getElementById(showId).classList.add('fade-enter-active');
+            },
+
+            finishQuiz() {
+                document.getElementById('q3').classList.add('hidden');
+                document.getElementById('analyzing').classList.remove('hidden');
+                setTimeout(() => {
+                    document.getElementById('analyzing').classList.add('hidden');
+                    document.getElementById('result').classList.remove('hidden');
+                    lucide.createIcons();
+                }, 2000);
+            },
+
+            // Checkout / Modals
+            checkout() {
+                if(store.cart.length === 0) return;
+                this.toggleCart();
+                document.getElementById('modal').classList.remove('hidden');
+            },
+
+            closeModal() {
+                document.getElementById('modal').classList.add('hidden');
+                store.cart = [];
+                this.updateCartUI();
+            },
+
+            // Ticker
+            startLiveTicker() {
+                const names = ["שרה", "רבקה", "מיכל", "אסתי", "יעל"];
+                const actions = ["רכשה ערכת פרימיום", "הצטרפה לקבוצה", "הזמינה אבחון"];
+                
+                setInterval(() => {
+                    const name = names[Math.floor(Math.random() * names.length)];
+                    const action = actions[Math.floor(Math.random() * actions.length)];
+                    document.getElementById('toast-text').innerText = `${name} ${action}`;
+                    
+                    const toast = document.getElementById('toast');
+                    toast.classList.remove('-translate-x-[200%]');
+                    setTimeout(() => toast.classList.add('-translate-x-[200%]'), 4000);
+                }, 10000);
+            }
+        };
+
+        // --- PAGE TEMPLATES ---
+        const pages = {
+            home: () => `
+                <!-- Hero -->
+                <div class="bg-gradient-to-b from-primary/10 to-transparent rounded-3xl p-6 mb-8 text-center relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-secondary/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
+                    <span class="inline-block px-3 py-1 bg-white text-primary rounded-full text-[10px] font-bold shadow-sm mb-4 border border-indigo-50">
+                        ✨ הפתרון המוביל במגזר
+                    </span>
+                    <h2 class="text-3xl font-black text-slate-900 mb-3 leading-tight">
+                        בואי נהפוך את הלילה
+                        <span class="text-primary">ליבש ושקט</span>
+                    </h2>
+                    <p class="text-slate-500 text-sm mb-6 max-w-xs mx-auto">
+                        השיטה היחידה שמשלבת טכנולוגיה, רגש וקהילה תומכת לאלפי משפחות.
+                    </p>
+                    <div class="flex gap-3 justify-center">
+                        <button onclick="app.router('quiz')" class="bg-slate-900 text-white px-6 py-3 rounded-xl text-sm font-bold shadow-lg shadow-slate-200 active:scale-95 transition-transform flex items-center gap-2">
+                            <i data-lucide="wand-2" class="w-4 h-4"></i>
+                            אבחון מהיר
+                        </button>
+                        <button onclick="app.router('store')" class="bg-white text-slate-700 border border-slate-200 px-6 py-3 rounded-xl text-sm font-bold active:scale-95 transition-transform">
+                            לרכישה
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Daily Tip -->
+                <div class="bg-white p-5 rounded-2xl shadow-soft border border-slate-50 mb-8 flex gap-4 items-start">
+                    <div class="bg-yellow-100 p-2 rounded-lg shrink-0 text-yellow-600">
+                        <i data-lucide="lightbulb" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-sm text-slate-900 mb-1">טיפ יומי מיוכבד</h3>
+                        <p class="text-sm text-slate-500 leading-relaxed">"שבחו את הילד על היובש בבוקר, אבל בעיקר על המאמץ לקום בלילה."</p>
+                    </div>
+                </div>
+
+                <!-- Feature Grid -->
+                <div class="grid grid-cols-2 gap-3 mb-8">
+                    <div onclick="app.router('story')" class="bg-indigo-50 p-4 rounded-2xl active:scale-95 transition-transform">
+                        <i data-lucide="book-open" class="w-6 h-6 text-indigo-500 mb-2"></i>
+                        <div class="font-bold text-sm text-slate-800">הסיפור שלנו</div>
+                        <div class="text-[10px] text-slate-500">איך הכל התחיל</div>
+                    </div>
+                    <div onclick="app.router('community')" class="bg-pink-50 p-4 rounded-2xl active:scale-95 transition-transform">
+                        <i data-lucide="heart" class="w-6 h-6 text-pink-500 mb-2"></i>
+                        <div class="font-bold text-sm text-slate-800">קהילת הורים</div>
+                        <div class="text-[10px] text-slate-500">אתם לא לבד</div>
+                    </div>
+                </div>
+
+                <!-- Footer Teaser -->
+                <div class="text-center pb-4 opacity-50">
+                    <div class="w-8 h-8 bg-slate-200 rounded-full mx-auto mb-2"></div>
+                    <p class="text-[10px]">יוכבד רבינוביץ - כל הזכויות שמורות 2024</p>
+                </div>
+            `,
+
+            store: () => `
+                <div class="mb-6">
+                    <h2 class="text-2xl font-black text-slate-900">חנות הערכות</h2>
+                    <p class="text-sm text-slate-500">בחרי את החבילה המתאימה ביותר</p>
+                </div>
+                
+                <div class="space-y-4">
+                    ${store.products.map(p => `
+                        <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-soft relative overflow-hidden group">
+                            ${p.tag ? `<div class="absolute top-0 left-0 bg-slate-900 text-white text-[10px] font-bold px-3 py-1 rounded-br-lg">${p.tag}</div>` : ''}
+                            <div class="flex gap-4">
+                                <div class="w-20 h-20 bg-slate-50 rounded-xl flex items-center justify-center shrink-0">
+                                    <i data-lucide="${p.icon}" class="w-8 h-8 text-slate-700"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="font-bold text-slate-900">${p.name}</h3>
+                                    <p class="text-xs text-slate-500 mb-3 leading-tight">${p.desc}</p>
+                                    <div class="flex items-center justify-between mt-auto">
+                                        <span class="font-black text-lg">${p.price} ₪</span>
+                                        <button onclick="app.addToCart(${p.id})" class="bg-primary text-white p-2 rounded-lg shadow-lg active:scale-90 transition-transform">
+                                            <i data-lucide="plus" class="w-4 h-4"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `,
+
+            quiz: () => `
+                <div class="text-center mb-8">
+                    <span class="bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full text-[10px] font-bold border border-indigo-100">אבחון AI מהיר</span>
+                    <h2 class="text-2xl font-black text-slate-900 mt-3">בואי נכיר את הילד</h2>
+                    <p class="text-sm text-slate-500">3 שאלות קצרות להתאמה מדויקת</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-3xl shadow-soft border border-slate-50 min-h-[300px] flex flex-col justify-center">
+                    
+                    <!-- Q1 -->
+                    <div id="q1">
+                        <h3 class="font-bold text-lg mb-4 text-center">בן כמה הילד/ה?</h3>
+                        <div class="space-y-3">
+                            <button onclick="app.nextStep('q1', 'q2')" class="w-full p-4 rounded-xl border border-slate-200 text-sm font-medium hover:border-primary hover:bg-indigo-50 transition-colors text-right">מתחת לגיל 5</button>
+                            <button onclick="app.nextStep('q1', 'q2')" class="w-full p-4 rounded-xl border border-slate-200 text-sm font-medium hover:border-primary hover:bg-indigo-50 transition-colors text-right">גילאי 6 עד 9</button>
+                            <button onclick="app.nextStep('q1', 'q2')" class="w-full p-4 rounded-xl border border-slate-200 text-sm font-medium hover:border-primary hover:bg-indigo-50 transition-colors text-right">מעל גיל 10</button>
+                        </div>
+                    </div>
+
+                    <!-- Q2 -->
+                    <div id="q2" class="hidden">
+                        <h3 class="font-bold text-lg mb-4 text-center">איך השינה שלו?</h3>
+                        <div class="space-y-3">
+                            <button onclick="app.nextStep('q2', 'q3')" class="w-full p-4 rounded-xl border border-slate-200 text-sm font-medium hover:border-primary hover:bg-indigo-50 transition-colors text-right">עמוקה מאוד (לא מתעורר מכלום)</button>
+                            <button onclick="app.nextStep('q2', 'q3')" class="w-full p-4 rounded-xl border border-slate-200 text-sm font-medium hover:border-primary hover:bg-indigo-50 transition-colors text-right">רגילה</button>
+                            <button onclick="app.nextStep('q2', 'q3')" class="w-full p-4 rounded-xl border border-slate-200 text-sm font-medium hover:border-primary hover:bg-indigo-50 transition-colors text-right">קלה, מתעורר מכל רעש</button>
+                        </div>
+                    </div>
+
+                    <!-- Q3 -->
+                    <div id="q3" class="hidden">
+                        <h3 class="font-bold text-lg mb-4 text-center">האם ניסיתם בעבר?</h3>
+                        <div class="space-y-3">
+                            <button onclick="app.finishQuiz()" class="w-full p-4 rounded-xl border border-slate-200 text-sm font-medium hover:border-primary hover:bg-indigo-50 transition-colors text-right">פעם ראשונה שאנחנו מנסים</button>
+                            <button onclick="app.finishQuiz()" class="w-full p-4 rounded-xl border border-slate-200 text-sm font-medium hover:border-primary hover:bg-indigo-50 transition-colors text-right">ניסינו הכל ושום דבר לא עזר</button>
+                        </div>
+                    </div>
+
+                    <!-- Loading -->
+                    <div id="analyzing" class="hidden text-center">
+                        <div class="w-12 h-12 border-4 border-indigo-100 border-t-primary rounded-full animate-spin mx-auto mb-4"></div>
+                        <p class="font-bold text-slate-800">מנתח נתונים...</p>
+                    </div>
+
+                    <!-- Result -->
+                    <div id="result" class="hidden text-center">
+                        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i data-lucide="check" class="w-8 h-8 text-green-600"></i>
+                        </div>
+                        <h3 class="font-bold text-xl mb-2">יש לנו פתרון!</h3>
+                        <p class="text-sm text-slate-500 mb-6">זיהינו פרופיל שינה עמוקה. ההמלצה שלנו היא ערכת פרימיום עם ליווי צמוד.</p>
+                        <button onclick="app.addToCart(2); app.router('store')" class="w-full bg-primary text-white font-bold py-3 rounded-xl shadow-lg">הוסף המלצה לסל</button>
+                    </div>
+
+                </div>
+            `,
+
+            builder: () => `
+                <div class="mb-6">
+                    <h2 class="text-2xl font-black text-slate-900">הרכבה אישית</h2>
+                    <p class="text-sm text-slate-500">Mix & Match - בחרי מה שטוב לך</p>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-soft border border-slate-50 overflow-hidden mb-4">
+                    <div class="bg-slate-50 p-3 border-b border-slate-100 text-xs font-bold text-slate-500 uppercase tracking-wide">1. בסיס חובה</div>
+                    <div class="p-4 flex items-center gap-4 bg-indigo-50/50">
+                        <div class="bg-primary text-white p-1 rounded-full"><i data-lucide="check" class="w-3 h-3"></i></div>
+                        <div class="flex-1">
+                            <div class="font-bold text-sm">זמזם בסיסי איכותי</div>
+                            <div class="text-[10px] text-slate-500">כולל אחריות לשנה</div>
+                        </div>
+                        <div class="font-bold text-sm">180 ₪</div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-soft border border-slate-50 overflow-hidden mb-24">
+                    <div class="bg-slate-50 p-3 border-b border-slate-100 text-xs font-bold text-slate-500 uppercase tracking-wide">2. תוספות ושדרוגים</div>
+                    <div class="divide-y divide-slate-100">
+                        ${store.addons.map(addon => `
+                            <label class="flex items-center gap-3 p-4 cursor-pointer transition-colors border border-transparent" onchange="app.toggleBuilderItem(this, ${addon.id})">
+                                <input type="checkbox" class="addon-check w-5 h-5 rounded border-slate-300 text-primary focus:ring-primary" data-price="${addon.price}" data-id="${addon.id}">
+                                <div class="flex-1 text-sm font-medium text-slate-700">${addon.name}</div>
+                                <div class="font-bold text-sm text-slate-900">+${addon.price} ₪</div>
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <!-- Floating Bottom Action for Builder -->
+                <div class="fixed bottom-20 left-4 right-4 bg-slate-900 text-white p-4 rounded-2xl shadow-2xl flex items-center justify-between z-30">
+                    <div>
+                        <div class="text-[10px] text-slate-400">סה"כ להרכבה</div>
+                        <div class="font-black text-xl" id="builder-total">180 ₪</div>
+                    </div>
+                    <button onclick="app.addBuilderToCart()" class="bg-white text-slate-900 px-6 py-2 rounded-xl text-sm font-bold">הוסף לסל</button>
+                </div>
+            `,
+
+            community: () => `
+                <div class="mb-6 text-center">
+                    <h2 class="text-2xl font-black text-slate-900">הקהילה שלנו</h2>
+                    <p class="text-sm text-slate-500">מה אומרות אמהות כמוך</p>
+                </div>
+
+                <div class="space-y-4">
+                    ${store.reviews.map((r, i) => `
+                        <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-soft relative ml-4 mr-2">
+                            <div class="absolute top-4 -right-2 w-4 h-4 bg-white border-t border-r border-slate-100 rotate-45"></div>
+                            <div class="flex justify-between items-baseline mb-2">
+                                <span class="font-bold text-sm text-primary">${r.name}</span>
+                                <span class="text-[10px] text-slate-400">${r.time}</span>
+                            </div>
+                            <p class="text-sm text-slate-600 leading-relaxed">"${r.text}"</p>
+                            <div class="mt-2 flex gap-0.5">
+                                <i data-lucide="star" class="w-3 h-3 text-yellow-400 fill-yellow-400"></i>
+                                <i data-lucide="star" class="w-3 h-3 text-yellow-400 fill-yellow-400"></i>
+                                <i data-lucide="star" class="w-3 h-3 text-yellow-400 fill-yellow-400"></i>
+                                <i data-lucide="star" class="w-3 h-3 text-yellow-400 fill-yellow-400"></i>
+                                <i data-lucide="star" class="w-3 h-3 text-yellow-400 fill-yellow-400"></i>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `,
+
+            story: () => `
+                <div class="mb-6">
+                    <button onclick="app.router('home')" class="text-sm text-slate-500 flex items-center gap-1 mb-4"><i data-lucide="chevron-right" class="w-4 h-4"></i> חזרה</button>
+                    <h2 class="text-2xl font-black text-slate-900">הסיפור האישי שלי</h2>
+                </div>
+                
+                <div class="space-y-8 relative pl-4 border-r-2 border-slate-100 mr-2">
+                    <div class="relative">
+                        <div class="absolute -right-[21px] top-0 w-4 h-4 bg-primary rounded-full border-4 border-white"></div>
+                        <span class="text-xs font-bold text-primary">2008</span>
+                        <h3 class="font-bold text-lg text-slate-900 mt-1">הדמעות של יוסי</h3>
+                        <p class="text-sm text-slate-600 mt-2 bg-white p-4 rounded-xl shadow-soft">הכל התחיל כשהבן שלי חזר מהחיידר בוכה כי חבר צחק עליו. באותו רגע החלטתי למצוא פתרון.</p>
+                    </div>
+                    
+                    <div class="relative">
+                        <div class="absolute -right-[21px] top-0 w-4 h-4 bg-secondary rounded-full border-4 border-white"></div>
+                        <span class="text-xs font-bold text-secondary">2010</span>
+                        <h3 class="font-bold text-lg text-slate-900 mt-1">הפריצה</h3>
+                        <p class="text-sm text-slate-600 mt-2 bg-white p-4 rounded-xl shadow-soft">פיתחתי את "שיטת שלושת השלבים" שמשלבת זמזם עם עבודה רגשית.</p>
+                    </div>
+
+                    <div class="relative">
+                        <div class="absolute -right-[21px] top-0 w-4 h-4 bg-slate-800 rounded-full border-4 border-white"></div>
+                        <span class="text-xs font-bold text-slate-800">היום</span>
+                        <h3 class="font-bold text-lg text-slate-900 mt-1">אלפי הצלחות</h3>
+                        <p class="text-sm text-slate-600 mt-2 bg-white p-4 rounded-xl shadow-soft">היום המרכז שלנו בבני ברק נותן מענה לאלפי משפחות בארץ ובעולם.</p>
+                    </div>
+                </div>
+                
+                <button onclick="app.router('store')" class="w-full mt-8 bg-slate-900 text-white font-bold py-4 rounded-xl shadow-lg">רוצה להצטרף להצלחה</button>
+            `
+        };
+
+        // Start App
+        window.onload = () => app.init();
+
+    </script>
+</body>
+</html>
