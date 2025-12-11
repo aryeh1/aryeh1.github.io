@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>אל תקנו את זה | באמת שלא</title>
+    <title>VOID | מוצרים לריק</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@300;500;900&family=Rubik:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Rubik', sans-serif;
-            background-color: #0f0f0f;
-            color: #e0e0e0;
+            background-color: #050505;
+            color: #a3a3a3;
             overflow-x: hidden;
             cursor: crosshair;
         }
@@ -27,7 +27,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: #0f0f0f;
+            background: #050505;
         }
         .glitch::before {
             left: 2px;
@@ -51,12 +51,7 @@
             100% { clip: rect(60px, 9999px, 20px, 0); }
         }
 
-        /* The Runaway Button */
-        #buy-btn {
-            transition: all 0.1s ease;
-            position: relative;
-        }
-
+        /* Noise Overlay - Fixed Z-Index issue */
         .noise {
             position: fixed;
             top: 0;
@@ -64,13 +59,20 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: 50;
-            opacity: 0.05;
+            z-index: 10; 
+            opacity: 0.07;
             background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyBAMAAADsEZWCAAAAGFBMVEUAAAA5OTkAAABERERmZmYzMzPMzMz///+B7xznAAAACHRSTlMAMwAqzMzM/wD334eOAAAAHElEQVQ4y2NgQAX8DIo4BcQAqiwI51C1YAAjHgB42wIrB3Xn4QAAAABJRU5ErkJggg==');
         }
 
-        .fade-in { animation: fadeIn 1s ease-in; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* Animations */
+        .fade-in { animation: fadeIn 0.8s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #111; }
+        ::-webkit-scrollbar-thumb { background: #333; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -78,321 +80,469 @@
     <div class="noise"></div>
 
     <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-40 border-b border-white/10 bg-black/50 backdrop-blur-md">
-        <div class="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
-            <div class="font-serif text-2xl font-bold tracking-widest text-red-500 cursor-not-allowed" title="אל תלחץ עליי">
-                VOID<span class="text-white text-xs block font-sans tracking-normal opacity-50">מוצרי קוסמטיקה מיותרים</span>
+    <nav class="fixed top-0 w-full z-40 border-b border-white/5 bg-black/80 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
+            <div class="font-serif text-3xl font-black tracking-tighter text-red-600 select-none pointer-events-none">
+                VOID
             </div>
-            <div class="flex gap-8 text-sm font-light text-gray-400">
-                <button onclick="router('truth')" class="hover:text-white hover:line-through transition-all">האמת המרה</button>
-                <button onclick="router('distraction')" class="hover:text-white hover:line-through transition-all">מסיחי דעת</button>
-                <button onclick="router('shop')" class="text-red-900 hover:text-red-700 font-bold transition-colors">אל תיכנס לפה</button>
+            
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex items-center gap-6 text-xs uppercase tracking-widest font-bold text-gray-500">
+                <button onclick="router('intro')" class="hover:text-white transition-colors">ראשי</button>
+                <button onclick="router('truth')" class="hover:text-white transition-colors">למה לא</button>
+                <button onclick="router('about')" class="hover:text-white transition-colors">מי אנחנו</button>
+                <button onclick="router('contact')" class="hover:text-white transition-colors">אל תצרו קשר</button>
+                <button onclick="router('distraction')" class="hover:text-white transition-colors text-blue-400">משחקים</button>
+                <button onclick="router('shop')" class="text-red-800 hover:text-red-500 border border-red-900/50 px-4 py-2 hover:bg-red-900/10 transition-all">חנות (סכנה)</button>
             </div>
+
+            <!-- Mobile Menu Button -->
+            <button class="md:hidden text-gray-400" onclick="toggleMobileMenu()">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
         </div>
     </nav>
 
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu" class="fixed inset-0 z-30 bg-black/95 flex flex-col items-center justify-center gap-8 text-xl hidden md:hidden">
+        <button onclick="router('intro'); toggleMobileMenu()" class="text-white">ראשי</button>
+        <button onclick="router('truth'); toggleMobileMenu()" class="text-white">האמת</button>
+        <button onclick="router('about'); toggleMobileMenu()" class="text-white">אודות</button>
+        <button onclick="router('shop'); toggleMobileMenu()" class="text-red-500">חנות</button>
+        <button onclick="toggleMobileMenu()" class="absolute top-6 left-6 text-gray-500"><i data-lucide="x" class="w-8 h-8"></i></button>
+    </div>
+
     <!-- Main Content -->
-    <main id="app" class="flex-grow pt-20">
-        <!-- Views injected here -->
+    <main id="app" class="flex-grow pt-20 relative z-20">
+        <!-- Content Injected Here -->
     </main>
 
-    <!-- Footer -->
-    <footer class="border-t border-white/5 py-12 text-center text-xs text-gray-600">
-        <p>כל הזכויות לא שמורות. שום דבר לא משנה. העור שלך יזדקן בכל מקרה.</p>
-        <p class="mt-2">נבנה בציניות תהומית 2024</p>
-    </footer>
-
-    <!-- Buy Modal (The Hard Mode) -->
-    <div id="buy-modal" class="fixed inset-0 bg-black/95 z-50 hidden flex items-center justify-center p-4">
-        <div class="max-w-md w-full border border-red-900/30 p-8 text-center relative overflow-hidden">
-            <div class="absolute inset-0 bg-red-900/5 animate-pulse"></div>
-            <h2 class="font-serif text-3xl text-red-500 mb-6">אתם בטוחים?</h2>
-            <p class="text-gray-400 mb-8 leading-relaxed">
-                אתם עומדים להוציא 450 ש"ח על צנצנת של מים ושמן.
-                <br>
-                אתם יכולים לקנות בזה 30 מנות פלאפל.
-                <br>
-                אתם יכולים לתרום את זה.
-                <br>
-                אתם יכולים לשרוף את השטרות וזה יחמם אתכם יותר.
-            </p>
-            
-            <div class="space-y-4">
-                <button onclick="closeModal()" class="w-full py-4 border border-white text-white hover:bg-white hover:text-black transition-all font-bold tracking-wider">
-                    צודק, אני אוותר
-                </button>
-                <button onclick="finalPurchase()" class="text-xs text-gray-800 hover:text-red-900 transition-colors mt-4">
-                    אני שונא את הכסף שלי, המשך לרכישה
-                </button>
+    <!-- Modal (Z-Index Fixed to 60) -->
+    <div id="buy-modal" class="fixed inset-0 z-[60] hidden bg-black/90 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="max-w-md w-full border-2 border-red-900/50 bg-black p-10 text-center relative shadow-[0_0_50px_rgba(220,38,38,0.2)]">
+            <div id="modal-content">
+                <i data-lucide="alert-triangle" class="w-12 h-12 text-red-500 mx-auto mb-6"></i>
+                <h2 class="font-serif text-3xl text-white mb-4">עצור!</h2>
+                <p class="text-gray-400 mb-8 leading-relaxed">
+                    אתה עומד לבצע טעות כלכלית.
+                    <br>
+                    הקרם הזה מכיל 98% מים ו-2% תקווה שווא.
+                    <br>
+                    אתה בטוח שאתה רוצה להמשיך?
+                </p>
+                
+                <div class="flex flex-col gap-3">
+                    <button onclick="closeModal()" class="w-full py-4 bg-white text-black font-bold hover:bg-gray-200 transition-colors tracking-widest uppercase">
+                        הצלתם אותי, תודה
+                    </button>
+                    <button onclick="finalPurchase()" class="text-xs text-red-900 hover:text-red-500 underline transition-colors mt-2">
+                        אני מתעקש לזרוק כסף לפח
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
+        // --- CONTENT VIEWS ---
         const views = {
             intro: `
-                <section class="min-h-[calc(100vh-80px)] flex flex-col items-center justify-center text-center px-4 relative overflow-hidden">
-                    <div class="glitch-wrapper mb-8">
-                        <h1 class="glitch font-serif text-6xl md:text-9xl font-black text-white leading-none" data-text="אל תקנו">אל תקנו</h1>
+                <section class="min-h-[calc(100vh-80px)] flex flex-col items-center justify-center text-center px-4">
+                    <div class="glitch-wrapper mb-6">
+                        <h1 class="glitch font-serif text-7xl md:text-9xl font-black text-white leading-none tracking-tighter" data-text="NOTHING.">NOTHING.</h1>
                     </div>
-                    <p class="text-xl md:text-2xl text-gray-400 max-w-2xl font-light leading-relaxed mb-12 fade-in">
-                        זהו קרם הפנים "נומרו 0". הוא לא יעצור את הזמן. הוא לא יעלים קמטים.
-                        הוא בסך הכל יוסיף שכבה שמנונית על הפרצוף שלכם לפני השינה.
-                        <br><span class="text-red-500">חבל על הכסף.</span>
+                    <p class="text-lg md:text-2xl text-gray-500 max-w-xl font-light leading-relaxed mb-12 fade-in">
+                        ברוכים הבאים ל-VOID. 
+                        אנחנו מוכרים מוצרי טיפוח שלא עושים כלום, לאנשים שיש להם הכל.
+                        <br>
+                        <span class="text-red-500 font-bold">זהירות: שיווק אגרסיבי לפניך.</span>
                     </p>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-4xl mt-12 text-gray-500 text-sm">
-                        <div class="border-t border-gray-800 pt-4">
-                            <i data-lucide="frown" class="w-8 h-8 mx-auto mb-4 opacity-50"></i>
-                            <h3 class="text-white font-bold mb-2">אכזבה מובטחת</h3>
-                            <p>ציפיות גבוהות מובילות לשברון לב. אנחנו מבטיחים אפס תוצאות, כך שלעולם לא תתאכזבו.</p>
+                    <button onclick="router('shop')" class="group relative px-8 py-4 bg-transparent border border-gray-800 text-gray-400 hover:text-white hover:border-white transition-all overflow-hidden">
+                        <div class="absolute inset-0 w-0 bg-red-900 transition-all duration-[250ms] ease-out group-hover:w-full opacity-20"></div>
+                        <span class="relative">בזבז כסף עכשיו</span>
+                    </button>
+
+                    <div class="mt-24 grid grid-cols-3 gap-8 text-center text-[10px] md:text-xs text-gray-600 uppercase tracking-widest max-w-2xl w-full">
+                        <div>
+                            <div class="text-2xl mb-2">0%</div>
+                            תוצאות
                         </div>
-                        <div class="border-t border-gray-800 pt-4">
-                            <i data-lucide="banknote" class="w-8 h-8 mx-auto mb-4 opacity-50"></i>
-                            <h3 class="text-white font-bold mb-2">יקר להחריד</h3>
-                            <p>המחיר מנופח ב-4000% רק בגלל המיתוג והזכוכית הכבדה שתישבר לכם באמבטיה.</p>
+                        <div>
+                            <div class="text-2xl mb-2">100%</div>
+                            שיווק
                         </div>
-                        <div class="border-t border-gray-800 pt-4">
-                            <i data-lucide="trash-2" class="w-8 h-8 mx-auto mb-4 opacity-50"></i>
-                            <h3 class="text-white font-bold mb-2">זיהום סביבתי</h3>
-                            <p>עוד פלסטיק לאוקיינוס. הדגים לא צריכים עור חלק, וגם אתם לא.</p>
+                        <div>
+                            <div class="text-2xl mb-2">∞</div>
+                            חרטה
                         </div>
                     </div>
-                    
-                    <button onclick="router('truth')" class="mt-20 border-b border-gray-600 pb-1 text-gray-500 hover:text-white hover:border-white transition-all">
-                        למה עוד לא כדאי?
-                    </button>
                 </section>
             `,
 
             truth: `
-                <section class="max-w-4xl mx-auto py-20 px-6">
-                    <h2 class="font-serif text-5xl text-white mb-16 text-center">האמת המדעית (שלא מוכרת)</h2>
+                <section class="max-w-4xl mx-auto py-20 px-6 fade-in">
+                    <h2 class="font-serif text-4xl md:text-6xl text-white mb-20 text-center">למה המוצר שלנו גרוע</h2>
                     
-                    <div class="space-y-24">
-                        <div class="flex flex-col md:flex-row gap-12 items-center">
-                            <div class="w-full md:w-1/2 h-64 bg-gray-900 flex items-center justify-center relative overflow-hidden grayscale hover:grayscale-0 transition-all duration-700">
-                                <!-- Abstract "Cream" visualization -->
-                                <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&w=1887&auto=format&fit=crop')] bg-cover bg-center opacity-40"></div>
-                                <span class="relative z-10 font-mono text-xs border border-white p-2">INGREDIENTS: LIES</span>
+                    <div class="space-y-32">
+                        <!-- Reason 1 -->
+                        <div class="flex flex-col md:flex-row gap-12 items-center group">
+                            <div class="w-full md:w-1/2 aspect-square bg-gray-900 border border-gray-800 relative overflow-hidden">
+                                <div class="absolute inset-0 bg-gradient-to-br from-transparent to-black/80 z-10"></div>
+                                <img src="https://images.unsplash.com/photo-1616683693504-3ea7e9ad6fec?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover opacity-30 grayscale group-hover:grayscale-0 transition-all duration-700" alt="water">
+                                <div class="absolute bottom-4 right-4 z-20 font-mono text-xs text-red-500 border border-red-900 px-2 py-1">AQUA: 99.9%</div>
                             </div>
-                            <div class="w-full md:w-1/2 space-y-4">
-                                <h3 class="text-2xl font-bold text-gray-200">מים. בעיקר מים.</h3>
+                            <div class="w-full md:w-1/2">
+                                <h3 class="text-2xl font-bold text-white mb-4">זה פשוט מים בצנצנת</h3>
                                 <p class="text-gray-400 leading-relaxed">
-                                    הרכיב הראשון בקרם שלנו הוא "Aqua". אתם יודעים מה זה? מים. מהברז. 
-                                    אנחנו מוכרים לכם מים במחיר של זהב נוזלי. פשוט תשתו כוס מים, זה יעשה לעור שלכם יותר טוב.
+                                    לקחנו מים מהברז במשרד, סיננו אותם דרך גרב משומשת (סתם, זה היה פילטר פחם, אבל עדיין), והכנסנו לצנצנת זכוכית יוקרתית שעלתה לנו 2 שקל באלי אקספרס. אתם משלמים 450 ש"ח על היכולת להרגיש רטובים בפנים.
                                 </p>
                             </div>
                         </div>
 
-                        <div class="flex flex-col md:flex-row-reverse gap-12 items-center">
-                            <div class="w-full md:w-1/2 h-64 bg-gray-900 flex items-center justify-center relative overflow-hidden grayscale hover:grayscale-0 transition-all duration-700">
-                                <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1506815446349-5cd87a7758eb?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-40"></div>
-                                <span class="relative z-10 font-mono text-xs border border-white p-2">THE SUN WINS</span>
+                        <!-- Reason 2 -->
+                        <div class="flex flex-col md:flex-row-reverse gap-12 items-center group">
+                            <div class="w-full md:w-1/2 aspect-square bg-gray-900 border border-gray-800 relative overflow-hidden">
+                                <div class="absolute inset-0 bg-gradient-to-br from-transparent to-black/80 z-10"></div>
+                                <img src="https://images.unsplash.com/photo-1555685812-4b943f3e9942?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover opacity-30 grayscale group-hover:grayscale-0 transition-all duration-700" alt="clock">
+                                <div class="absolute bottom-4 right-4 z-20 font-mono text-xs text-red-500 border border-red-900 px-2 py-1">TIME: UNBEATABLE</div>
                             </div>
-                            <div class="w-full md:w-1/2 space-y-4 text-right">
-                                <h3 class="text-2xl font-bold text-gray-200">הכבידה תמיד מנצחת</h3>
+                            <div class="w-full md:w-1/2 text-right">
+                                <h3 class="text-2xl font-bold text-white mb-4">הזקנה תנצח אותך</h3>
                                 <p class="text-gray-400 leading-relaxed">
-                                    אייזיק ניוטון גילה את זה מזמן. הכל נופל למטה. גם הלחיים שלכם. 
-                                    שום מריחה של תמצית אצות נדירה מהים הצפוני לא תבטל את חוקי הפיזיקה. 
-                                    תשלימו עם זה. זה משחרר.
+                                    שום סרום בעולם לא ימנע מהתאים שלך להזדקן. זה ביולוגיה. אנחנו מוכרים אשליה בבקבוק. במקום למרוח קרם, תשלים עם המוות הבלתי נמנע. זה הרבה יותר זול ומשחרר פסיכולוגית.
                                 </p>
                             </div>
                         </div>
                     </div>
+                </section>
+            `,
 
-                    <div class="mt-24 p-8 border border-white/10 text-center bg-white/5">
-                        <h4 class="text-xl font-bold mb-4">סטטיסטיקה פנימית:</h4>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+            about: `
+                <section class="max-w-3xl mx-auto py-20 px-6 text-center fade-in">
+                    <h2 class="font-serif text-5xl text-white mb-8">מי אנחנו?</h2>
+                    <p class="text-xl text-gray-400 mb-16 leading-relaxed">
+                        אנחנו קבוצה של ציניקנים שהבינו שהדרך הכי קלה להתעשר היא למכור חוסר ביטחון לאנשים.
+                    </p>
+
+                    <div class="grid md:grid-cols-2 gap-8 mb-20">
+                        <div class="border border-white/10 p-8 bg-white/5">
+                            <div class="w-24 h-24 bg-gray-800 rounded-full mx-auto mb-6 overflow-hidden grayscale">
+                                <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=1000&auto=format&fit=crop" class="object-cover w-full h-full">
+                            </div>
+                            <h3 class="text-white font-bold text-lg">המנכ"ל</h3>
+                            <p class="text-gray-500 text-sm mt-2">"אני אוהב כסף ושונא אנשים. זה השילוב המושלם לקוסמטיקה."</p>
+                        </div>
+                        <div class="border border-white/10 p-8 bg-white/5">
+                            <div class="w-24 h-24 bg-gray-800 rounded-full mx-auto mb-6 overflow-hidden grayscale">
+                                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1000&auto=format&fit=crop" class="object-cover w-full h-full">
+                            </div>
+                            <h3 class="text-white font-bold text-lg">סמנכ"לית שיווק</h3>
+                            <p class="text-gray-500 text-sm mt-2">"אם נגרום להם להרגיש מכוערים, הם יקנו הכל."</p>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-gray-800 pt-12">
+                        <h3 class="text-2xl text-white mb-4">החזון שלנו</h3>
+                        <p class="text-gray-500">
+                            להגיע למצב שבו כל אדם בעולם מחזיק צנצנת של VOID בארון, פותח אותה, רואה שאין בפנים כלום, ואומר "וואלה, הגיע לי".
+                        </p>
+                    </div>
+                </section>
+            `,
+
+            contact: `
+                <section class="min-h-[calc(100vh-80px)] flex flex-col items-center justify-center px-4 fade-in">
+                    <div class="max-w-md w-full border border-gray-800 bg-black p-8 relative">
+                        <div class="absolute -top-3 -left-3 bg-red-600 text-white text-xs font-bold px-2 py-1">DO NOT SEND</div>
+                        
+                        <h2 class="text-3xl font-serif text-white mb-2">אל תצרו קשר</h2>
+                        <p class="text-gray-500 text-sm mb-8">אנחנו לא קוראים את המיילים האלה. הם הולכים ישירות לתיקיית ספאם דמיונית.</p>
+
+                        <form onsubmit="event.preventDefault(); fakeSubmit(this);" class="space-y-6">
                             <div>
-                                <div class="text-4xl font-serif text-red-500 mb-2">0%</div>
-                                <div class="text-xs text-gray-500 uppercase">הצערת העור</div>
+                                <label class="block text-gray-500 text-xs uppercase tracking-widest mb-2">שם (לא מעניין)</label>
+                                <input type="text" class="w-full bg-gray-900 border border-gray-800 text-gray-300 p-3 focus:border-red-900 focus:outline-none transition-colors" placeholder="פלוני אלמוני">
                             </div>
                             <div>
-                                <div class="text-4xl font-serif text-red-500 mb-2">100%</div>
-                                <div class="text-xs text-gray-500 uppercase">כרית שמנונית</div>
+                                <label class="block text-gray-500 text-xs uppercase tracking-widest mb-2">סיבת ההטרדה</label>
+                                <select class="w-full bg-gray-900 border border-gray-800 text-gray-300 p-3 focus:border-red-900 focus:outline-none">
+                                    <option>אני רוצה להתלונן</option>
+                                    <option>המוצר גרם לי לפריחה</option>
+                                    <option>אני רוצה את הכסף חזרה (פחחח)</option>
+                                </select>
                             </div>
                             <div>
-                                <div class="text-4xl font-serif text-red-500 mb-2">450₪</div>
-                                <div class="text-xs text-gray-500 uppercase">הפסד נקי</div>
+                                <label class="block text-gray-500 text-xs uppercase tracking-widest mb-2">הודעה</label>
+                                <textarea rows="4" class="w-full bg-gray-900 border border-gray-800 text-gray-300 p-3 focus:border-red-900 focus:outline-none" placeholder="תכתבו מה שבא לכם, אף אחד לא קורא..."></textarea>
                             </div>
-                            <div>
-                                <div class="text-4xl font-serif text-red-500 mb-2">∞</div>
-                                <div class="text-xs text-gray-500 uppercase">חרטה</div>
-                            </div>
+                            <button type="submit" class="w-full bg-white text-black font-bold py-4 hover:bg-gray-200 transition-colors uppercase tracking-widest text-sm">
+                                שלח לגריסה
+                            </button>
+                        </form>
+                        
+                        <div id="form-feedback" class="hidden mt-4 text-center text-red-500 text-xs">
+                            שגיאה: השרת מסרב לקבל את התלונה שלך כי לא אכפת לו.
                         </div>
                     </div>
                 </section>
             `,
 
             distraction: `
-                <section class="h-[calc(100vh-80px)] flex flex-col items-center justify-center relative overflow-hidden">
-                    <h2 class="text-3xl font-serif mb-8 z-10 pointer-events-none mix-blend-difference">תשכחו מהקרם. תשחקו בבועות.</h2>
-                    <p class="text-sm text-gray-500 mb-8 z-10">כל פיצוץ בועה חוסך לכם 5 שקלים שלא בזבזתם.</p>
+                <section class="h-[calc(100vh-80px)] flex flex-col items-center justify-center relative overflow-hidden bg-gray-900">
+                    <div class="absolute inset-0 z-0 opacity-20" style="background-image: radial-gradient(#333 1px, transparent 1px); background-size: 20px 20px;"></div>
                     
-                    <div id="game-container" class="absolute inset-0 cursor-crosshair"></div>
+                    <h2 class="text-3xl font-serif text-white mb-4 z-10 pointer-events-none">חסוך כסף ע"י פיצוץ בועות</h2>
+                    <p class="text-gray-500 mb-8 z-10 pointer-events-none text-sm">כל בועה = שקל שלא בזבזת על הקרם שלנו</p>
                     
-                    <div class="absolute bottom-10 z-10 text-center">
-                        <div id="score" class="text-6xl font-black text-white/10">0 ₪</div>
-                        <div class="text-xs text-gray-600 mt-2">חסכתם עד כה</div>
+                    <div id="game-area" class="absolute inset-0 overflow-hidden cursor-crosshair"></div>
+                    
+                    <div class="absolute bottom-12 z-10 text-center bg-black/50 p-4 rounded-xl backdrop-blur-sm border border-white/10">
+                        <div class="text-xs text-gray-400 uppercase tracking-widest mb-1">כסף שנחסך</div>
+                        <div id="score" class="text-5xl font-mono text-green-400">0 ₪</div>
                     </div>
                 </section>
             `,
 
             shop: `
-                <section class="min-h-[calc(100vh-80px)] flex flex-col items-center pt-20 px-4">
-                    <h2 class="text-red-600 font-black text-4xl mb-2">אזור הסכנה</h2>
-                    <p class="text-gray-500 mb-12">אתם באמת מתעקשים? אין לכם משהו טוב יותר לעשות?</p>
-                    
-                    <div class="bg-gray-900 border border-gray-800 p-8 max-w-sm w-full relative group">
+                <section class="min-h-[calc(100vh-80px)] flex flex-col items-center pt-16 px-4 pb-20">
+                    <div class="max-w-4xl w-full flex flex-col md:flex-row gap-12">
                         <!-- Product Image -->
-                        <div class="h-64 bg-black mb-8 flex items-center justify-center overflow-hidden">
-                            <div class="w-32 h-40 border border-white/20 rounded-full flex items-center justify-center relative">
-                                <div class="absolute inset-2 border-t border-white/10 rounded-full"></div>
-                                <span class="font-serif text-2xl tracking-widest text-white/80 rotate-90">VOID</span>
+                        <div class="w-full md:w-1/2">
+                            <div class="aspect-[3/4] bg-gray-900 border border-gray-800 relative flex items-center justify-center overflow-hidden group">
+                                <div class="absolute top-4 left-4 border border-white/20 text-white/50 text-[10px] px-2 py-1 font-mono">EDITION: INFINITE</div>
+                                
+                                <!-- The Jar -->
+                                <div class="w-48 h-56 border border-white/10 bg-gradient-to-b from-gray-800 to-black relative shadow-2xl group-hover:scale-105 transition-transform duration-700">
+                                    <div class="absolute inset-x-0 top-12 bottom-4 border-l border-r border-white/5"></div>
+                                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
+                                        <div class="font-serif text-3xl text-white tracking-[0.2em] mb-1">VOID</div>
+                                        <div class="text-[8px] text-gray-600 uppercase tracking-widest">Pure Nothingness</div>
+                                    </div>
+                                    <div class="absolute bottom-0 w-full h-1 bg-gradient-to-r from-transparent via-red-900 to-transparent opacity-50"></div>
+                                </div>
                             </div>
                         </div>
-                        
-                        <h3 class="text-2xl font-bold text-white mb-2">קרם פנים "ריק"</h3>
-                        <p class="text-gray-400 text-sm mb-6">מכיל: כלום, אוויר, הבטחות שווא, חומרים משמרים.</p>
-                        
-                        <div class="flex items-center justify-between mb-8 border-t border-gray-800 pt-4">
-                            <span class="text-xl line-through text-gray-600">50 ₪</span>
-                            <span class="text-3xl font-bold text-red-500">450 ₪</span>
-                        </div>
 
-                        <!-- The Impossible Button Area -->
-                        <div class="h-20 relative w-full" id="btn-area">
-                            <button id="buy-btn" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white text-black font-bold px-8 py-3 rounded-none hover:bg-gray-200 uppercase tracking-widest text-sm shadow-[4px_4px_0px_0px_rgba(255,0,0,1)]">
-                                לרכישה (טעות)
-                            </button>
+                        <!-- Product Details -->
+                        <div class="w-full md:w-1/2 flex flex-col justify-center">
+                            <h2 class="text-4xl font-serif text-white mb-2">VOID CREAM N°0</h2>
+                            <div class="flex items-center gap-4 mb-8">
+                                <span class="text-2xl text-red-500 font-bold">450.00 ₪</span>
+                                <span class="text-lg text-gray-600 line-through">50.00 ₪</span>
+                            </div>
+
+                            <p class="text-gray-400 leading-relaxed mb-8 text-sm">
+                                הקרם המיותר בעולם. מגיע בצנצנת כבדה שתגרום לכם להרגיש יוקרתיים עד הרגע שתבינו שמרחתם אוויר.
+                                <br><br>
+                                <span class="text-white">• לא נבדק על בעלי חיים (כי לא היה טעם)</span>
+                                <br>
+                                <span class="text-white">• נטול רכיבים פעילים</span>
+                                <br>
+                                <span class="text-white">• מתאדה מיד במגע עם הבושה</span>
+                            </p>
+
+                            <!-- Runaway Button Container -->
+                            <div class="h-32 bg-gray-900/50 border border-dashed border-gray-800 relative overflow-hidden flex items-center justify-center mb-4" id="btn-container">
+                                <p class="absolute top-2 left-0 w-full text-center text-[10px] text-gray-600">נסו ללחוץ (אנחנו לא ממליצים)</p>
+                                <button id="runaway-btn" class="bg-white text-black px-8 py-3 font-bold uppercase tracking-widest text-sm hover:bg-red-600 hover:text-white transition-colors shadow-[4px_4px_0_0_#333] z-10">
+                                    הוסף לסל
+                                </button>
+                            </div>
+                            
+                            <p class="text-[10px] text-gray-600 italic text-center">
+                                * ברכישת מוצר זה אתם מוותרים על זכותכם לתבונה צרכנית.
+                            </p>
                         </div>
-                        
-                        <p class="text-[10px] text-center text-gray-600 mt-4">
-                            * בלחיצה אתם מוותרים על זכותכם להתלונן.
-                            <br>
-                            * אין החזרים, הכסף הולך למימון היאכטה שלי.
-                        </p>
                     </div>
                 </section>
             `
         };
 
-        // Router Logic
+        // --- LOGIC ---
+
         function router(viewName) {
             const app = document.getElementById('app');
-            app.innerHTML = '<div class="fade-in">' + views[viewName] + '</div>';
-            lucide.createIcons();
+            app.innerHTML = views[viewName];
             
-            if(viewName === 'distraction') initGame();
-            if(viewName === 'shop') initShopLogic();
+            // Scroll to top
+            window.scrollTo(0,0);
+            
+            // Re-initialize Lucide icons for new content
+            lucide.createIcons();
+
+            // Initialize view-specific scripts
+            if (viewName === 'distraction') initDistractionGame();
+            if (viewName === 'shop') initShopButton();
         }
 
-        // Shop Logic (Runaway Button)
-        function initShopLogic() {
-            const btn = document.getElementById('buy-btn');
-            const area = document.getElementById('btn-area');
-            let clicks = 0;
+        function toggleMobileMenu() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        }
 
-            if(!btn) return;
+        // --- SHOP BUTTON LOGIC ---
+        function initShopButton() {
+            const btn = document.getElementById('runaway-btn');
+            const container = document.getElementById('btn-container');
+            let escapes = 0;
 
-            // Make it hard to click
-            btn.addEventListener('mouseover', (e) => {
-                if (clicks < 5) { // After 5 tries, let them click it out of pity
-                    const x = (Math.random() - 0.5) * 200;
-                    const y = (Math.random() - 0.5) * 100;
-                    btn.style.transform = `translate(${x}px, ${y}px)`;
-                    clicks++;
+            if (!btn || !container) return;
+
+            btn.addEventListener('mouseover', () => {
+                if (escapes < 5) {
+                    const containerRect = container.getBoundingClientRect();
+                    const btnRect = btn.getBoundingClientRect();
+                    
+                    const maxX = containerRect.width - btnRect.width - 20;
+                    const maxY = containerRect.height - btnRect.height - 20;
+                    
+                    const randomX = Math.random() * maxX - (maxX / 2);
+                    const randomY = Math.random() * maxY - (maxY / 2);
+                    
+                    btn.style.transform = `translate(${randomX}px, ${randomY}px)`;
+                    escapes++;
                 } else {
-                    btn.innerText = "נו, בחייאת...";
-                    btn.classList.add('bg-red-500', 'text-white');
-                    btn.classList.remove('bg-white', 'text-black');
+                    btn.style.transform = 'translate(0, 0)';
+                    btn.classList.add('bg-red-600', 'text-white');
+                    btn.innerText = "טוב, נו. לחץ.";
                 }
             });
 
             btn.addEventListener('click', () => {
-                document.getElementById('buy-modal').classList.remove('hidden');
+                const modal = document.getElementById('buy-modal');
+                modal.classList.remove('hidden');
+                // Reset content in case it was changed
+                document.getElementById('modal-content').innerHTML = `
+                    <i data-lucide="alert-triangle" class="w-12 h-12 text-red-500 mx-auto mb-6"></i>
+                    <h2 class="font-serif text-3xl text-white mb-4">עצור!</h2>
+                    <p class="text-gray-400 mb-8 leading-relaxed">
+                        אתה עומד לבצע טעות כלכלית.
+                        <br>
+                        הקרם הזה מכיל 98% מים ו-2% תקווה שווא.
+                        <br>
+                        אתה בטוח שאתה רוצה להמשיך?
+                    </p>
+                    
+                    <div class="flex flex-col gap-3">
+                        <button onclick="closeModal()" class="w-full py-4 bg-white text-black font-bold hover:bg-gray-200 transition-colors tracking-widest uppercase">
+                            הצלתם אותי, תודה
+                        </button>
+                        <button onclick="finalPurchase()" class="text-xs text-red-900 hover:text-red-500 underline transition-colors mt-2">
+                            אני מתעקש לזרוק כסף לפח
+                        </button>
+                    </div>
+                `;
+                lucide.createIcons();
             });
         }
 
-        // Modal Logic
+        // --- MODAL LOGIC ---
         function closeModal() {
             document.getElementById('buy-modal').classList.add('hidden');
         }
 
         function finalPurchase() {
-            const modalContent = document.querySelector('#buy-modal > div');
-            modalContent.innerHTML = `
-                <div class="text-center py-10">
-                    <i data-lucide="loader" class="w-12 h-12 text-white animate-spin mx-auto mb-4"></i>
-                    <h3 class="text-xl text-white mb-2">מעבד את הטעות שלך...</h3>
-                    <p class="text-gray-500 text-sm">אנחנו לוקחים את הכסף ממש לאט כדי שתוכל להתחרט</p>
+            const content = document.getElementById('modal-content');
+            content.innerHTML = `
+                <div class="py-12 animate-pulse">
+                    <i data-lucide="loader" class="w-16 h-16 text-white animate-spin mx-auto mb-6"></i>
+                    <h3 class="text-xl text-white">מעבד את הטעות שלך...</h3>
+                    <p class="text-xs text-gray-500 mt-2">שורף את הכסף דיגיטלית</p>
                 </div>
             `;
             lucide.createIcons();
-            
+
             setTimeout(() => {
-                modalContent.innerHTML = `
-                    <div class="text-center py-10">
-                        <h3 class="text-4xl text-white font-serif mb-4">נמכר.</h3>
-                        <p class="text-gray-400 mb-8">הקרם בדרך. הוא לא יעזור.<br>תודה על הכסף.</p>
-                        <button onclick="location.reload()" class="text-xs underline text-gray-600">התחל מחדש (אולי הפעם תהיה חכם)</button>
+                content.innerHTML = `
+                    <div class="py-8">
+                        <h3 class="text-4xl text-red-500 font-serif mb-4">נמכר.</h3>
+                        <p class="text-gray-400 mb-8">
+                            תודה על התרומה לקרן הנופש של המנכ"ל.
+                            <br>
+                            המוצר לא יישלח, אבל החשבונית בדרך.
+                        </p>
+                        <button onclick="location.reload()" class="text-white border-b border-white pb-1 hover:text-gray-300">התחל מחדש</button>
                     </div>
                 `;
-            }, 3000);
+            }, 2500);
         }
 
-        // Distraction Game (Bubble Pop)
-        function initGame() {
-            const container = document.getElementById('game-container');
+        // --- CONTACT FORM LOGIC ---
+        function fakeSubmit(form) {
+            const feedback = document.getElementById('form-feedback');
+            const btn = form.querySelector('button');
+            
+            btn.innerHTML = "גורס...";
+            btn.disabled = true;
+
+            setTimeout(() => {
+                feedback.classList.remove('hidden');
+                btn.innerHTML = "נכשל בהצלחה";
+                form.reset();
+            }, 1500);
+        }
+
+        // --- GAME LOGIC ---
+        function initDistractionGame() {
+            const area = document.getElementById('game-area');
             const scoreEl = document.getElementById('score');
-            let saved = 0;
+            if(!area) return;
+            
+            let savings = 0;
+            let gameInterval = setInterval(() => {
+                if (!document.getElementById('game-area')) {
+                    clearInterval(gameInterval);
+                    return;
+                }
 
-            setInterval(() => {
-                if(!document.getElementById('game-container')) return; // Stop if view changed
-                
                 const bubble = document.createElement('div');
-                const size = Math.random() * 60 + 20;
+                const size = Math.random() * 50 + 20;
                 
-                bubble.style.width = size + 'px';
-                bubble.style.height = size + 'px';
-                bubble.style.position = 'absolute';
-                bubble.style.left = Math.random() * 90 + '%';
-                bubble.style.top = '110%';
-                bubble.style.background = 'rgba(255, 255, 255, 0.1)';
-                bubble.style.border = '1px solid rgba(255, 255, 255, 0.3)';
-                bubble.style.borderRadius = '50%';
-                bubble.style.cursor = 'pointer';
-                bubble.style.transition = 'top 5s linear';
-                
-                bubble.onmouseover = () => {
-                    bubble.style.transform = 'scale(1.5)';
-                    bubble.style.background = 'rgba(255, 0, 0, 0.2)';
-                };
+                bubble.style.cssText = `
+                    position: absolute;
+                    width: ${size}px;
+                    height: ${size}px;
+                    background: rgba(255,255,255,0.1);
+                    border: 1px solid rgba(255,255,255,0.3);
+                    border-radius: 50%;
+                    left: ${Math.random() * 90}%;
+                    top: 100%;
+                    cursor: pointer;
+                    transition: transform 0.2s;
+                `;
 
+                bubble.onmouseover = () => bubble.style.background = 'rgba(220,38,38,0.4)';
                 bubble.onclick = () => {
-                    bubble.remove();
-                    saved += 5;
-                    scoreEl.innerText = saved + ' ₪';
+                    bubble.style.transform = "scale(1.5)";
+                    bubble.style.opacity = "0";
+                    setTimeout(() => bubble.remove(), 200);
+                    savings += 5;
+                    scoreEl.innerText = savings + " ₪";
                 };
 
-                container.appendChild(bubble);
+                area.appendChild(bubble);
 
-                // Animate
-                setTimeout(() => {
-                    bubble.style.top = '-100px';
-                }, 100);
+                // Animation
+                let pos = 100;
+                const speed = Math.random() * 0.5 + 0.2;
+                
+                const move = setInterval(() => {
+                    if(!bubble.isConnected) { clearInterval(move); return; }
+                    pos -= speed;
+                    bubble.style.top = pos + '%';
+                    if(pos < -10) {
+                        bubble.remove();
+                        clearInterval(move);
+                    }
+                }, 16);
 
-                // Cleanup
-                setTimeout(() => {
-                    if(bubble.parentNode) bubble.remove();
-                }, 5000);
-
-            }, 500);
+            }, 600);
         }
 
         // Init
-        router('intro');
+        window.onload = () => {
+            router('intro');
+        };
     </script>
 </body>
 </html>
