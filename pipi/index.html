@@ -1,241 +1,220 @@
-import React, { useState } from 'react';
-import { Moon, Star, Send, Check, Phone, Mail, ShieldCheck, Heart } from 'lucide-react';
-
-const LandingPage = () => {
-  const [formStatus, setFormStatus] = useState('idle'); // idle, submitting, success
-  const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    email: ''
-  });
-
-  const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setFormStatus('submitting');
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>יוכבד רבינוביץ - פתרונות לשינה רגועה</title>
     
-    // Simulating API call
-    setTimeout(() => {
-      setFormStatus('success');
-      // Here you would typically send data to Google Sheets/Forms or Email service
-    }, 1500);
-  };
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
 
-  if (formStatus === 'success') {
-    return (
-      <div dir="rtl" className="min-h-screen bg-slate-50 flex items-center justify-center p-4 font-sans">
-        <div className="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full text-center border-t-4 border-indigo-500">
-          <div className="mx-auto bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mb-4">
-            <Check className="w-8 h-8 text-green-600" />
-          </div>
-          <h2 className="text-2xl font-bold text-slate-800 mb-2">הפרטים התקבלו בהצלחה!</h2>
-          <p className="text-slate-600 mb-6">
-            תודה רבה {formData.name}.<br/>
-            אנו ניצור איתך קשר בהקדם בטלפון שמסרת להשלמת הרכישה ותיאום המשלוח.
-          </p>
-          <button 
-            onClick={() => setFormStatus('idle')}
-            className="text-indigo-600 font-medium hover:text-indigo-800 underline"
-          >
-            חזרה לאתר
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div dir="rtl" className="min-h-screen bg-slate-50 font-sans text-slate-800">
-      
-      {/* Header / Navigation */}
-      <nav className="bg-white shadow-sm sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <Moon className="text-indigo-600 w-6 h-6 fill-indigo-100" />
-            <span className="font-bold text-xl text-slate-800">יוכבד רבינוביץ</span>
-          </div>
-          <div className="text-sm font-medium text-slate-500 hidden sm:block">
-            פתרונות לשינה רגועה
-          </div>
-        </div>
-      </nav>
-
-      {/* Hero Section */}
-      <header className="bg-gradient-to-b from-indigo-50 to-white py-12 sm:py-20 px-4">
-        <div className="max-w-3xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 bg-indigo-100 text-indigo-800 px-4 py-1.5 rounded-full text-sm font-medium mb-6">
-            <Star className="w-4 h-4" />
-            ערכה מוכחת ומומלצת
-          </div>
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 mb-6 leading-tight">
-            לילה יבש,
-            <br />
-            בוקר מלא בחיוכים
-          </h1>
-          <p className="text-lg sm:text-xl text-slate-600 mb-10 max-w-2xl mx-auto leading-relaxed">
-            הערכה המקצועית שתעזור לילדכם להיגמל מהרטבת לילה בביטחון וברוגע.
-            פתרון דיסקרטי ומותאם לכל בית.
-          </p>
-          <a 
-            href="#order-form"
-            className="inline-block bg-indigo-600 hover:bg-indigo-700 text-white text-lg font-bold py-4 px-10 rounded-xl shadow-lg shadow-indigo-200 transition-all transform hover:-translate-y-1"
-          >
-            אני רוצה להזמין את הערכה
-          </a>
-        </div>
-      </header>
-
-      {/* Features Grid */}
-      <section className="py-16 px-4 bg-white">
-        <div className="max-w-4xl mx-auto">
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-              <div className="bg-white w-12 h-12 rounded-xl shadow-sm flex items-center justify-center mb-4 text-indigo-600">
-                <ShieldCheck className="w-6 h-6" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">שיטה בדוקה</h3>
-              <p className="text-slate-600 leading-relaxed">
-                הערכה פותחה על בסיס ניסיון רב שנים ומלווה מאות משפחות להצלחה מלאה.
-              </p>
+    <!-- Navbar -->
+    <nav class="bg-white shadow-sm sticky top-0 z-10">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <i data-lucide="moon" class="text-indigo-600 w-6 h-6 fill-indigo-100"></i>
+                <span class="font-bold text-xl text-slate-800">יוכבד רבינוביץ</span>
             </div>
-            <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-              <div className="bg-white w-12 h-12 rounded-xl shadow-sm flex items-center justify-center mb-4 text-indigo-600">
-                <Heart className="w-6 h-6" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">גישה מעצימה</h3>
-              <p className="text-slate-600 leading-relaxed">
-                התהליך מתמקד בחיזוק הביטחון העצמי של הילד, ללא לחץ וללא תחושת כישלון.
-              </p>
+            <div class="text-sm font-medium text-slate-500 hidden sm:block">
+                פתרונות לשינה רגועה
             </div>
-            <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-              <div className="bg-white w-12 h-12 rounded-xl shadow-sm flex items-center justify-center mb-4 text-indigo-600">
-                <Phone className="w-6 h-6" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">ליווי אישי</h3>
-              <p className="text-slate-600 leading-relaxed">
-                אנחנו כאן לכל שאלה. הרכישה כוללת אפשרות להתייעצות טלפונית ראשונית.
-              </p>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div id="main-content">
+        <!-- Hero Section -->
+        <header class="bg-gradient-to-b from-indigo-50 to-white py-12 sm:py-20 px-4">
+            <div class="max-w-3xl mx-auto text-center">
+                <div class="inline-flex items-center gap-2 bg-indigo-100 text-indigo-800 px-4 py-1.5 rounded-full text-sm font-medium mb-6">
+                    <i data-lucide="star" class="w-4 h-4"></i>
+                    ערכה מוכחת ומומלצת
+                </div>
+                <h1 class="text-4xl sm:text-5xl font-extrabold text-slate-900 mb-6 leading-tight">
+                    לילה יבש,
+                    <br />
+                    בוקר מלא בחיוכים
+                </h1>
+                <p class="text-lg sm:text-xl text-slate-600 mb-10 max-w-2xl mx-auto leading-relaxed">
+                    הערכה המקצועית שתעזור לילדכם להיגמל מהרטבת לילה בביטחון וברוגע.
+                    פתרון דיסקרטי ומותאם לכל בית.
+                </p>
+                <a href="#order-form" class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white text-lg font-bold py-4 px-10 rounded-xl shadow-lg shadow-indigo-200 transition-all transform hover:-translate-y-1">
+                    אני רוצה להזמין את הערכה
+                </a>
             </div>
-          </div>
-        </div>
-      </section>
+        </header>
 
-      {/* Pricing & CTA Section */}
-      <section id="order-form" className="py-16 px-4 bg-indigo-900 text-white">
-        <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-12">
-          
-          {/* Left Side: Product Details */}
-          <div className="flex-1 text-center md:text-right">
-            <h2 className="text-3xl font-bold mb-6">ערכת הלילה השקטה</h2>
-            <ul className="space-y-4 mb-8 text-indigo-100">
-              <li className="flex items-center gap-3">
-                <Check className="w-5 h-5 text-green-400 shrink-0" />
-                <span>מכשיר זמזם איכותי ורגיש</span>
-              </li>
-              <li className="flex items-center gap-3">
-                <Check className="w-5 h-5 text-green-400 shrink-0" />
-                <span>טבלת מעקב והצלחות לילד</span>
-              </li>
-              <li className="flex items-center gap-3">
-                <Check className="w-5 h-5 text-green-400 shrink-0" />
-                <span>דף הנחיות מפורט להורים</span>
-              </li>
-              <li className="flex items-center gap-3">
-                <Check className="w-5 h-5 text-green-400 shrink-0" />
-                <span>בונוס: סיפור שמע לפני השינה</span>
-              </li>
-            </ul>
-            <div className="mb-8">
-              <span className="text-5xl font-bold">250 ₪</span>
-              <span className="text-indigo-300 mr-3 text-lg">כולל משלוח</span>
+        <!-- Features Grid -->
+        <section class="py-16 px-4 bg-white">
+            <div class="max-w-4xl mx-auto">
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- Feature 1 -->
+                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                        <div class="bg-white w-12 h-12 rounded-xl shadow-sm flex items-center justify-center mb-4 text-indigo-600">
+                            <i data-lucide="shield-check" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">שיטה בדוקה</h3>
+                        <p class="text-slate-600 leading-relaxed">
+                            הערכה פותחה על בסיס ניסיון רב שנים ומלווה מאות משפחות להצלחה מלאה.
+                        </p>
+                    </div>
+                    <!-- Feature 2 -->
+                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                        <div class="bg-white w-12 h-12 rounded-xl shadow-sm flex items-center justify-center mb-4 text-indigo-600">
+                            <i data-lucide="heart" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">גישה מעצימה</h3>
+                        <p class="text-slate-600 leading-relaxed">
+                            התהליך מתמקד בחיזוק הביטחון העצמי של הילד, ללא לחץ וללא תחושת כישלון.
+                        </p>
+                    </div>
+                    <!-- Feature 3 -->
+                    <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                        <div class="bg-white w-12 h-12 rounded-xl shadow-sm flex items-center justify-center mb-4 text-indigo-600">
+                            <i data-lucide="phone" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">ליווי אישי</h3>
+                        <p class="text-slate-600 leading-relaxed">
+                            אנחנו כאן לכל שאלה. הרכישה כוללת אפשרות להתייעצות טלפונית ראשונית.
+                        </p>
+                    </div>
+                </div>
             </div>
-            <p className="text-indigo-200 text-sm max-w-md">
-              * התשלום מתבצע לאחר יצירת קשר טלפוני. אין צורך בכרטיס אשראי כרגע.
-            </p>
-          </div>
+        </section>
 
-          {/* Right Side: Form */}
-          <div className="w-full md:w-96 bg-white rounded-2xl p-6 shadow-2xl text-slate-800">
-            <h3 className="text-xl font-bold mb-4 text-center">השארת פרטים להזמנה</h3>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">שם מלא</label>
-                <input
-                  required
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-colors"
-                  placeholder="ישראל ישראלי"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">מספר טלפון</label>
-                <input
-                  required
-                  type="tel"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-colors"
-                  placeholder="050-0000000"
-                />
-              </div>
+        <!-- Pricing & Form Section -->
+        <section id="order-form" class="py-16 px-4 bg-indigo-900 text-white">
+            <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-12">
+                
+                <!-- Left Side -->
+                <div class="flex-1 text-center md:text-right">
+                    <h2 class="text-3xl font-bold mb-6">ערכת הלילה השקטה</h2>
+                    <ul class="space-y-4 mb-8 text-indigo-100">
+                        <li class="flex items-center gap-3"><i data-lucide="check" class="w-5 h-5 text-green-400 shrink-0"></i><span>מכשיר זמזם איכותי ורגיש</span></li>
+                        <li class="flex items-center gap-3"><i data-lucide="check" class="w-5 h-5 text-green-400 shrink-0"></i><span>טבלת מעקב והצלחות לילד</span></li>
+                        <li class="flex items-center gap-3"><i data-lucide="check" class="w-5 h-5 text-green-400 shrink-0"></i><span>דף הנחיות מפורט להורים</span></li>
+                        <li class="flex items-center gap-3"><i data-lucide="check" class="w-5 h-5 text-green-400 shrink-0"></i><span>בונוס: סיפור שמע לפני השינה</span></li>
+                    </ul>
+                    <div class="mb-8">
+                        <span class="text-5xl font-bold">250 ₪</span>
+                        <span class="text-indigo-300 mr-3 text-lg">כולל משלוח</span>
+                    </div>
+                    <p class="text-indigo-200 text-sm max-w-md">
+                        * התשלום מתבצע לאחר יצירת קשר טלפוני. אין צורך בכרטיס אשראי כרגע.
+                    </p>
+                </div>
 
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">כתובת אימייל</label>
-                <input
-                  required
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-colors"
-                  placeholder="email@example.com"
-                />
-              </div>
+                <!-- Right Side: Form -->
+                <div class="w-full md:w-96 bg-white rounded-2xl p-6 shadow-2xl text-slate-800">
+                    <h3 class="text-xl font-bold mb-4 text-center">השארת פרטים להזמנה</h3>
+                    
+                    <form id="leadForm" onsubmit="handleSubmit(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">שם מלא</label>
+                            <input required type="text" id="name" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-colors" placeholder="ישראל ישראלי">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">מספר טלפון</label>
+                            <input required type="tel" id="phone" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-colors" placeholder="050-0000000">
+                        </div>
 
-              <button
-                type="submit"
-                disabled={formStatus === 'submitting'}
-                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2"
-              >
-                {formStatus === 'submitting' ? 'שולח...' : 'אני רוצה להזמין'}
-                {formStatus !== 'submitting' && <Send className="w-4 h-4" />}
-              </button>
-              
-              <p className="text-xs text-center text-slate-500 mt-4">
-                בלחיצה על הכפתור אני מאשר/ת יצירת קשר לצורך השלמת הרכישה
-              </p>
-            </form>
-          </div>
-        </div>
-      </section>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">כתובת אימייל</label>
+                            <input required type="email" id="email" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-colors" placeholder="email@example.com">
+                        </div>
 
-      {/* Footer */}
-      <footer className="bg-slate-50 py-8 text-center text-slate-500 text-sm border-t border-slate-200">
-        <p>© כל הזכויות שמורות ליוכבד רבינוביץ - פתרונות להרטבת לילה</p>
-        <div className="flex justify-center gap-4 mt-4">
-          <div className="flex items-center gap-1">
-            <Mail className="w-4 h-4" />
-            <span>office@yocheved-r.co.il</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <Phone className="w-4 h-4" />
-            <span>03-0000000</span>
-          </div>
-        </div>
-      </footer>
+                        <button type="submit" id="submitBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2">
+                            <span>אני רוצה להזמין</span>
+                            <i data-lucide="send" class="w-4 h-4"></i>
+                        </button>
+                        
+                        <p class="text-xs text-center text-slate-500 mt-4">
+                            בלחיצה על הכפתור אני מאשר/ת יצירת קשר לצורך השלמת הרכישה
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </section>
     </div>
-  );
-};
 
-export default LandingPage;
+    <!-- Success Message (Hidden initially) -->
+    <div id="success-view" class="hidden min-h-screen bg-slate-50 flex items-center justify-center p-4 fixed inset-0 z-50">
+        <div class="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full text-center border-t-4 border-indigo-500">
+            <div class="mx-auto bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mb-4">
+                <i data-lucide="check" class="w-8 h-8 text-green-600"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-slate-800 mb-2">הפרטים התקבלו בהצלחה!</h2>
+            <p class="text-slate-600 mb-6">
+                תודה רבה <span id="success-name" class="font-bold"></span>.<br/>
+                אנו ניצור איתך קשר בהקדם בטלפון שמסרת להשלמת הרכישה ותיאום המשלוח.
+            </p>
+            <button onclick="resetView()" class="text-indigo-600 font-medium hover:text-indigo-800 underline">
+                חזרה לאתר
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-50 py-8 text-center text-slate-500 text-sm border-t border-slate-200 mt-auto">
+        <p>© כל הזכויות שמורות ליוכבד רבינוביץ - פתרונות להרטבת לילה</p>
+        <div class="flex justify-center gap-4 mt-4">
+            <div class="flex items-center gap-1">
+                <i data-lucide="mail" class="w-4 h-4"></i>
+                <span>office@yocheved-r.co.il</span>
+            </div>
+            <div class="flex items-center gap-1">
+                <i data-lucide="phone" class="w-4 h-4"></i>
+                <span>03-0000000</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        function handleSubmit(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('submitBtn');
+            const name = document.getElementById('name').value;
+            
+            // Loading State
+            const originalText = btn.innerHTML;
+            btn.innerHTML = 'שולח...';
+            btn.disabled = true;
+            btn.classList.add('opacity-75');
+
+            // Simulate API
+            setTimeout(() => {
+                document.getElementById('success-name').textContent = name;
+                document.getElementById('main-content').classList.add('hidden');
+                document.getElementById('success-view').classList.remove('hidden');
+                
+                // Reset form
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                btn.classList.remove('opacity-75');
+            }, 1500);
+        }
+
+        function resetView() {
+            document.getElementById('leadForm').reset();
+            document.getElementById('success-view').classList.add('hidden');
+            document.getElementById('main-content').classList.remove('hidden');
+            window.scrollTo(0, 0);
+        }
+    </script>
+</body>
+</html>
