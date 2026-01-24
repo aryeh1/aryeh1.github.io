@@ -17,14 +17,14 @@ export function Dashboard() {
         {/* Header */}
         <header className="flex justify-between items-center mb-12">
           <div>
-            <Link to="/" className="text-sm text-gray-400 hover:text-[var(--accent)]">
+            <Link to="/" className="text-sm text-[var(--text-muted)] dark:text-[var(--text-dark-muted)] hover:text-[var(--accent)]">
               ← Home
             </Link>
             <h1 className="text-3xl font-light mt-4">Private Dashboard</h1>
           </div>
           <button
             onClick={logout}
-            className="text-sm text-gray-400 hover:text-red-500 transition-colors"
+            className="text-sm text-[var(--text-muted)] dark:text-[var(--text-dark-muted)] hover:text-[var(--accent)] transition-colors"
           >
             Logout
           </button>
@@ -57,17 +57,17 @@ export function Dashboard() {
         {/* Status */}
         <section>
           <h2 className="text-lg font-medium mb-4">Site Status</h2>
-          <div className="border border-gray-100 dark:border-gray-700 rounded-lg p-4 space-y-2 text-sm">
+          <div className="border border-[var(--border)] dark:border-[var(--border-dark)] rounded-lg p-4 space-y-2 text-sm">
             <div className="flex justify-between">
-              <span className="text-gray-500">Environment</span>
+              <span className="text-[var(--text-secondary)] dark:text-[var(--text-dark-secondary)]">Environment</span>
               <span>GitHub Pages</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-500">Build</span>
-              <span className="text-green-600">Passing</span>
+              <span className="text-[var(--text-secondary)] dark:text-[var(--text-dark-secondary)]">Build</span>
+              <span className="text-[var(--accent)]">Passing</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-500">Last Update</span>
+              <span className="text-[var(--text-secondary)] dark:text-[var(--text-dark-secondary)]">Last Update</span>
               <span>{new Date().toLocaleDateString()}</span>
             </div>
           </div>
@@ -85,7 +85,7 @@ interface ActionCardProps {
 }
 
 function ActionCard({ title, description, href, external }: ActionCardProps) {
-  const cardClasses = "block border border-gray-100 dark:border-gray-700 p-4 rounded-lg hover:border-[var(--accent)] transition-colors";
+  const cardClasses = "block border border-[var(--border)] dark:border-[var(--border-dark)] p-4 rounded-lg hover:border-[var(--accent)] transition-colors bg-[var(--bg-card)] dark:bg-[var(--bg-dark-card)]";
 
   if (external) {
     return (
@@ -96,7 +96,7 @@ function ActionCard({ title, description, href, external }: ActionCardProps) {
         className={cardClasses}
       >
         <h3 className="font-medium">{title}</h3>
-        <p className="text-sm text-gray-500">{description}</p>
+        <p className="text-sm text-[var(--text-secondary)] dark:text-[var(--text-dark-secondary)]">{description}</p>
       </a>
     );
   }
@@ -104,7 +104,7 @@ function ActionCard({ title, description, href, external }: ActionCardProps) {
   return (
     <Link to={href} className={cardClasses}>
       <h3 className="font-medium">{title}</h3>
-      <p className="text-sm text-gray-500">{description}</p>
+      <p className="text-sm text-[var(--text-secondary)] dark:text-[var(--text-dark-secondary)]">{description}</p>
     </Link>
   );
 }

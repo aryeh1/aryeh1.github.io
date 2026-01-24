@@ -37,7 +37,7 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="text-center">
             <div className="text-4xl mb-4">鍵</div>
-            <p className="text-sm text-[var(--text-light)] dark:text-[var(--text-dark-light)]">
+            <p className="text-sm text-[var(--text-secondary)] dark:text-[var(--text-dark-secondary)]">
               Protected area
             </p>
           </div>
@@ -52,7 +52,7 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
                          rounded-lg focus:outline-none focus:border-[var(--accent)]
                          bg-transparent text-center
                          text-[var(--text-primary)] dark:text-[var(--text-dark)]
-                         placeholder:text-[var(--text-light)] dark:placeholder:text-[var(--text-dark-light)]"
+                         placeholder:text-[var(--text-secondary)] dark:placeholder:text-[var(--text-dark-secondary)]"
               autoFocus
               disabled={loading}
             />

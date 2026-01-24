@@ -30,7 +30,7 @@ export function Landing() {
         onClick={toggleTheme}
         className="absolute top-6 right-6 w-10 h-10 rounded-full
                    flex items-center justify-center
-                   hover:bg-gray-100 dark:hover:bg-gray-800
+                   hover:bg-[var(--bg-alt)] dark:hover:bg-[var(--bg-dark-alt)]
                    transition-colors text-lg"
         aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
       >
@@ -56,7 +56,7 @@ export function Landing() {
         <motion.p
           variants={fadeInUp}
           transition={{ duration: 0.8, ease: 'easeOut', delay: 0.1 }}
-          className="text-lg text-gray-500 dark:text-gray-400 font-light"
+          className="text-lg text-[var(--text-secondary)] dark:text-[var(--text-dark-secondary)] font-light"
         >
           {siteConfig.title}
         </motion.p>
@@ -119,7 +119,7 @@ export function Landing() {
         >
           <Link
             to="/lab"
-            className="inline-block mt-8 text-xs text-gray-400 hover:text-[var(--accent)]
+            className="inline-block mt-8 text-xs text-[var(--text-muted)] dark:text-[var(--text-dark-muted)] hover:text-[var(--accent)]
                        transition-colors border-b border-transparent hover:border-[var(--accent)]"
           >
             Enter Lab →
@@ -134,11 +134,11 @@ export function Landing() {
         transition={{ delay: 1.5, duration: 0.5 }}
         className="absolute bottom-8 text-center"
       >
-        <div className="text-xs text-gray-400 dark:text-gray-500">
+        <div className="text-xs text-[var(--text-muted)] dark:text-[var(--text-dark-muted)]">
           <span className="font-serif-he">間</span>
           <span className="ml-2">Ma</span>
         </div>
-        <div className="text-[10px] text-gray-300 dark:text-gray-600 mt-2">
+        <div className="text-[10px] text-[var(--text-muted)] dark:text-[var(--text-dark-muted)] opacity-60 mt-2">
           v{__BUILD_VERSION__} · {new Date(__BUILD_TIME__).toLocaleString('en-GB', {
             timeZone: 'UTC',
             year: 'numeric',

@@ -15,13 +15,13 @@ export function NotMeApp() {
         <div className="text-center py-12">
           <div className="text-6xl mb-6">🎭</div>
           <h1 className="text-4xl font-light mb-2">Not Me</h1>
-          <p className="text-xl text-[var(--text-light)] dark:text-[var(--text-dark-light)] font-serif-he" dir="rtl">
+          <p className="text-xl text-[var(--text-secondary)] dark:text-[var(--text-dark-secondary)] font-serif-he" dir="rtl">
             לא אני
           </p>
         </div>
 
         {/* Description */}
-        <div className="space-y-4 text-[var(--text-light)] dark:text-[var(--text-dark-light)]">
+        <div className="space-y-4 text-[var(--text-secondary)] dark:text-[var(--text-dark-secondary)]">
           <p>
             A mobile application exploring identity, perception, and self-reflection.
           </p>
@@ -33,15 +33,15 @@ export function NotMeApp() {
         {/* Placeholder for app screenshots/demo */}
         <div className="border-2 border-dashed border-[var(--border)] dark:border-[var(--border-dark)]
                         rounded-xl p-12 text-center">
-          <p className="text-[var(--text-light)] dark:text-[var(--text-dark-light)] text-sm">
+          <p className="text-[var(--text-secondary)] dark:text-[var(--text-dark-secondary)] text-sm">
             App preview coming soon
           </p>
         </div>
 
         {/* Status */}
         <div className="flex items-center justify-center gap-2 text-sm">
-          <span className="w-2 h-2 bg-yellow-400 dark:bg-yellow-500 rounded-full animate-pulse" />
-          <span className="text-[var(--text-light)] dark:text-[var(--text-dark-light)]">In Development</span>
+          <span className="w-2 h-2 bg-[var(--accent)] rounded-full animate-pulse" />
+          <span className="text-[var(--text-secondary)] dark:text-[var(--text-dark-secondary)]">In Development</span>
         </div>
       </motion.div>
     </main>

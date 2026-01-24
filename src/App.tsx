@@ -19,7 +19,7 @@ function PageLoader() {
       <div className="text-center space-y-4">
         <div className="w-8 h-8 border-2 border-[var(--accent)] border-t-transparent
                         rounded-full animate-spin mx-auto" />
-        <p className="text-sm text-gray-400">Loading...</p>
+        <p className="text-sm text-[var(--text-muted)] dark:text-[var(--text-dark-muted)]">Loading...</p>
       </div>
     </div>
   );
