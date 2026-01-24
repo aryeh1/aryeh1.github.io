@@ -8,12 +8,14 @@ interface NavLink {
   path: string;
   label: string;
   labelHe?: string;
+  external?: boolean;
 }
 
 const navLinks: NavLink[] = [
   { path: '/', label: 'Home', labelHe: 'בית' },
   { path: '/projects', label: 'Projects', labelHe: 'פרויקטים' },
   { path: '/lab', label: 'Lab', labelHe: 'מעבדה' },
+  { path: '/archive', label: 'Archive', labelHe: 'ארכיון', external: true },
 ];
 
 export function Header() {
@@ -38,22 +40,31 @@ export function Header() {
             <ul className="flex items-center gap-6">
               {navLinks.map((link) => (
                 <li key={link.path}>
-                  <Link
-                    to={link.path}
-                    className={`text-sm font-normal relative py-1 border-none transition-colors
-                      ${location.pathname === link.path
-                        ? 'text-[var(--accent)]'
-                        : 'text-[var(--text-primary)] dark:text-[var(--text-dark)] hover:text-[var(--accent)]'
-                      }`}
-                  >
-                    {link.label}
-                    {location.pathname === link.path && (
-                      <motion.div
-                        layoutId="nav-underline"
-                        className="absolute bottom-0 left-0 right-0 h-px bg-[var(--accent)]"
-                      />
-                    )}
-                  </Link>
+                  {link.external ? (
+                    <a
+                      href={link.path}
+                      className="text-sm font-normal relative py-1 border-none transition-colors text-[var(--text-primary)] dark:text-[var(--text-dark)] hover:text-[var(--accent)]"
+                    >
+                      {link.label}
+                    </a>
+                  ) : (
+                    <Link
+                      to={link.path}
+                      className={`text-sm font-normal relative py-1 border-none transition-colors
+                        ${location.pathname === link.path
+                          ? 'text-[var(--accent)]'
+                          : 'text-[var(--text-primary)] dark:text-[var(--text-dark)] hover:text-[var(--accent)]'
+                        }`}
+                    >
+                      {link.label}
+                      {location.pathname === link.path && (
+                        <motion.div
+                          layoutId="nav-underline"
+                          className="absolute bottom-0 left-0 right-0 h-px bg-[var(--accent)]"
+                        />
+                      )}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
@@ -115,17 +126,27 @@ export function Header() {
             <ul className="py-4 px-6 space-y-2">
               {navLinks.map((link) => (
                 <li key={link.path}>
-                  <Link
-                    to={link.path}
-                    onClick={() => setIsMenuOpen(false)}
-                    className={`block py-2 text-sm border-none transition-colors
-                      ${location.pathname === link.path
-                        ? 'text-[var(--accent)]'
-                        : 'text-[var(--text-primary)] dark:text-[var(--text-dark)] hover:text-[var(--accent)]'
-                      }`}
-                  >
-                    {link.label}
-                  </Link>
+                  {link.external ? (
+                    <a
+                      href={link.path}
+                      onClick={() => setIsMenuOpen(false)}
+                      className="block py-2 text-sm border-none transition-colors text-[var(--text-primary)] dark:text-[var(--text-dark)] hover:text-[var(--accent)]"
+                    >
+                      {link.label}
+                    </a>
+                  ) : (
+                    <Link
+                      to={link.path}
+                      onClick={() => setIsMenuOpen(false)}
+                      className={`block py-2 text-sm border-none transition-colors
+                        ${location.pathname === link.path
+                          ? 'text-[var(--accent)]'
+                          : 'text-[var(--text-primary)] dark:text-[var(--text-dark)] hover:text-[var(--accent)]'
+                        }`}
+                    >
+                      {link.label}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
