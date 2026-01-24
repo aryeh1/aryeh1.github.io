@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback, useEffect } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import type { KameaConfig, KameaLayer, ShapeType, KameaHistoryItem } from '@/lib/kamea/types';
 import {
   hashString,
@@ -67,31 +67,22 @@ export function useKameaGenerator(input: string, size = 300): KameaConfig | null
   }, [input, size]);
 }
 
+// Initialize from localStorage synchronously
+function getInitialHistory(): KameaHistoryItem[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      return JSON.parse(stored);
+    }
+  } catch {
+    // Ignore storage errors
+  }
+  return [];
+}
+
 export function useKameaHistory() {
-  const [history, setHistory] = useState<KameaHistoryItem[]>([]);
-
-  // Load from localStorage on mount
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        setHistory(JSON.parse(stored));
-      }
-    } catch {
-      // Ignore storage errors
-    }
-  }, []);
-
-  // Save to localStorage when history changes
-  useEffect(() => {
-    if (history.length > 0) {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
-      } catch {
-        // Ignore storage errors
-      }
-    }
-  }, [history]);
+  const [history, setHistory] = useState<KameaHistoryItem[]>(getInitialHistory);
 
   const addToHistory = useCallback((input: string) => {
     setHistory((prev) => {
@@ -106,7 +97,16 @@ export function useKameaHistory() {
         timestamp: Date.now(),
       };
 
-      return [newItem, ...prev].slice(0, MAX_HISTORY);
+      const updated = [newItem, ...prev].slice(0, MAX_HISTORY);
+
+      // Persist to localStorage
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+      } catch {
+        // Ignore storage errors
+      }
+
+      return updated;
     });
   }, []);
 
