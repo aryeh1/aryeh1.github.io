@@ -1,29 +1,16 @@
-# CI/CD Run Log
+# CI Run Log
 
-Automated log of build and test results. Updated by GitHub Actions.
+**Branch:** claude/new-website-build-WbsMm
+**Commit:** 95b6fd9811b6645ff4bcfa3af283d2932d5aa627
+**Time:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")
 
----
+## Results
 
-## Latest Runs
+| Step | Status |
+|------|--------|
+| Test | failure |
+| Build | skipped |
 
-| Date | Branch | Status | Duration | Notes |
-|------|--------|--------|----------|-------|
-| 2026-01-24 | claude/new-website-build-WbsMm | PENDING | - | Initial setup |
+## Summary
 
----
-
-## How to Read This Log
-
-- **Status**: PASS / FAIL / PENDING
-- **Duration**: Build + test time
-- **Notes**: Error summary if failed
-
-## For Agents
-
-If you see FAIL status:
-1. Check the error in Notes
-2. Fix the issue
-3. Commit and push
-4. Wait for new run result
-
-To manually trigger: Push any commit to branch.
+❌ **Failed.** Check workflow logs.
