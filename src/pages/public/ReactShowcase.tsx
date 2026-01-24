@@ -675,7 +675,7 @@ function Modal({ isOpen, onClose, children }: ModalProps) {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
             tabIndex={-1}
-            className="relative bg-[var(--bg)] dark:bg-[var(--bg-dark)} rounded-xl
+            className="relative bg-[var(--bg)] dark:bg-[var(--bg-dark)] rounded-xl
                        shadow-2xl p-6 max-w-md w-full outline-none"
             role="dialog"
             aria-modal="true"
