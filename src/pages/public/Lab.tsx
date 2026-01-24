@@ -34,6 +34,13 @@ const labItems: LabItem[] = [
     link: '/app/not-me',
   },
   {
+    id: 'react-showcase',
+    title: 'React Showcase',
+    description: '10 state-of-the-art React patterns, all interactive',
+    category: 'apps',
+    link: '/lab/react',
+  },
+  {
     id: 'kamea',
     title: 'Kamea',
     titleHe: 'קמע',
