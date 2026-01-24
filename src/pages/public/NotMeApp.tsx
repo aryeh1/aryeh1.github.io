@@ -1,5 +1,4 @@
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
 
 /** Not Me App showcase page */
 export function NotMeApp() {
@@ -11,12 +10,6 @@ export function NotMeApp() {
         transition={{ duration: 0.6 }}
         className="space-y-8"
       >
-        {/* Header */}
-        <header>
-          <Link to="/" className="text-sm text-gray-400 hover:text-[var(--accent)]">
-            ← Back
-          </Link>
-        </header>
 
         {/* App Info */}
         <div className="text-center py-12">

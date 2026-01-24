@@ -11,12 +11,12 @@ export function Projects() {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
-        {/* Header */}
+        {/* Page Title */}
         <header className="mb-12">
-          <Link to="/" className="text-sm text-gray-400 hover:text-[var(--accent)]">
-            ← Back
-          </Link>
-          <h1 className="text-3xl font-light mt-4">Projects</h1>
+          <h1 className="text-3xl font-light">Projects</h1>
+          <p className="text-[var(--text-light)] dark:text-[var(--text-dark-light)] mt-2">
+            A collection of personal projects and experiments
+          </p>
         </header>
 
         {/* Project Grid */}

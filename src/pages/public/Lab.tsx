@@ -1,6 +1,5 @@
 import { lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 // Lazy load Kamea for better performance
@@ -21,23 +20,6 @@ function LoadingSpinner() {
 export function Lab() {
   return (
     <main className="min-h-screen">
-      {/* Header */}
-      <header className="p-6 flex items-center justify-between max-w-4xl mx-auto">
-        <Link
-          to="/"
-          className="text-sm text-gray-400 hover:text-[var(--accent)] transition-colors"
-        >
-          ← Home
-        </Link>
-        <motion.h1
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-lg font-light"
-        >
-          Lab
-        </motion.h1>
-        <div className="w-16" /> {/* Spacer for centering */}
-      </header>
 
       {/* Kamea Section */}
       <section className="py-12">
