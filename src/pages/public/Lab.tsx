@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 
 const Kamea = lazy(() => import('@/components/kamea/Kamea').then(m => ({ default: m.Kamea })));
+const DecisionMaker = lazy(() => import('@/components/tools/DecisionMaker').then(m => ({ default: m.DecisionMaker })));
 
 function LoadingSpinner() {
   return (
@@ -13,7 +14,7 @@ function LoadingSpinner() {
   );
 }
 
-type Category = 'apps' | 'nonsense';
+type Category = 'apps' | 'tools' | 'nonsense';
 
 interface LabItem {
   id: string;
@@ -41,6 +42,13 @@ const labItems: LabItem[] = [
     link: '/lab/react',
   },
   {
+    id: 'decision',
+    title: 'Decision Maker',
+    titleHe: 'מחליט',
+    description: 'Spin the wheel when you can\'t decide',
+    category: 'tools',
+  },
+  {
     id: 'kamea',
     title: 'Kamea',
     titleHe: 'קמע',
@@ -51,6 +59,7 @@ const labItems: LabItem[] = [
 
 const categories: { id: Category; label: string }[] = [
   { id: 'apps', label: 'Apps' },
+  { id: 'tools', label: 'Tools' },
   { id: 'nonsense', label: 'Nonsense' },
 ];
 
@@ -143,6 +152,20 @@ export function Lab() {
                 <ErrorBoundary>
                   <Suspense fallback={<LoadingSpinner />}>
                     <Kamea />
+                  </Suspense>
+                </ErrorBoundary>
+              </motion.div>
+            )}
+            {expandedItem === item.id && item.id === 'decision' && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="mt-8 pt-8 border-t border-[var(--border)] dark:border-[var(--border-dark)]"
+              >
+                <ErrorBoundary>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <DecisionMaker />
                   </Suspense>
                 </ErrorBoundary>
               </motion.div>
