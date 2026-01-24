@@ -7,7 +7,7 @@ export const siteConfig: SiteConfig = {
   social: {
     linkedin: 'https://www.linkedin.com/in/aryeh-lopian/',
     github: 'https://github.com/aryeh1',
-    email: 'mailto:contact@example.com', // Update with real email
+    email: 'aryeh.lopian.07@gmail.com',
   },
   features: {
     darkMode: true,
@@ -17,5 +17,4 @@ export const siteConfig: SiteConfig = {
 };
 
 /** Password hash for protected sections (SHA-256) */
-// To generate: echo -n "your-password" | sha256sum
-export const PROTECTED_HASH = 'placeholder-hash-update-before-deploy';
+export const PROTECTED_HASH = 'b370edd9c33ddc1ae8117a1478816414bbdb9092022b23b82e890f297797713a';
