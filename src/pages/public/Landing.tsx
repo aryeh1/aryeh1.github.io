@@ -1,33 +1,86 @@
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { siteConfig } from '@/data/config';
+import { useDarkMode } from '@/hooks/useDarkMode';
+
+const fadeInUp = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+};
+
+const stagger = {
+  animate: {
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
 
 /** Minimalist landing page - Japanese-inspired */
 export function Landing() {
+  const { isDark, toggleTheme } = useDarkMode();
+
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center p-8">
+    <main className="min-h-screen flex flex-col items-center justify-center p-8 relative">
+      {/* Theme Toggle */}
+      <motion.button
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.5 }}
+        onClick={toggleTheme}
+        className="absolute top-6 right-6 w-10 h-10 rounded-full
+                   flex items-center justify-center
+                   hover:bg-gray-100 dark:hover:bg-gray-800
+                   transition-colors text-lg"
+        aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+      >
+        {isDark ? '☀' : '☽'}
+      </motion.button>
+
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: 'easeOut' }}
+        variants={stagger}
+        initial="initial"
+        animate="animate"
         className="text-center space-y-6"
       >
         {/* Name */}
-        <h1 className="text-4xl md:text-5xl font-light tracking-wide">
+        <motion.h1
+          variants={fadeInUp}
+          transition={{ duration: 0.8, ease: 'easeOut' }}
+          className="text-4xl md:text-5xl font-light tracking-wide"
+        >
           {siteConfig.name}
-        </h1>
+        </motion.h1>
 
         {/* Title */}
-        <p className="text-lg text-gray-500 font-light">
+        <motion.p
+          variants={fadeInUp}
+          transition={{ duration: 0.8, ease: 'easeOut', delay: 0.1 }}
+          className="text-lg text-gray-500 dark:text-gray-400 font-light"
+        >
           {siteConfig.title}
-        </p>
+        </motion.p>
 
         {/* Divider - Japanese-inspired */}
-        <div className="flex justify-center py-4">
-          <div className="w-12 h-px bg-[var(--accent)]" />
-        </div>
+        <motion.div
+          variants={fadeInUp}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="flex justify-center py-4"
+        >
+          <motion.div
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
+            className="w-16 h-px bg-[var(--accent)]"
+          />
+        </motion.div>
 
         {/* Social Links */}
-        <nav className="flex justify-center gap-8 text-sm">
+        <motion.nav
+          variants={fadeInUp}
+          transition={{ delay: 0.3 }}
+          className="flex justify-center gap-8 text-sm"
+        >
           {siteConfig.social.linkedin && (
             <a
               href={siteConfig.social.linkedin}
@@ -50,23 +103,39 @@ export function Landing() {
           )}
           {siteConfig.social.email && (
             <a
-              href={siteConfig.social.email}
+              href={`mailto:${siteConfig.social.email}`}
               className="hover:text-[var(--accent)] transition-colors"
             >
               Email
             </a>
           )}
-        </nav>
+        </motion.nav>
+
+        {/* Lab Link */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.2 }}
+        >
+          <Link
+            to="/lab"
+            className="inline-block mt-8 text-xs text-gray-400 hover:text-[var(--accent)]
+                       transition-colors border-b border-transparent hover:border-[var(--accent)]"
+          >
+            Enter Lab →
+          </Link>
+        </motion.div>
       </motion.div>
 
-      {/* Subtle footer */}
+      {/* Ma symbol footer */}
       <motion.footer
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1, duration: 0.5 }}
-        className="absolute bottom-8 text-xs text-gray-400"
+        transition={{ delay: 1.5, duration: 0.5 }}
+        className="absolute bottom-8 text-xs text-gray-400 dark:text-gray-500"
       >
-        間 Ma
+        <span className="font-serif-he">間</span>
+        <span className="ml-2">Ma</span>
       </motion.footer>
     </main>
   );
