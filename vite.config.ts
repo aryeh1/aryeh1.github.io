@@ -30,7 +30,7 @@ export default defineConfig({
     __BUILD_VERSION__: JSON.stringify(BUILD_VERSION),
     __BUILD_TIME__: JSON.stringify(BUILD_TIME),
   },
-  base: '/', // GitHub Pages root
+  base: process.env.VITE_BASE_PATH || '/',
   build: {
     outDir: 'dist',
     sourcemap: true,
