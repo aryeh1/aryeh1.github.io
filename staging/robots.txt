@@ -1,7 +1,0 @@
-# robots.txt - Site hidden from search engines
-User-agent: *
-Disallow: /
-
-# Allow specific crawlers if needed later
-# User-agent: Googlebot
-# Allow: /
