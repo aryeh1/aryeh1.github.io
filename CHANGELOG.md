@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-01-24
+
+### Changed
+- **Repository split**: This repo now contains only the public landing page
+- Full application (Lab, Kamea, auth, etc.) moved to separate private repo at lab.aryehlopian.com
+- Updated all documentation (CLAUDE.md, README.md, ARCHITECTURE.md) to reflect minimal scope
+
+### Removed
+- All pages except Landing (Lab, Projects, Dashboard, NotMeApp, Links)
+- Authentication system (useAuth, ProtectedRoute)
+- Kamea generative art engine
+- Layout components (Header, navigation)
+
 ## [0.2.0] - 2026-01-24
 
 ### Added
