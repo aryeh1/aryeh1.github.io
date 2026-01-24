@@ -39,8 +39,12 @@
   </div>
   <script>
     // Handle SPA routing for GitHub Pages
+    // Exclude static folders that should not be handled by the SPA
     const path = window.location.pathname;
-    if (path !== '/' && path !== '/404.html') {
+    const staticPaths = ['/archive'];
+    const isStaticPath = staticPaths.some(p => path === p || path.startsWith(p + '/'));
+    
+    if (path !== '/' && path !== '/404.html' && !isStaticPath) {
       sessionStorage.setItem('redirect', path);
       window.location.replace('/');
     }
