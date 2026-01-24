@@ -32,12 +32,14 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[var(--bg-primary)]">
+    <div className="min-h-screen flex items-center justify-center bg-[var(--bg-primary)] dark:bg-[var(--bg-dark)]">
       <div className="w-full max-w-sm p-8 animate-fade-in">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="text-center">
             <div className="text-4xl mb-4">鍵</div>
-            <p className="text-sm text-gray-500">Protected area</p>
+            <p className="text-sm text-[var(--text-light)] dark:text-[var(--text-dark-light)]">
+              Protected area
+            </p>
           </div>
 
           <div>
@@ -46,7 +48,11 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-[var(--accent)] bg-transparent text-center"
+              className="w-full px-4 py-3 border border-[var(--border)] dark:border-[var(--border-dark)]
+                         rounded-lg focus:outline-none focus:border-[var(--accent)]
+                         bg-transparent text-center
+                         text-[var(--text-primary)] dark:text-[var(--text-dark)]
+                         placeholder:text-[var(--text-light)] dark:placeholder:text-[var(--text-dark-light)]"
               autoFocus
               disabled={loading}
             />
@@ -61,7 +67,8 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
           <button
             type="submit"
             disabled={loading || !password}
-            className="w-full py-3 bg-[var(--accent)] text-white rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50"
+            className="w-full py-3 bg-[var(--accent)] text-white rounded-lg
+                       hover:opacity-90 transition-opacity disabled:opacity-50"
           >
             {loading ? '...' : 'Enter'}
           </button>
