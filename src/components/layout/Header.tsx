@@ -25,12 +25,12 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 bg-[var(--bg-primary)] dark:bg-[var(--bg-dark)] border-b border-[var(--border)] dark:border-[var(--border-dark)]">
-      <div className="max-w-[1100px] mx-auto px-6">
+      <div className="max-w-[var(--max-width)] mx-auto px-6">
         <div className="flex items-center justify-between h-14">
           {/* Logo */}
           <Link
             to="/"
-            className="text-lg font-light tracking-wide hover:text-[var(--accent)] transition-colors border-none"
+            className="text-lg font-light tracking-wide hover:text-[var(--accent)] dark:hover:text-[var(--accent-dark)] transition-colors"
           >
             {siteConfig.name}
           </Link>
@@ -43,24 +43,26 @@ export function Header() {
                   {link.external ? (
                     <a
                       href={link.path}
-                      className="text-sm font-normal relative py-1 border-none transition-colors text-[var(--text-primary)] dark:text-[var(--text-dark)] hover:text-[var(--accent)]"
+                      className="text-sm font-normal relative py-1 transition-colors
+                                 text-[var(--text-primary)] dark:text-[var(--text-dark)]
+                                 hover:text-[var(--accent)] dark:hover:text-[var(--accent-dark)]"
                     >
                       {link.label}
                     </a>
                   ) : (
                     <Link
                       to={link.path}
-                      className={`text-sm font-normal relative py-1 border-none transition-colors
+                      className={`text-sm font-normal relative py-1 transition-colors
                         ${location.pathname === link.path
-                          ? 'text-[var(--accent)]'
-                          : 'text-[var(--text-primary)] dark:text-[var(--text-dark)] hover:text-[var(--accent)]'
+                          ? 'text-[var(--accent)] dark:text-[var(--accent-dark)]'
+                          : 'text-[var(--text-primary)] dark:text-[var(--text-dark)] hover:text-[var(--accent)] dark:hover:text-[var(--accent-dark)]'
                         }`}
                     >
                       {link.label}
                       {location.pathname === link.path && (
                         <motion.div
                           layoutId="nav-underline"
-                          className="absolute bottom-0 left-0 right-0 h-px bg-[var(--accent)]"
+                          className="absolute bottom-0 left-0 right-0 h-px bg-[var(--accent)] dark:bg-[var(--accent-dark)]"
                         />
                       )}
                     </Link>
@@ -130,7 +132,9 @@ export function Header() {
                     <a
                       href={link.path}
                       onClick={() => setIsMenuOpen(false)}
-                      className="block py-2 text-sm border-none transition-colors text-[var(--text-primary)] dark:text-[var(--text-dark)] hover:text-[var(--accent)]"
+                      className="block py-2 text-sm transition-colors
+                                 text-[var(--text-primary)] dark:text-[var(--text-dark)]
+                                 hover:text-[var(--accent)] dark:hover:text-[var(--accent-dark)]"
                     >
                       {link.label}
                     </a>
@@ -138,10 +142,10 @@ export function Header() {
                     <Link
                       to={link.path}
                       onClick={() => setIsMenuOpen(false)}
-                      className={`block py-2 text-sm border-none transition-colors
+                      className={`block py-2 text-sm transition-colors
                         ${location.pathname === link.path
-                          ? 'text-[var(--accent)]'
-                          : 'text-[var(--text-primary)] dark:text-[var(--text-dark)] hover:text-[var(--accent)]'
+                          ? 'text-[var(--accent)] dark:text-[var(--accent-dark)]'
+                          : 'text-[var(--text-primary)] dark:text-[var(--text-dark)] hover:text-[var(--accent)] dark:hover:text-[var(--accent-dark)]'
                         }`}
                     >
                       {link.label}

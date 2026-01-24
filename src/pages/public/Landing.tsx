@@ -16,7 +16,7 @@ const stagger = {
   },
 };
 
-/** Minimalist landing page - Japanese-inspired */
+/** Minimalist landing page - Efipaz Japanese-inspired style */
 export function Landing() {
   const { isDark, toggleTheme } = useDarkMode();
 
@@ -61,7 +61,7 @@ export function Landing() {
           {siteConfig.title}
         </motion.p>
 
-        {/* Divider - Japanese-inspired */}
+        {/* Divider - Japanese-inspired red accent */}
         <motion.div
           variants={fadeInUp}
           transition={{ duration: 0.8, delay: 0.2 }}
@@ -71,7 +71,7 @@ export function Landing() {
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
             transition={{ duration: 0.8, delay: 0.5 }}
-            className="w-16 h-px bg-[var(--accent)]"
+            className="w-16 h-px bg-[var(--accent)] dark:bg-[var(--accent-dark)]"
           />
         </motion.div>
 
@@ -86,7 +86,10 @@ export function Landing() {
               href={siteConfig.social.linkedin}
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-[var(--accent)] transition-colors"
+              className="pb-1 border-b border-[var(--border)] dark:border-[var(--border-dark)]
+                         hover:border-[var(--accent)] dark:hover:border-[var(--accent-dark)]
+                         hover:text-[var(--accent)] dark:hover:text-[var(--accent-dark)]
+                         transition-colors"
             >
               LinkedIn
             </a>
@@ -96,14 +99,17 @@ export function Landing() {
               href={siteConfig.social.github}
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-[var(--accent)] transition-colors"
+              className="pb-1 border-b border-[var(--border)] dark:border-[var(--border-dark)]
+                         hover:border-[var(--accent)] dark:hover:border-[var(--accent-dark)]
+                         hover:text-[var(--accent)] dark:hover:text-[var(--accent-dark)]
+                         transition-colors"
             >
               GitHub
             </a>
           )}
         </motion.nav>
 
-        {/* Lab Link */}
+        {/* Enter Link */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -111,15 +117,17 @@ export function Landing() {
         >
           <Link
             to="/lab"
-            className="inline-block mt-8 text-xs text-[var(--text-muted)] dark:text-[var(--text-dark-muted)] hover:text-[var(--accent)]
-                       transition-colors border-b border-transparent hover:border-[var(--accent)]"
+            className="inline-block mt-8 text-xs text-[var(--text-muted)] dark:text-[var(--text-dark-muted)]
+                       hover:text-[var(--accent)] dark:hover:text-[var(--accent-dark)]
+                       transition-colors border-b border-transparent
+                       hover:border-[var(--accent)] dark:hover:border-[var(--accent-dark)]"
           >
             Enter Lab →
           </Link>
         </motion.div>
       </motion.div>
 
-      {/* Footer with version info */}
+      {/* Footer */}
       <motion.footer
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
