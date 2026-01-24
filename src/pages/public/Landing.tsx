@@ -101,14 +101,6 @@ export function Landing() {
               GitHub
             </a>
           )}
-          {siteConfig.social.email && (
-            <a
-              href={`mailto:${siteConfig.social.email}`}
-              className="hover:text-[var(--accent)] transition-colors"
-            >
-              Email
-            </a>
-          )}
         </motion.nav>
 
         {/* Lab Link */}

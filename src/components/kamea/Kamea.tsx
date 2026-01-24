@@ -1,6 +1,7 @@
 import { useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useKameaGenerator, useKameaHistory } from '@/hooks/useKamea';
+import { useDarkMode } from '@/hooks/useDarkMode';
 import { KameaCanvas } from './KameaCanvas';
 
 export function Kamea() {
@@ -9,6 +10,7 @@ export function Kamea() {
   const [showHistory, setShowHistory] = useState(false);
   const svgRef = useRef<HTMLDivElement>(null);
 
+  const { isDark } = useDarkMode();
   const config = useKameaGenerator(currentInput, 320);
   const { history, addToHistory, clearHistory } = useKameaHistory();
 
@@ -159,7 +161,7 @@ export function Kamea() {
             ref={svgRef}
           >
             <div className="w-80 h-80 rounded-2xl overflow-hidden shadow-2xl">
-              <KameaCanvas config={config} animate={true} />
+              <KameaCanvas config={config} animate={true} themeMode={isDark ? 'dark' : 'light'} />
             </div>
 
             {/* Download button */}

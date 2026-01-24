@@ -1,28 +1,63 @@
 @import "tailwindcss";
 
-:root {
-  /* Warm cream palette - like aged paper, not blinding */
-  --bg-primary: #F5F2EB;        /* warm cream, easy on eyes */
-  --bg-alt: #EBE7DF;            /* slightly darker cream */
-  --bg-card: #FAF8F5;           /* lighter cream for cards */
-  --text-primary: #2D2A26;      /* warm dark brown, not pure black */
-  --text-secondary: #5C5650;    /* warm medium brown */
-  --text-muted: #8A847C;        /* warm gray-brown */
-  --accent: #C4A77D;            /* warm gold/tan - efipaz signature */
-  --accent-hover: #A8895F;      /* darker gold on hover */
-  --border: #DDD9D2;            /* warm border */
-  --input-bg: #FAF8F5;          /* cream inputs */
+/**
+ * Color Theme System
+ * ==================
+ * ALL colors defined here. Components use var(--name).
+ * For JS access, see src/data/theme.ts
+ *
+ * NEVER add colors elsewhere. Always reference these variables.
+ */
 
-  /* Dark mode - warm charcoal, high contrast text */
-  --bg-dark: #1C1A18;           /* warm charcoal with brown tint */
-  --bg-dark-alt: #252320;       /* slightly lighter */
-  --bg-dark-card: #2D2A27;      /* card background */
-  --text-dark: #F5F2EB;         /* cream text - matches light bg */
-  --text-dark-secondary: #C4BFB6;  /* visible secondary text */
-  --text-dark-muted: #8A847C;   /* still readable muted */
-  --border-dark: #3D3935;       /* warm dark border */
-  --input-bg-dark: #2D2A27;     /* dark input bg */
+:root {
+  /* ===== LIGHT MODE ===== */
+
+  /* Backgrounds */
+  --bg-primary: #F5F2EB;      /* Main background - warm cream */
+  --bg-alt: #EBE7DF;          /* Alternate - slightly darker cream */
+  --bg-card: #FAF8F5;         /* Cards - lighter cream */
+
+  /* Text */
+  --text-primary: #2D2A26;    /* Main text - warm dark brown */
+  --text-secondary: #5C5650;  /* Secondary - warm medium brown */
+  --text-muted: #8A847C;      /* Muted - warm gray-brown */
+
+  /* Accent */
+  --accent: #C4A77D;          /* Primary accent - warm gold */
+  --accent-hover: #A8895F;    /* Hover state - darker gold */
+
+  /* UI Elements */
+  --border: #DDD9D2;          /* Borders - warm */
+  --input-bg: #FAF8F5;        /* Input backgrounds */
+
+  /* Special */
+  --overlay: rgba(45, 42, 38, 0.6);
+
+  /* ===== DARK MODE ===== */
+
+  /* Backgrounds */
+  --bg-dark: #1C1A18;         /* Main background - warm charcoal */
+  --bg-dark-alt: #252320;     /* Alternate - slightly lighter */
+  --bg-dark-card: #2D2A27;    /* Cards */
+
+  /* Text */
+  --text-dark: #F5F2EB;       /* Main text - cream (matches light bg) */
+  --text-dark-secondary: #C4BFB6;  /* Secondary - visible */
+  --text-dark-muted: #8A847C;      /* Muted - still readable */
+
+  /* Accent (same as light for consistency) */
+  --accent-dark: #C4A77D;
+  --accent-dark-hover: #D4B78D;
+
+  /* UI Elements */
+  --border-dark: #3D3935;     /* Borders */
+  --input-bg-dark: #2D2A27;   /* Input backgrounds */
+
+  /* Special */
+  --overlay-dark: rgba(0, 0, 0, 0.7);
 }
+
+/* ===== BASE STYLES ===== */
 
 html {
   scroll-behavior: smooth;
@@ -37,6 +72,8 @@ body {
   transition: background-color 0.3s, color 0.3s;
 }
 
+/* ===== DARK MODE ===== */
+
 body.dark {
   background-color: var(--bg-dark);
   color: var(--text-dark);
@@ -50,12 +87,14 @@ body.dark a:hover {
   color: var(--accent);
 }
 
-/* Japanese-inspired minimalism */
+/* ===== TYPOGRAPHY ===== */
+
 .font-serif-he {
   font-family: 'Noto Serif Hebrew', Georgia, serif;
 }
 
-/* Subtle animations */
+/* ===== ANIMATIONS ===== */
+
 @keyframes fade-in {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
@@ -65,19 +104,24 @@ body.dark a:hover {
   animation: fade-in 0.6s ease-out forwards;
 }
 
-/* Focus states for accessibility */
+/* ===== ACCESSIBILITY ===== */
+
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
-/* Selection color */
 ::selection {
   background-color: var(--accent);
-  color: white;
+  color: var(--bg-primary);
 }
 
-/* Links */
+body.dark ::selection {
+  color: var(--bg-dark);
+}
+
+/* ===== LINKS ===== */
+
 a {
   color: var(--accent);
   text-decoration: none;

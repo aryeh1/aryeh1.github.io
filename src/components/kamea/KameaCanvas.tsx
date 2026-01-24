@@ -1,11 +1,13 @@
 import { motion } from 'framer-motion';
 import type { KameaConfig, KameaLayer } from '@/lib/kamea/types';
 import { pointsToPath } from '@/lib/kamea/algorithms';
+import { getThemeColor, type ThemeMode } from '@/data/theme';
 
 interface KameaCanvasProps {
   config: KameaConfig;
   animate?: boolean;
   className?: string;
+  themeMode?: ThemeMode;
 }
 
 interface LayerProps {
@@ -91,9 +93,13 @@ function KameaLayerComponent({ layer, index, animate }: LayerProps) {
   );
 }
 
-export function KameaCanvas({ config, animate = true, className = '' }: KameaCanvasProps) {
+export function KameaCanvas({ config, animate = true, className = '', themeMode = 'dark' }: KameaCanvasProps) {
   const padding = 20;
   const viewBox = `${-padding} ${-padding} ${config.size + padding * 2} ${config.size + padding * 2}`;
+
+  // Get theme-aware colors
+  const bgColor = getThemeColor(themeMode, 'bgPrimary');
+  const textColor = getThemeColor(themeMode, 'textMuted');
 
   return (
     <motion.svg
@@ -111,7 +117,7 @@ export function KameaCanvas({ config, animate = true, className = '' }: KameaCan
         y={-padding}
         width={config.size + padding * 2}
         height={config.size + padding * 2}
-        fill="#0a0a0a"
+        fill={bgColor}
         rx="8"
       />
 
@@ -145,7 +151,8 @@ export function KameaCanvas({ config, animate = true, className = '' }: KameaCan
         textAnchor="middle"
         fontSize={11}
         fontWeight="500"
-        fill="rgba(255,255,255,0.6)"
+        fill={textColor}
+        fillOpacity={0.7}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 2, duration: 0.8 }}

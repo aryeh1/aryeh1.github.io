@@ -9,10 +9,11 @@
 
 export const VERSION = {
   major: 0,
-  minor: 1,
-  patch: 4,
+  minor: 2,
+  patch: 0,
   date: '2026-01-24',
   changelog: [
+    '0.2.0 - Centralized color theme system, fixed dark/light mode, removed email',
     '0.1.4 - Added agent infrastructure (CLAUDE.md, FAILURES.md, hooks, version tracking, +30 tests)',
     '0.1.3 - Simplified CI pipeline',
     '0.1.2 - Dark mode support',
