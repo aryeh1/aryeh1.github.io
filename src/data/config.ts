@@ -5,7 +5,7 @@ export const siteConfig: SiteConfig = {
   title: 'Software Engineer',
   description: 'Personal website of Aryeh Lopian',
   social: {
-    linkedin: 'https://www.linkedin.com/in/aryeh-lopian/',
+    linkedin: 'https://www.linkedin.com/in/aryeh1',
     github: 'https://github.com/aryeh1',
     email: 'aryeh.lopian.07@gmail.com',
   },
