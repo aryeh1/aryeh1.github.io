@@ -99,7 +99,7 @@ describe('Archive Link Integrity', () => {
         link === `${folder}/` || 
         link === `./${folder}/` ||
         link === `${folder}/index.html` ||
-        link.includes(`${folder}/`)
+        link === `./${folder}/index.html`
       );
       if (!isLinked) {
         orphanFolders.push(folder);
