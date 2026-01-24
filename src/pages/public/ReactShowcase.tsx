@@ -656,34 +656,34 @@ function Modal({ isOpen, onClose, children }: ModalProps) {
     }
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
-
   return createPortal(
     <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      >
-        <div
-          className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-          onClick={onClose}
-        />
+      {isOpen && (
         <motion.div
-          ref={modalRef}
-          initial={{ scale: 0.95, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0.95, opacity: 0 }}
-          tabIndex={-1}
-          className="relative bg-[var(--bg)] dark:bg-[var(--bg-dark)] rounded-xl
-                     shadow-2xl p-6 max-w-md w-full outline-none"
-          role="dialog"
-          aria-modal="true"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
         >
-          {children}
+          <div
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={onClose}
+          />
+          <motion.div
+            ref={modalRef}
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.95, opacity: 0 }}
+            tabIndex={-1}
+            className="relative bg-[var(--bg)] dark:bg-[var(--bg-dark)} rounded-xl
+                       shadow-2xl p-6 max-w-md w-full outline-none"
+            role="dialog"
+            aria-modal="true"
+          >
+            {children}
+          </motion.div>
         </motion.div>
-      </motion.div>
+      )}
     </AnimatePresence>,
     document.body
   );
@@ -818,18 +818,30 @@ function Demo8_InfiniteScroll() {
 // External store (like Redux, Zustand, or browser APIs)
 function createWindowSizeStore() {
   let listeners: (() => void)[] = [];
-
-  const getSnapshot = () => ({
+  let cachedSnapshot = {
     width: typeof window !== 'undefined' ? window.innerWidth : 0,
     height: typeof window !== 'undefined' ? window.innerHeight : 0,
-  });
+  };
+
+  const getSnapshot = () => cachedSnapshot;
 
   const subscribe = (listener: () => void) => {
     listeners.push(listener);
-    window.addEventListener('resize', listener);
+    const handleResize = () => {
+      const newSnapshot = {
+        width: window.innerWidth,
+        height: window.innerHeight,
+      };
+      // Only update cache if values actually changed
+      if (newSnapshot.width !== cachedSnapshot.width || newSnapshot.height !== cachedSnapshot.height) {
+        cachedSnapshot = newSnapshot;
+      }
+      listener();
+    };
+    window.addEventListener('resize', handleResize);
     return () => {
       listeners = listeners.filter((l) => l !== listener);
-      window.removeEventListener('resize', listener);
+      window.removeEventListener('resize', handleResize);
     };
   };
 
