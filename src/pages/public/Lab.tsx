@@ -1,19 +1,14 @@
 import { lazy, Suspense, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 
-// Lazy load Kamea
 const Kamea = lazy(() => import('@/components/kamea/Kamea').then(m => ({ default: m.Kamea })));
 
 function LoadingSpinner() {
   return (
-    <div className="min-h-[300px] flex items-center justify-center">
-      <motion.div
-        animate={{ rotate: 360 }}
-        transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-        className="w-6 h-6 border-2 border-[var(--accent)] border-t-transparent rounded-full"
-      />
+    <div className="min-h-[200px] flex items-center justify-center">
+      <div className="w-5 h-5 border-2 border-[var(--accent)] border-t-transparent rounded-full animate-spin" />
     </div>
   );
 }
@@ -47,9 +42,9 @@ const labItems: LabItem[] = [
   },
 ];
 
-const categories: { id: Category; label: string; labelHe: string }[] = [
-  { id: 'apps', label: 'Apps', labelHe: 'אפליקציות' },
-  { id: 'nonsense', label: 'Nonsense', labelHe: 'שטויות' },
+const categories: { id: Category; label: string }[] = [
+  { id: 'apps', label: 'Apps' },
+  { id: 'nonsense', label: 'Nonsense' },
 ];
 
 export function Lab() {
@@ -59,21 +54,18 @@ export function Lab() {
   const filteredItems = labItems.filter(item => item.category === activeCategory);
 
   return (
-    <main className="min-h-screen max-w-4xl mx-auto px-6 py-12">
+    <main className="min-h-screen max-w-2xl mx-auto px-6 py-16">
       {/* Header */}
       <motion.header
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center mb-12"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="text-center mb-16"
       >
-        <h1 className="text-3xl font-light mb-2">Lab</h1>
-        <p className="text-sm text-[var(--text-secondary)] dark:text-[var(--text-dark-secondary)]">
-          Experiments and side projects
-        </p>
+        <h1 className="text-2xl font-light tracking-wide">Lab</h1>
       </motion.header>
 
-      {/* Category Tabs */}
-      <div className="flex justify-center gap-1 mb-12 p-1 bg-[var(--bg-alt)] dark:bg-[var(--bg-dark-alt)] rounded-lg w-fit mx-auto">
+      {/* Category Navigation - simple text links */}
+      <nav className="flex justify-center gap-8 mb-16 text-sm">
         {categories.map(cat => (
           <button
             key={cat.id}
@@ -81,117 +73,84 @@ export function Lab() {
               setActiveCategory(cat.id);
               setExpandedItem(null);
             }}
-            className={`px-6 py-2 rounded-md text-sm transition-all ${
+            className={`pb-1 transition-colors ${
               activeCategory === cat.id
-                ? 'bg-[var(--bg-card)] dark:bg-[var(--bg-dark-card)] text-[var(--text-primary)] dark:text-[var(--text-dark)] shadow-sm'
-                : 'text-[var(--text-secondary)] dark:text-[var(--text-dark-secondary)] hover:text-[var(--text-primary)] dark:hover:text-[var(--text-dark)]'
+                ? 'text-[var(--text-primary)] dark:text-[var(--text-dark)] border-b border-[var(--accent)]'
+                : 'text-[var(--text-muted)] dark:text-[var(--text-dark-muted)] hover:text-[var(--text-primary)] dark:hover:text-[var(--text-dark)]'
             }`}
           >
             {cat.label}
           </button>
         ))}
+      </nav>
+
+      {/* Items - simple list */}
+      <div className="space-y-12">
+        {filteredItems.map((item, index) => (
+          <motion.article
+            key={item.id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.1 }}
+          >
+            {/* Title row */}
+            <div className="flex items-baseline gap-3 mb-2">
+              <h2 className="text-lg font-light">{item.title}</h2>
+              {item.titleHe && (
+                <span className="text-sm text-[var(--text-muted)] dark:text-[var(--text-dark-muted)] font-serif-he">
+                  {item.titleHe}
+                </span>
+              )}
+            </div>
+
+            {/* Description */}
+            <p className="text-sm text-[var(--text-secondary)] dark:text-[var(--text-dark-secondary)] mb-4">
+              {item.description}
+            </p>
+
+            {/* Action */}
+            {item.link ? (
+              <Link
+                to={item.link}
+                className="text-sm text-[var(--accent)] hover:text-[var(--accent-hover)]"
+              >
+                View →
+              </Link>
+            ) : (
+              <button
+                onClick={() => setExpandedItem(expandedItem === item.id ? null : item.id)}
+                className="text-sm text-[var(--accent)] hover:text-[var(--accent-hover)]"
+              >
+                {expandedItem === item.id ? 'Close' : 'Open'} →
+              </button>
+            )}
+
+            {/* Expanded content */}
+            {expandedItem === item.id && item.id === 'kamea' && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="mt-8 pt-8 border-t border-[var(--border)] dark:border-[var(--border-dark)]"
+              >
+                <ErrorBoundary>
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <Kamea />
+                  </Suspense>
+                </ErrorBoundary>
+              </motion.div>
+            )}
+          </motion.article>
+        ))}
       </div>
 
-      {/* Items Grid */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={activeCategory}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -10 }}
-          transition={{ duration: 0.2 }}
-          className="space-y-4"
-        >
-          {filteredItems.map(item => (
-            <div key={item.id}>
-              {/* Item Card */}
-              <motion.div
-                layout
-                className={`p-6 rounded-xl border transition-colors cursor-pointer ${
-                  expandedItem === item.id
-                    ? 'bg-[var(--bg-card)] dark:bg-[var(--bg-dark-card)] border-[var(--accent)]'
-                    : 'bg-[var(--bg-alt)] dark:bg-[var(--bg-dark-alt)] border-transparent hover:border-[var(--border)] dark:hover:border-[var(--border-dark)]'
-                }`}
-                onClick={() => setExpandedItem(expandedItem === item.id ? null : item.id)}
-              >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h2 className="text-xl font-light">
-                      {item.title}
-                      {item.titleHe && (
-                        <span className="ml-3 text-[var(--text-muted)] dark:text-[var(--text-dark-muted)] font-serif-he">
-                          {item.titleHe}
-                        </span>
-                      )}
-                    </h2>
-                    <p className="text-sm text-[var(--text-secondary)] dark:text-[var(--text-dark-secondary)] mt-1">
-                      {item.description}
-                    </p>
-                  </div>
-                  <motion.span
-                    animate={{ rotate: expandedItem === item.id ? 45 : 0 }}
-                    className="text-xl text-[var(--text-muted)] dark:text-[var(--text-dark-muted)]"
-                  >
-                    +
-                  </motion.span>
-                </div>
-
-                {/* Link if available */}
-                {item.link && expandedItem !== item.id && (
-                  <Link
-                    to={item.link}
-                    onClick={e => e.stopPropagation()}
-                    className="inline-block mt-4 text-sm text-[var(--accent)] hover:text-[var(--accent-hover)]"
-                  >
-                    View details →
-                  </Link>
-                )}
-              </motion.div>
-
-              {/* Expanded Content */}
-              <AnimatePresence>
-                {expandedItem === item.id && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="overflow-hidden"
-                  >
-                    <div className="pt-4">
-                      {item.link ? (
-                        <div className="text-center py-8">
-                          <Link
-                            to={item.link}
-                            className="inline-block px-6 py-3 bg-[var(--accent)] text-white rounded-lg hover:bg-[var(--accent-hover)] transition-colors"
-                          >
-                            Open {item.title}
-                          </Link>
-                        </div>
-                      ) : item.id === 'kamea' ? (
-                        <ErrorBoundary>
-                          <Suspense fallback={<LoadingSpinner />}>
-                            <Kamea />
-                          </Suspense>
-                        </ErrorBoundary>
-                      ) : null}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          ))}
-
-          {filteredItems.length === 0 && (
-            <div className="text-center py-12 text-[var(--text-muted)] dark:text-[var(--text-dark-muted)]">
-              Nothing here yet
-            </div>
-          )}
-        </motion.div>
-      </AnimatePresence>
+      {/* Divider */}
+      <div className="my-16 flex justify-center">
+        <div className="w-12 h-px bg-[var(--border)] dark:bg-[var(--border-dark)]" />
+      </div>
 
       {/* Footer */}
-      <footer className="mt-16 pt-8 border-t border-[var(--border)] dark:border-[var(--border-dark)] text-center">
+      <footer className="text-center">
         <p className="text-xs text-[var(--text-muted)] dark:text-[var(--text-dark-muted)]">
           More experiments coming
         </p>
