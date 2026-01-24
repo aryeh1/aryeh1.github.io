@@ -15,6 +15,7 @@ const navLinks: NavLink[] = [
   { path: '/', label: 'Home', labelHe: 'בית' },
   { path: '/projects', label: 'Projects', labelHe: 'פרויקטים' },
   { path: '/lab', label: 'Lab', labelHe: 'מעבדה' },
+  { path: '/links', label: 'Links', labelHe: 'קישורים' },
   { path: '/archive', label: 'Archive', labelHe: 'ארכיון', external: true },
 ];
 
