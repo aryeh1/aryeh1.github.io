@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 
 type Theme = 'light' | 'dark' | 'system';
 
@@ -9,51 +9,46 @@ function getSystemTheme(): 'light' | 'dark' {
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
-export function useDarkMode() {
-  const [theme, setThemeState] = useState<Theme>(() => {
-    if (typeof window === 'undefined') return 'system';
-    const stored = localStorage.getItem(STORAGE_KEY) as Theme | null;
-    return stored || 'system';
-  });
+function getInitialTheme(): Theme {
+  if (typeof window === 'undefined') return 'system';
+  const stored = localStorage.getItem(STORAGE_KEY) as Theme | null;
+  return stored || 'system';
+}
 
-  const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>(() => {
-    if (typeof window === 'undefined') return 'light';
-    const stored = localStorage.getItem(STORAGE_KEY) as Theme | null;
-    if (stored && stored !== 'system') return stored;
-    return getSystemTheme();
-  });
+function getResolvedTheme(theme: Theme): 'light' | 'dark' {
+  if (theme === 'system') return getSystemTheme();
+  return theme;
+}
+
+export function useDarkMode() {
+  const [theme, setThemeState] = useState<Theme>(getInitialTheme);
+
+  // Compute resolved theme synchronously
+  const resolvedTheme = useMemo(() => getResolvedTheme(theme), [theme]);
+  const isDark = resolvedTheme === 'dark';
 
   // Apply theme to document
   useEffect(() => {
     const root = document.documentElement;
     const body = document.body;
 
-    const actualTheme = theme === 'system' ? getSystemTheme() : theme;
-    setResolvedTheme(actualTheme);
-
-    if (actualTheme === 'dark') {
+    if (resolvedTheme === 'dark') {
       root.classList.add('dark');
       body.classList.add('dark');
     } else {
       root.classList.remove('dark');
       body.classList.remove('dark');
     }
-  }, [theme]);
+  }, [resolvedTheme]);
 
   // Listen for system theme changes
   useEffect(() => {
     if (theme !== 'system') return;
 
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const handler = (e: MediaQueryListEvent) => {
-      setResolvedTheme(e.matches ? 'dark' : 'light');
-      if (e.matches) {
-        document.documentElement.classList.add('dark');
-        document.body.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-        document.body.classList.remove('dark');
-      }
+    const handler = () => {
+      // Force re-render by toggling theme briefly
+      setThemeState('system');
     };
 
     mediaQuery.addEventListener('change', handler);
@@ -66,7 +61,8 @@ export function useDarkMode() {
   }, []);
 
   const toggleTheme = useCallback(() => {
-    setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
+    const newTheme = resolvedTheme === 'dark' ? 'light' : 'dark';
+    setTheme(newTheme);
   }, [resolvedTheme, setTheme]);
 
   return {
@@ -74,6 +70,6 @@ export function useDarkMode() {
     resolvedTheme,
     setTheme,
     toggleTheme,
-    isDark: resolvedTheme === 'dark',
+    isDark,
   };
 }

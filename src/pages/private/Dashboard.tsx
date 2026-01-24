@@ -37,7 +37,7 @@ export function Dashboard() {
             <ActionCard
               title="Lab"
               description="Experimental features"
-              href="/private/lab"
+              href="/lab"
             />
             <ActionCard
               title="Archive"
@@ -57,7 +57,7 @@ export function Dashboard() {
         {/* Status */}
         <section>
           <h2 className="text-lg font-medium mb-4">Site Status</h2>
-          <div className="border border-gray-100 rounded-lg p-4 space-y-2 text-sm">
+          <div className="border border-gray-100 dark:border-gray-700 rounded-lg p-4 space-y-2 text-sm">
             <div className="flex justify-between">
               <span className="text-gray-500">Environment</span>
               <span>GitHub Pages</span>
@@ -85,18 +85,26 @@ interface ActionCardProps {
 }
 
 function ActionCard({ title, description, href, external }: ActionCardProps) {
-  const Component = external ? 'a' : Link;
-  const props = external
-    ? { href, target: '_blank', rel: 'noopener noreferrer' }
-    : { to: href };
+  const cardClasses = "block border border-gray-100 dark:border-gray-700 p-4 rounded-lg hover:border-[var(--accent)] transition-colors";
+
+  if (external) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={cardClasses}
+      >
+        <h3 className="font-medium">{title}</h3>
+        <p className="text-sm text-gray-500">{description}</p>
+      </a>
+    );
+  }
 
   return (
-    <Component
-      {...props as any}
-      className="block border border-gray-100 p-4 rounded-lg hover:border-[var(--accent)] transition-colors"
-    >
+    <Link to={href} className={cardClasses}>
       <h3 className="font-medium">{title}</h3>
       <p className="text-sm text-gray-500">{description}</p>
-    </Component>
+    </Link>
   );
 }
