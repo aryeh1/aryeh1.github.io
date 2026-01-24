@@ -1,58 +1,91 @@
-# CI/CD Deployment Issue - Diagnosis & Fix
+# CI/CD Deployment - Complete Diagnosis & Fix
 
-## Issue Summary
-The site is not deploying with the correct version number. The version displayed shows `v1.0.1-xxxxx` instead of the expected `v1.0.146-xxxxx`.
+## Date: 2026-01-24
 
-## Root Cause
-**Problem:** GitHub Actions `actions/checkout@v4` performs a shallow clone by default (`fetch-depth: 1`).
+## Executive Summary
+The site is NOT deploying because the previous fix switched to a deployment method that requires GitHub repository settings changes that were never made.
 
-This causes the `vite.config.ts` version generation to fail:
-```typescript
-const commitCount = execSync('git rev-list --count HEAD', { encoding: 'utf-8' }).trim()
+---
+
+## Root Cause Analysis
+
+### Problem 1: Deployment Method Mismatch
+**Previous state (working):** Using `peaceiris/actions-gh-pages@v4` to push to `gh-pages` branch
+**Changed to (broken):** Using `actions/deploy-pages@v4` (modern GitHub Pages API)
+
+**Why it broke:**
+- The modern method (`actions/deploy-pages@v4`) requires GitHub Pages source to be set to "GitHub Actions" in repo settings
+- The repo is still configured to deploy from the `gh-pages` branch
+- The new workflow runs successfully but doesn't update `gh-pages` branch
+- GitHub Pages keeps serving the stale `gh-pages` content
+
+### Problem 2: Shallow Clone (Secondary)
+The `fetch-depth: 0` fix was correct but irrelevant since deployments weren't working anyway.
+
+---
+
+## Evidence
+
+### 1. gh-pages branch is stale
+```
+Last deployment: f50332c deploy: bd1a4c7
+Commit bd1a4c7 = "Add comprehensive dark mode support to all pages"
+```
+This is ~10 commits behind main!
+
+### 2. Main branch has newer commits
+```
+eabc0da CI: Update run log [skip ci]
+0622750 Switch to modern GitHub Pages deployment  <- THE BREAKING CHANGE
+c483e11 CI: Update run log [skip ci]
+d84d522 Trigger deploy: Update CI/CD diagnosis status
+...
+bd1a4c7 Add comprehensive dark mode support  <- Last actual deployment
 ```
 
-With shallow clone:
-- Expected: `146` (full history commit count)
-- Actual: `1` (only the latest commit is cloned)
-
-## Affected Files
-1. `.github/workflows/deploy.yml` - Production deployment
-2. `.github/workflows/ci.yml` - CI pipeline (build job)
-
-## Fix Applied
-Added `fetch-depth: 0` to checkout steps to fetch full git history.
-
-### deploy.yml
-```yaml
-- name: Checkout
-  uses: actions/checkout@v4
-  with:
-    fetch-depth: 0  # Full history for version generation
+### 3. Local build works correctly
+```
+Build version: 1.0.152-eabc0da
+Build successful with correct version!
 ```
 
-### ci.yml
-```yaml
-# In build job - needs full history for version
-- name: Checkout
-  uses: actions/checkout@v4
-  with:
-    fetch-depth: 0
-```
+### 4. Website returns 503
+The site at aryehlopian.com returns HTTP 503 - something is wrong with GitHub Pages.
 
-## Version System
-- Format: `v1.0.{commit_count}-{short_hash}`
-- Source: `vite.config.ts` lines 8-20
-- Display: `src/pages/public/Landing.tsx` footer
+---
 
-## Verification
-After merge to main:
-1. Check GitHub Actions deploy workflow completes
-2. Visit https://aryehlopian.com
-3. Verify footer shows correct version (e.g., `v1.0.147-xxxxxxx`)
+## The Fix
 
-## Status
-- [x] Fix committed to main (e4f740c)
-- [x] Trigger deploy workflow
+### Revert to gh-pages deployment method
+The `peaceiris/actions-gh-pages@v4` action pushes directly to the `gh-pages` branch, which GitHub Pages is already configured to serve.
 
-## Date
-2026-01-24
+**Changes to deploy.yml:**
+1. Revert to `peaceiris/actions-gh-pages@v4`
+2. Keep `fetch-depth: 0` for correct version
+3. Use `contents: write` permission
+4. Single job instead of build+deploy separation
+
+---
+
+## Verification Checklist
+- [ ] deploy.yml updated with peaceiris action
+- [ ] Changes pushed to branch
+- [ ] Merged to main
+- [ ] GitHub Actions workflow completes
+- [ ] gh-pages branch updated
+- [ ] Site accessible at aryehlopian.com
+- [ ] Version shows v1.0.15X-xxxxxxx (correct commit count)
+
+---
+
+## Technical Details
+
+### Expected Version Format
+`v1.0.{commit_count}-{short_hash}`
+
+### Current Commit Count
+152 commits on current branch
+
+### Build System
+- Vite 7.3.1
+- Version generated in `vite.config.ts` via `git rev-list --count HEAD`
