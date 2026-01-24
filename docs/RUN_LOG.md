@@ -8,9 +8,9 @@
 
 | Step | Status |
 |------|--------|
-| Test | cancelled |
-| Build | cancelled |
+| Test | success |
+| Build | success |
 
 ## Summary
 
-❌ **Failed.** Check workflow logs.
+✅ **All checks passed.** Ready for merge.
