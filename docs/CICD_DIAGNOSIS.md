@@ -50,5 +50,9 @@ After merge to main:
 2. Visit https://aryehlopian.com
 3. Verify footer shows correct version (e.g., `v1.0.147-xxxxxxx`)
 
+## Status
+- [x] Fix committed to main (e4f740c)
+- [x] Trigger deploy workflow
+
 ## Date
 2026-01-24
