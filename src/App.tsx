@@ -10,6 +10,7 @@ import './index.css';
 const Projects = lazy(() => import('@/pages/public/Projects').then(m => ({ default: m.Projects })));
 const NotMeApp = lazy(() => import('@/pages/public/NotMeApp').then(m => ({ default: m.NotMeApp })));
 const Lab = lazy(() => import('@/pages/public/Lab').then(m => ({ default: m.Lab })));
+const Cholent = lazy(() => import('@/pages/public/Cholent').then(m => ({ default: m.Cholent })));
 const Dashboard = lazy(() => import('@/pages/private/Dashboard').then(m => ({ default: m.Dashboard })));
 
 /** Loading fallback */
@@ -83,6 +84,14 @@ function AppContent() {
           element={
             <ProtectedLayout>
               <Lab />
+            </ProtectedLayout>
+          }
+        />
+        <Route
+          path="/lab/cholent"
+          element={
+            <ProtectedLayout>
+              <Cholent />
             </ProtectedLayout>
           }
         />
