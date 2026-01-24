@@ -64,7 +64,7 @@ export function Lab() {
         <h1 className="text-2xl font-light tracking-wide">Lab</h1>
       </motion.header>
 
-      {/* Category Navigation - simple text links */}
+      {/* Category Navigation */}
       <nav className="flex justify-center gap-8 mb-16 text-sm">
         {categories.map(cat => (
           <button
@@ -75,8 +75,8 @@ export function Lab() {
             }}
             className={`pb-1 transition-colors ${
               activeCategory === cat.id
-                ? 'text-[var(--text-primary)] dark:text-[var(--text-dark)] border-b border-[var(--accent)]'
-                : 'text-[var(--text-muted)] dark:text-[var(--text-dark-muted)] hover:text-[var(--text-primary)] dark:hover:text-[var(--text-dark)]'
+                ? 'border-b border-[var(--accent)]'
+                : 'opacity-50 hover:opacity-100'
             }`}
           >
             {cat.label}
@@ -84,7 +84,7 @@ export function Lab() {
         ))}
       </nav>
 
-      {/* Items - simple list */}
+      {/* Items */}
       <div className="space-y-12">
         {filteredItems.map((item, index) => (
           <motion.article
@@ -97,14 +97,14 @@ export function Lab() {
             <div className="flex items-baseline gap-3 mb-2">
               <h2 className="text-lg font-light">{item.title}</h2>
               {item.titleHe && (
-                <span className="text-sm text-[var(--text-muted)] dark:text-[var(--text-dark-muted)] font-serif-he">
+                <span className="text-sm opacity-60 font-serif-he">
                   {item.titleHe}
                 </span>
               )}
             </div>
 
             {/* Description */}
-            <p className="text-sm text-[var(--text-secondary)] dark:text-[var(--text-dark-secondary)] mb-4">
+            <p className="text-sm opacity-70 mb-4">
               {item.description}
             </p>
 
@@ -112,14 +112,14 @@ export function Lab() {
             {item.link ? (
               <Link
                 to={item.link}
-                className="text-sm text-[var(--accent)] hover:text-[var(--accent-hover)]"
+                className="text-sm text-[var(--accent)] hover:opacity-70"
               >
                 View →
               </Link>
             ) : (
               <button
                 onClick={() => setExpandedItem(expandedItem === item.id ? null : item.id)}
-                className="text-sm text-[var(--accent)] hover:text-[var(--accent-hover)]"
+                className="text-sm text-[var(--accent)] hover:opacity-70"
               >
                 {expandedItem === item.id ? 'Close' : 'Open'} →
               </button>
@@ -151,7 +151,7 @@ export function Lab() {
 
       {/* Footer */}
       <footer className="text-center">
-        <p className="text-xs text-[var(--text-muted)] dark:text-[var(--text-dark-muted)]">
+        <p className="text-xs opacity-50">
           More experiments coming
         </p>
       </footer>
