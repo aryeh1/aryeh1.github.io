@@ -47,7 +47,6 @@ export default defineConfig({
     __BUILD_TIME__: JSON.stringify(BUILD_TIME),
   },
   base: process.env.VITE_BASE_PATH || '/',
-  publicDir: 'public',
   build: {
     outDir: 'dist',
     sourcemap: true,
