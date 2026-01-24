@@ -1,27 +1,27 @@
 @import "tailwindcss";
 
 :root {
-  /* efipaz-style Palette - warm, minimal, elegant */
-  --bg-primary: #FAFAF8;        /* off-white, slightly warm */
-  --bg-alt: #F5F5F3;            /* subtle alternate */
-  --bg-card: #FFFFFF;           /* pure white for cards */
-  --text-primary: #2C2C2C;      /* soft black */
-  --text-secondary: #6B6B6B;    /* medium gray for subtitles */
-  --text-muted: #9B9B9B;        /* light gray for hints */
+  /* Warm cream palette - like aged paper, not blinding */
+  --bg-primary: #F5F2EB;        /* warm cream, easy on eyes */
+  --bg-alt: #EBE7DF;            /* slightly darker cream */
+  --bg-card: #FAF8F5;           /* lighter cream for cards */
+  --text-primary: #2D2A26;      /* warm dark brown, not pure black */
+  --text-secondary: #5C5650;    /* warm medium brown */
+  --text-muted: #8A847C;        /* warm gray-brown */
   --accent: #C4A77D;            /* warm gold/tan - efipaz signature */
   --accent-hover: #A8895F;      /* darker gold on hover */
-  --border: #E8E8E6;            /* very subtle border */
-  --input-bg: #FFFFFF;          /* white inputs */
+  --border: #DDD9D2;            /* warm border */
+  --input-bg: #FAF8F5;          /* cream inputs */
 
-  /* Dark mode - warm and cozy */
-  --bg-dark: #1A1A1A;           /* warm charcoal */
-  --bg-dark-alt: #242424;       /* slightly lighter */
-  --bg-dark-card: #2A2A2A;      /* card background */
-  --text-dark: #F0EDE8;         /* warm off-white */
-  --text-dark-secondary: #A8A49E;  /* muted warm gray */
-  --text-dark-muted: #706C66;   /* very muted */
-  --border-dark: #3D3D3D;       /* subtle dark border */
-  --input-bg-dark: #2A2A2A;     /* dark input bg */
+  /* Dark mode - warm charcoal, high contrast text */
+  --bg-dark: #1C1A18;           /* warm charcoal with brown tint */
+  --bg-dark-alt: #252320;       /* slightly lighter */
+  --bg-dark-card: #2D2A27;      /* card background */
+  --text-dark: #F5F2EB;         /* cream text - matches light bg */
+  --text-dark-secondary: #C4BFB6;  /* visible secondary text */
+  --text-dark-muted: #8A847C;   /* still readable muted */
+  --border-dark: #3D3935;       /* warm dark border */
+  --input-bg-dark: #2D2A27;     /* dark input bg */
 }
 
 html {
