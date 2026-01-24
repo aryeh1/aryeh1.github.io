@@ -7,7 +7,6 @@ export const siteConfig: SiteConfig = {
   social: {
     linkedin: 'https://www.linkedin.com/in/aryeh1',
     github: 'https://github.com/aryeh1',
-    email: 'aryeh.lopian.07@gmail.com',
   },
   features: {
     darkMode: true,
