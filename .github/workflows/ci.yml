@@ -1,3 +1,18 @@
+# CI/CD Pipeline
+# ===============
+# Trigger: Push to any branch
+#
+# Jobs:
+#   - test: Type check, lint, tests (all branches)
+#   - build: Build production bundle (all branches)
+#   - deploy: Deploy to gh-pages (main only)
+#
+# IMPORTANT:
+#   - Deploy uses peaceiris/actions-gh-pages which pushes to gh-pages branch
+#   - GitHub Pages must be configured to serve from gh-pages branch (not Actions)
+#   - Do NOT add a "report" job that writes to branches - causes merge conflicts
+#     and fails when branches are deleted after PR merge
+
 name: CI - Test, Build & Deploy
 
 on:
@@ -5,7 +20,7 @@ on:
     branches: ['**']
 
 permissions:
-  contents: write
+  contents: write  # Required for gh-pages deployment
 
 concurrency:
   group: ci-${{ github.ref }}
