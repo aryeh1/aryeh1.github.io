@@ -1,144 +1,80 @@
 # CLAUDE.md - Agent Instructions
 
-## Quick Start
+## What Is This Repo?
 
-```bash
-# Verify you're in the right place
-pwd  # Should be: .../aryeh1.github.io
+A **minimal public landing page** for [aryehlopian.com](https://aryehlopian.com).
 
-# Before ANY work
-npm run test        # Must pass
-npm run lint        # Must pass
-npm run build       # Must succeed
+That's it. One page with name, title, social links, and a link to the private lab.
 
-# After changes
-npm run test        # Still passing?
-```
+The full application (Lab, projects, tools) lives in a **separate private repo** deployed at [lab.aryehlopian.com](https://lab.aryehlopian.com).
 
-## Project Overview
+## Tech Stack
 
-Personal website for Aryeh Lopian. React 19 + TypeScript + Vite + Tailwind.
+React 19 + TypeScript + Vite + Tailwind + Framer Motion
 
-**Live site:** https://aryehlopian.com
-
-## Architecture
+## Structure
 
 ```
 src/
-├── components/     # Reusable UI components
-│   ├── auth/       # Authentication (ProtectedRoute)
-│   ├── kamea/      # Generative art component
-│   └── layout/     # Header, navigation
-├── hooks/          # Custom React hooks
-│   ├── useAuth.ts      # Client-side auth with SHA-256
-│   ├── useDarkMode.ts  # Theme management (light/dark/system)
-│   └── useKamea.ts     # Generative pattern hooks
-├── lib/            # Pure functions (no React)
-│   └── kamea/      # Mathematical algorithms
-├── pages/
-│   ├── public/     # Landing, Projects, Lab, NotMeApp
-│   └── private/    # Dashboard (requires auth)
-├── data/           # Static data (config, projects)
-└── types/          # TypeScript interfaces
+├── App.tsx                    # Routes (all paths → Landing)
+├── main.tsx                   # Entry point
+├── index.css                  # Tailwind + CSS variables
+├── components/
+│   └── ErrorBoundary.tsx      # Error handling
+├── pages/public/
+│   └── Landing.tsx            # The only page
+├── hooks/
+│   ├── useDarkMode.ts         # Theme toggle (has tests)
+│   └── useDarkMode.test.ts
+├── data/
+│   ├── config.ts              # Site config & social links
+│   ├── theme.ts               # Color definitions
+│   └── version.ts             # Version number
+└── types/
+    └── index.ts               # TypeScript interfaces
 ```
 
-## Critical Files
+**Total: ~15 files.** Keep it minimal.
 
-| File | Purpose | Touch Carefully |
-|------|---------|-----------------|
-| `src/data/config.ts` | Site configuration | Yes |
-| `src/lib/kamea/algorithms.ts` | Math algorithms | Yes - has tests |
-| `src/hooks/useAuth.ts` | Authentication | Yes - security |
-| `src/hooks/useDarkMode.ts` | Theme system | Yes - has tests |
+## Commands
+
+```bash
+npm run dev       # Local development
+npm run build     # Production build
+npm run test      # Run tests
+npm run lint      # Check code style
+```
+
+## Before Committing
+
+```bash
+npm run test && npm run lint && npm run build
+```
+
+All three must pass.
 
 ## Rules
 
-### Rule 1: Test Before and After
-```bash
-# BEFORE starting work
-npm run test
+1. **Keep it minimal** - This is just a landing page
+2. **No secrets in code** - Use environment variables
+3. **TypeScript strict** - No `any` types
+4. **Test what has logic** - Currently only `useDarkMode` has tests
 
-# AFTER every significant change
-npm run test
-```
+## Key Files
 
-### Rule 2: No Secrets in Code
-- Never commit API keys, tokens, passwords
-- Use environment variables or hashed values
-- The auth system uses SHA-256 hashed passwords
+| File | Purpose | Notes |
+|------|---------|-------|
+| `src/pages/public/Landing.tsx` | The landing page | Main content |
+| `src/data/config.ts` | Name, title, links | Edit to update info |
+| `src/hooks/useDarkMode.ts` | Light/dark theme | Has tests |
+| `src/index.css` | Theme colors | CSS variables |
 
-### Rule 3: TypeScript Strict
-- All files must be `.ts` or `.tsx`
-- No `any` types without justification
-- Run `npx tsc --noEmit` to verify
+## Adding a New Page
 
-### Rule 4: Keep It Simple
-- This is a personal website, not a SaaS
-- Avoid over-engineering
-- One file is better than ten
-
-### Rule 5: Document Failures
-When something fails, add to `FAILURES.md`:
-```markdown
-## FXXX - Short Title
-- **Date:** YYYY-MM-DD
-- **What:** What happened
-- **Why:** Root cause
-- **Fix:** How it was resolved
-```
-
-## Testing
-
-```bash
-npm run test              # Run once
-npm run test:watch        # Watch mode
-npm run test:coverage     # With coverage report
-```
-
-Test files: `*.test.ts` or `*.test.tsx` next to source files.
-
-## Common Tasks
-
-### Add a new page
-1. Create file in `src/pages/public/` or `src/pages/private/`
+1. Create file in `src/pages/public/`
 2. Add route in `src/App.tsx`
-3. Add nav link in `src/components/layout/Header.tsx` if needed
+3. Use Tailwind for styles, `dark:` prefix for dark mode
 
-### Add a new component
-1. Create in `src/components/<category>/`
-2. Export from `index.ts` in that folder
-3. Write test if it has logic
+## Future Plans
 
-### Modify styles
-- Use Tailwind classes
-- Dark mode: use `dark:` prefix
-- CSS variables defined in `src/index.css`
-
-## Version
-
-Check `src/data/version.ts` for current version.
-
-Increment on:
-- `patch`: Bug fixes, small changes
-- `minor`: New features
-- `major`: Breaking changes (rare for personal site)
-
-## Pre-commit Checklist
-
-Before committing, verify:
-
-- [ ] `npm run test` passes
-- [ ] `npm run lint` passes
-- [ ] `npm run build` succeeds
-- [ ] No console.log statements left
-- [ ] No hardcoded secrets
-- [ ] TypeScript has no errors
-
-## Session Verification
-
-At the start of each session, run:
-```bash
-npm run test && npm run build && echo "✓ website ready"
-```
-
-If this fails, fix it before doing anything else.
+Additional public pages may be added here over time. The private lab remains separate.
