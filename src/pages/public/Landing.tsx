@@ -127,15 +127,27 @@ export function Landing() {
         </motion.div>
       </motion.div>
 
-      {/* Ma symbol footer */}
+      {/* Footer with version info */}
       <motion.footer
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.5, duration: 0.5 }}
-        className="absolute bottom-8 text-xs text-gray-400 dark:text-gray-500"
+        className="absolute bottom-8 text-center"
       >
-        <span className="font-serif-he">間</span>
-        <span className="ml-2">Ma</span>
+        <div className="text-xs text-gray-400 dark:text-gray-500">
+          <span className="font-serif-he">間</span>
+          <span className="ml-2">Ma</span>
+        </div>
+        <div className="text-[10px] text-gray-300 dark:text-gray-600 mt-2">
+          v{__BUILD_VERSION__} · {new Date(__BUILD_TIME__).toLocaleString('en-GB', {
+            timeZone: 'UTC',
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+          })} UTC
+        </div>
       </motion.footer>
     </main>
   );
