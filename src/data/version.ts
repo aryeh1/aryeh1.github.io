@@ -8,12 +8,16 @@
  */
 
 export const VERSION = {
-  major: 1,
-  minor: 0,
-  patch: 0,
+  major: 0,
+  minor: 1,
+  patch: 4,
   date: '2026-01-24',
   changelog: [
-    '1.0.0 - Added agent infrastructure (CLAUDE.md, FAILURES.md, hooks, version tracking)',
+    '0.1.4 - Added agent infrastructure (CLAUDE.md, FAILURES.md, hooks, version tracking, +30 tests)',
+    '0.1.3 - Simplified CI pipeline',
+    '0.1.2 - Dark mode support',
+    '0.1.1 - Kamea generative art',
+    '0.1.0 - Initial release',
   ],
 } as const;
 
