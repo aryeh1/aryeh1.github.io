@@ -1,61 +1,60 @@
 /**
- * Centralized Color Theme System
- * ==============================
- * ALL colors in the app MUST come from here.
- * Never use hardcoded colors anywhere else.
+ * Efipaz-Inspired Color Theme System
+ * ===================================
+ * Japanese minimalist design with 3 core colors:
+ * 1. Cream background - #F7F5F0
+ * 2. Dark text - #1A1A1A
+ * 3. Deep red accent - #8B2635
  *
  * Usage in CSS:  var(--color-name)
  * Usage in JS:   theme.light.colorName or theme.dark.colorName
- *
- * For components that can't use CSS variables (e.g., SVG),
- * use the getThemeColor() helper function.
  */
 
 export const theme = {
   light: {
     // Backgrounds
-    bgPrimary: '#F5F2EB',       // Main background - warm cream
-    bgAlt: '#EBE7DF',           // Alternate background - slightly darker cream
-    bgCard: '#FAF8F5',          // Card background - lighter cream
+    bgPrimary: '#F7F5F0',       // Warm cream
+    bgAlt: '#EFEBE4',           // Slightly darker cream
+    bgCard: '#FFFFFF',          // White for cards
 
     // Text
-    textPrimary: '#2D2A26',     // Main text - warm dark brown
-    textSecondary: '#5C5650',   // Secondary text - warm medium brown
-    textMuted: '#8A847C',       // Muted text - warm gray-brown
+    textPrimary: '#1A1A1A',     // Near black
+    textSecondary: '#4A4A4A',   // Medium gray
+    textMuted: '#6A6A6A',       // Light gray
 
-    // Accent
-    accent: '#C4A77D',          // Primary accent - warm gold/tan
-    accentHover: '#A8895F',     // Accent hover state - darker gold
+    // Accent - Japanese red
+    accent: '#8B2635',
+    accentHover: '#6B1D29',
 
     // UI Elements
-    border: '#DDD9D2',          // Border color - warm border
-    inputBg: '#FAF8F5',         // Input background
+    border: '#D4CFC5',
+    inputBg: '#FFFFFF',
 
     // Special
-    overlay: 'rgba(45, 42, 38, 0.6)',  // Modal overlay
+    overlay: 'rgba(26, 26, 26, 0.6)',
   },
 
   dark: {
     // Backgrounds
-    bgPrimary: '#1C1A18',       // Main background - warm charcoal
-    bgAlt: '#252320',           // Alternate background - slightly lighter
-    bgCard: '#2D2A27',          // Card background
+    bgPrimary: '#1A1A1A',
+    bgAlt: '#242424',
+    bgCard: '#2A2A2A',
 
     // Text
-    textPrimary: '#F5F2EB',     // Main text - cream (matches light bg)
-    textSecondary: '#C4BFB6',   // Secondary text - visible
-    textMuted: '#8A847C',       // Muted text - still readable
+    textPrimary: '#F7F5F0',
+    textSecondary: '#B8B8B8',
+    textMuted: '#808080',
 
-    // Accent
-    accent: '#C4A77D',          // Primary accent - same as light
-    accentHover: '#D4B78D',     // Accent hover - lighter for dark mode
+    // Accent - Lighter red for dark mode
+    accent: '#C4424F',
+    accentHover: '#D4525F',
 
     // UI Elements
-    border: '#3D3935',          // Border color - warm dark
-    inputBg: '#2D2A27',         // Input background
+    border: '#3A3A3A',
+    inputBg: '#2A2A2A',
 
     // Special
-    overlay: 'rgba(0, 0, 0, 0.7)',  // Modal overlay
+    overlay: 'rgba(0, 0, 0, 0.8)',
   },
 } as const;
 
@@ -92,14 +91,6 @@ export type DarkTheme = typeof theme.dark;
 
 /**
  * Get a specific color value based on the current theme.
- * Use this for components that can't use CSS variables (e.g., SVG fill/stroke).
- *
- * @param mode - Current theme mode
- * @param colorKey - Key from theme object
- * @returns The color value as a string
- *
- * @example
- * const bgColor = getThemeColor(isDark ? 'dark' : 'light', 'bgPrimary');
  */
 export function getThemeColor(
   mode: ThemeMode,
@@ -110,14 +101,6 @@ export function getThemeColor(
 
 /**
  * Get CSS variable reference string.
- * Use for inline styles that need to reference CSS variables.
- *
- * @param varName - CSS variable name (without --)
- * @returns CSS var() reference
- *
- * @example
- * style={{ color: cssVar('text-primary') }}
- * // Returns: "var(--text-primary)"
  */
 export function cssVar(varName: string): string {
   return `var(--${varName})`;
