@@ -1,20 +1,27 @@
 @import "tailwindcss";
 
 :root {
-  /* Japanese Minimalist Palette - inspired by efipaz */
-  --bg-primary: #F7F5F0;        /* warm cream */
-  --bg-alt: #EFEBE4;            /* alternate cream */
-  --text-primary: #1A1A1A;      /* charcoal */
-  --text-light: #4A4A4A;        /* lighter text */
-  --accent: #8B2635;            /* Japanese deep red */
-  --border: #D4CFC5;            /* soft border */
+  /* efipaz-style Palette - warm, minimal, elegant */
+  --bg-primary: #FAFAF8;        /* off-white, slightly warm */
+  --bg-alt: #F5F5F3;            /* subtle alternate */
+  --bg-card: #FFFFFF;           /* pure white for cards */
+  --text-primary: #2C2C2C;      /* soft black */
+  --text-secondary: #6B6B6B;    /* medium gray for subtitles */
+  --text-muted: #9B9B9B;        /* light gray for hints */
+  --accent: #C4A77D;            /* warm gold/tan - efipaz signature */
+  --accent-hover: #A8895F;      /* darker gold on hover */
+  --border: #E8E8E6;            /* very subtle border */
+  --input-bg: #FFFFFF;          /* white inputs */
 
-  /* Dark mode - softer, less scary */
-  --bg-dark: #1F1F1F;           /* warm dark gray (not pure black) */
-  --bg-dark-alt: #2A2A2A;       /* alternate dark */
-  --text-dark: #E8E4DF;         /* warm light text */
-  --text-dark-light: #A8A4A0;   /* secondary dark text */
-  --border-dark: #3A3A3A;       /* dark border */
+  /* Dark mode - warm and cozy */
+  --bg-dark: #1A1A1A;           /* warm charcoal */
+  --bg-dark-alt: #242424;       /* slightly lighter */
+  --bg-dark-card: #2A2A2A;      /* card background */
+  --text-dark: #F0EDE8;         /* warm off-white */
+  --text-dark-secondary: #A8A49E;  /* muted warm gray */
+  --text-dark-muted: #706C66;   /* very muted */
+  --border-dark: #3D3D3D;       /* subtle dark border */
+  --input-bg-dark: #2A2A2A;     /* dark input bg */
 }
 
 html {

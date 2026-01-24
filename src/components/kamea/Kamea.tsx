@@ -62,7 +62,7 @@ export function Kamea() {
         <h1 className="text-3xl font-light tracking-wide mb-2">
           קמע
         </h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400">
+        <p className="text-sm text-[var(--text-secondary)] dark:text-[var(--text-dark-secondary)]">
           Personal Amulet Generator
         </p>
       </motion.div>
@@ -81,8 +81,8 @@ export function Kamea() {
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Enter text to generate..."
-            className="flex-1 px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-700
-                       bg-white dark:bg-gray-800 text-sm focus:outline-none focus:ring-2
+            className="flex-1 px-4 py-3 rounded-lg border border-[var(--border)] dark:border-[var(--border-dark)]
+                       bg-[var(--input-bg)] dark:bg-[var(--input-bg-dark)] text-sm focus:outline-none focus:ring-2
                        focus:ring-[var(--accent)] transition-all"
             dir="auto"
           />
@@ -101,7 +101,7 @@ export function Kamea() {
         {history.length > 0 && (
           <button
             onClick={() => setShowHistory(!showHistory)}
-            className="mt-2 text-xs text-gray-400 hover:text-[var(--accent)] transition-colors"
+            className="mt-2 text-xs text-[var(--text-muted)] dark:text-[var(--text-dark-muted)] hover:text-[var(--accent)] transition-colors"
           >
             {showHistory ? 'Hide' : 'Show'} history ({history.length})
           </button>
@@ -117,12 +117,12 @@ export function Kamea() {
             exit={{ opacity: 0, height: 0 }}
             className="w-full max-w-sm mb-6 overflow-hidden"
           >
-            <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-3">
+            <div className="bg-[var(--bg-alt)] dark:bg-[var(--bg-dark-alt)] rounded-lg p-3">
               <div className="flex justify-between items-center mb-2">
-                <span className="text-xs text-gray-500">Recent</span>
+                <span className="text-xs text-[var(--text-muted)] dark:text-[var(--text-dark-muted)]">Recent</span>
                 <button
                   onClick={clearHistory}
-                  className="text-xs text-red-400 hover:text-red-500"
+                  className="text-xs text-[var(--accent)] hover:text-[var(--accent-hover)]"
                 >
                   Clear
                 </button>
@@ -132,8 +132,8 @@ export function Kamea() {
                   <button
                     key={item.id}
                     onClick={() => handleHistorySelect(item.input)}
-                    className="px-3 py-1 text-xs rounded-full bg-white dark:bg-gray-700
-                               border border-gray-200 dark:border-gray-600
+                    className="px-3 py-1 text-xs rounded-full bg-[var(--bg-card)] dark:bg-[var(--bg-dark-card)]
+                               border border-[var(--border)] dark:border-[var(--border-dark)]
                                hover:border-[var(--accent)] transition-colors"
                     dir="auto"
                   >
@@ -169,7 +169,7 @@ export function Kamea() {
               transition={{ delay: 2 }}
               onClick={handleDownload}
               className="absolute -bottom-12 left-1/2 -translate-x-1/2
-                         text-xs text-gray-400 hover:text-[var(--accent)]
+                         text-xs text-[var(--text-muted)] dark:text-[var(--text-dark-muted)] hover:text-[var(--accent)]
                          transition-colors"
             >
               Download SVG
@@ -183,10 +183,10 @@ export function Kamea() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="w-80 h-80 rounded-2xl bg-gray-100 dark:bg-gray-800/30
-                     flex items-center justify-center"
+          className="w-80 h-80 rounded-2xl bg-[var(--bg-alt)] dark:bg-[var(--bg-dark-alt)]
+                     flex items-center justify-center border border-[var(--border)] dark:border-[var(--border-dark)]"
         >
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-[var(--text-muted)] dark:text-[var(--text-dark-muted)]">
             Enter text above to generate your amulet
           </p>
         </motion.div>

@@ -14,7 +14,7 @@ export function Projects() {
         {/* Page Title */}
         <header className="mb-12">
           <h1 className="text-3xl font-light">Projects</h1>
-          <p className="text-[var(--text-light)] dark:text-[var(--text-dark-light)] mt-2">
+          <p className="text-[var(--text-secondary)] dark:text-[var(--text-dark-secondary)] mt-2">
             A collection of personal projects and experiments
           </p>
         </header>
@@ -37,12 +37,12 @@ export function Projects() {
               </div>
 
               {project.titleHe && (
-                <p className="text-sm text-[var(--text-light)] dark:text-[var(--text-dark-light)] font-serif-he mb-2" dir="rtl">
+                <p className="text-sm text-[var(--text-secondary)] dark:text-[var(--text-dark-secondary)] font-serif-he mb-2" dir="rtl">
                   {project.titleHe}
                 </p>
               )}
 
-              <p className="text-[var(--text-light)] dark:text-[var(--text-dark-light)] text-sm mb-4">
+              <p className="text-[var(--text-secondary)] dark:text-[var(--text-dark-secondary)] text-sm mb-4">
                 {project.description}
               </p>
 
@@ -51,7 +51,7 @@ export function Projects() {
                   <span
                     key={tag}
                     className="text-xs px-2 py-1 bg-[var(--bg-alt)] dark:bg-[var(--bg-dark)] rounded
-                               text-[var(--text-light)] dark:text-[var(--text-dark-light)]"
+                               text-[var(--text-secondary)] dark:text-[var(--text-dark-secondary)]"
                   >
                     {tag}
                   </span>
@@ -76,9 +76,9 @@ export function Projects() {
 
 function StatusBadge({ status }: { status: string }) {
   const colors = {
-    live: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400',
-    development: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400',
-    archived: 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400',
+    live: 'bg-[var(--accent)]/10 text-[var(--accent)]',
+    development: 'bg-[var(--accent)]/20 text-[var(--accent-hover)]',
+    archived: 'bg-[var(--bg-alt)] dark:bg-[var(--bg-dark-alt)] text-[var(--text-muted)] dark:text-[var(--text-dark-muted)]',
   };
 
   return (

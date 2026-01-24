@@ -32,7 +32,7 @@ export function Lab() {
 
       {/* Footer */}
       <footer className="p-6 text-center">
-        <p className="text-xs text-[var(--text-light)] dark:text-[var(--text-dark-light)]">
+        <p className="text-xs text-[var(--text-secondary)] dark:text-[var(--text-dark-secondary)]">
           Experimental features and generative art
         </p>
       </footer>
