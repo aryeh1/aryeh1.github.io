@@ -29,9 +29,7 @@ src/
 ├── hooks/
 │   └── useDarkMode      # Theme toggle
 ├── data/
-│   ├── config           # Site configuration
-│   ├── theme            # Color definitions
-│   └── version          # Version number
+│   └── config           # Site configuration
 └── types/               # TypeScript interfaces
 ```
 

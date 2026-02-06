@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="robots" content="noindex">
   <title>404 - Not Found</title>
   <style>
     body {
@@ -38,14 +37,8 @@
     <a href="/">← Return home</a>
   </div>
   <script>
-    // Handle SPA routing for GitHub Pages
-    // Exclude static folders that should not be handled by the SPA
-    const path = window.location.pathname;
-    const staticPaths = ['/archive'];
-    const isStaticPath = staticPaths.some(p => path === p || path.startsWith(p + '/'));
-    
-    if (path !== '/' && path !== '/404.html' && !isStaticPath) {
-      sessionStorage.setItem('redirect', path);
+    // Simple redirect to home for GitHub Pages
+    if (window.location.pathname !== '/' && window.location.pathname !== '/404.html') {
       window.location.replace('/');
     }
   </script>

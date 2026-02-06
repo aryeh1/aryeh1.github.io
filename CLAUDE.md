@@ -25,14 +25,12 @@ src/
 │   ├── useDarkMode.ts         # Theme toggle (has tests)
 │   └── useDarkMode.test.ts
 ├── data/
-│   ├── config.ts              # Site config & social links
-│   ├── theme.ts               # Color definitions
-│   └── version.ts             # Version number
+│   └── config.ts              # Site config & social links
 └── types/
     └── index.ts               # TypeScript interfaces
 ```
 
-**Total: ~15 files.** Keep it minimal.
+**Total: ~12 files.** Keep it minimal.
 
 ## Commands
 
@@ -65,7 +63,7 @@ All three must pass.
 | `src/pages/public/Landing.tsx` | The landing page | Main content |
 | `src/data/config.ts` | Name, title, links | Edit to update info |
 | `src/hooks/useDarkMode.ts` | Light/dark theme | Has tests |
-| `src/index.css` | Theme colors | CSS variables |
+| `src/index.css` | Theme colors | CSS variables for theming |
 
 ## Adding a New Page
 
