@@ -4,8 +4,6 @@
 
 Minimal landing page for [aryehlopian.com](https://aryehlopian.com).
 
-The full application lives at [lab.aryehlopian.com](https://lab.aryehlopian.com) (separate private repo).
-
 ## Tech Stack
 
 | Category | Technology |

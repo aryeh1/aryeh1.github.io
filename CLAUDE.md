@@ -4,9 +4,7 @@
 
 A **minimal public landing page** for [aryehlopian.com](https://aryehlopian.com).
 
-That's it. One page with name, title, social links, and a link to the private lab.
-
-The full application (Lab, projects, tools) lives in a **separate private repo** deployed at [lab.aryehlopian.com](https://lab.aryehlopian.com).
+That's it. One page with name, title, and social links.
 
 ## Tech Stack
 
@@ -77,4 +75,4 @@ All three must pass.
 
 ## Future Plans
 
-Additional public pages may be added here over time. The private lab remains separate.
+Additional public pages may be added here over time.

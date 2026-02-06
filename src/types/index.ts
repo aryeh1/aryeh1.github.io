@@ -3,7 +3,6 @@ export interface SiteConfig {
   name: string;
   title: string;
   description: string;
-  labUrl: string;
   social: {
     linkedin?: string;
     github?: string;

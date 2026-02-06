@@ -11,7 +11,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - **Repository split**: This repo now contains only the public landing page
-- Full application (Lab, Kamea, auth, etc.) moved to separate private repo at lab.aryehlopian.com
 - Updated all documentation (CLAUDE.md, README.md, ARCHITECTURE.md) to reflect minimal scope
 
 ### Removed
