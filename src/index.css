@@ -1,0 +1,174 @@
+@import "tailwindcss";
+
+/* Enable class-based dark mode for Tailwind v4 */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/**
+ * Efipaz-Inspired Color Theme
+ * ===========================
+ * Japanese minimalist design with 3 core colors:
+ * 1. Cream background - #F7F5F0
+ * 2. Dark text - #1A1A1A
+ * 3. Deep red accent - #8B2635
+ */
+
+:root {
+  /* ===== LIGHT MODE ===== */
+
+  /* Backgrounds */
+  --bg-primary: #F7F5F0;        /* Warm cream */
+  --bg-alt: #EFEBE4;            /* Slightly darker cream */
+  --bg-card: #FFFFFF;           /* White for cards */
+
+  /* Text */
+  --text-primary: #1A1A1A;      /* Near black */
+  --text-secondary: #4A4A4A;    /* Medium gray */
+  --text-muted: #6A6A6A;        /* Light gray */
+
+  /* Accent - Japanese red */
+  --accent: #8B2635;
+  --accent-hover: #6B1D29;
+
+  /* UI Elements */
+  --border: #D4CFC5;
+  --input-bg: #FFFFFF;
+
+  /* Special */
+  --overlay: rgba(26, 26, 26, 0.6);
+
+  /* ===== DARK MODE ===== */
+
+  /* Backgrounds */
+  --bg-dark: #1A1A1A;
+  --bg-dark-alt: #242424;
+  --bg-dark-card: #2A2A2A;
+
+  /* Text */
+  --text-dark: #F7F5F0;
+  --text-dark-secondary: #B8B8B8;
+  --text-dark-muted: #808080;
+
+  /* Accent - Lighter red for dark mode */
+  --accent-dark: #C4424F;
+  --accent-dark-hover: #D4525F;
+
+  /* UI Elements */
+  --border-dark: #3A3A3A;
+  --input-bg-dark: #2A2A2A;
+
+  /* Special */
+  --overlay-dark: rgba(0, 0, 0, 0.8);
+
+  /* ===== SPACING ===== */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2.5rem;
+  --space-xl: 4rem;
+  --space-2xl: 6rem;
+
+  /* ===== DIMENSIONS ===== */
+  --max-width: 1100px;
+  --max-width-narrow: 720px;
+
+  /* ===== TRANSITIONS ===== */
+  --transition: 0.25s ease;
+}
+
+/* ===== BASE STYLES ===== */
+
+html {
+  font-size: 17px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.8;
+  min-height: 100vh;
+  margin: 0;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* ===== DARK MODE ===== */
+
+body.dark {
+  background-color: var(--bg-dark);
+  color: var(--text-dark);
+}
+
+/* ===== TYPOGRAPHY ===== */
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-weight: 300;
+}
+
+h2 {
+  font-size: 1.75rem;
+}
+
+h3 {
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+.font-serif-he {
+  font-family: 'Noto Serif Hebrew', Georgia, serif;
+}
+
+/* ===== LINKS ===== */
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--transition);
+}
+
+a:hover {
+  color: var(--accent);
+}
+
+body.dark a:hover {
+  color: var(--accent-dark);
+}
+
+/* ===== ANIMATIONS ===== */
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out forwards;
+}
+
+/* ===== ACCESSIBILITY ===== */
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+body.dark :focus-visible {
+  outline-color: var(--accent-dark);
+}
+
+::selection {
+  background-color: var(--accent);
+  color: var(--bg-primary);
+}
+
+body.dark ::selection {
+  background-color: var(--accent-dark);
+  color: var(--bg-dark);
+}

@@ -1,0 +1,55 @@
+#!/bin/bash
+# Pre-commit hook for aryeh1.github.io
+# Install: ./hooks/install.sh
+
+set -e
+
+echo "Running pre-commit checks..."
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m' # No Color
+
+# Check for secrets
+echo "Checking for secrets..."
+if git diff --cached --name-only | xargs grep -l -E "(api_key|apikey|secret|password|token).*=" 2>/dev/null | grep -v "\.md$" | grep -v "\.test\." > /dev/null; then
+    echo -e "${RED}WARNING: Possible secrets detected in staged files${NC}"
+    echo "Review your changes carefully before committing."
+fi
+
+# Check for console.log in TypeScript files
+echo "Checking for console.log..."
+if git diff --cached --name-only -- '*.ts' '*.tsx' | xargs grep -l "console\.log" 2>/dev/null | grep -v "\.test\." > /dev/null; then
+    echo -e "${RED}WARNING: console.log found in staged files${NC}"
+    echo "Consider removing before production commit."
+fi
+
+# Type check
+echo "Running type check..."
+if ! npx tsc --noEmit > /dev/null 2>&1; then
+    echo -e "${RED}TypeScript errors found. Fix before committing.${NC}"
+    npx tsc --noEmit
+    exit 1
+fi
+echo -e "${GREEN}Type check passed${NC}"
+
+# Lint
+echo "Running lint..."
+if ! npm run lint > /dev/null 2>&1; then
+    echo -e "${RED}Lint errors found. Fix before committing.${NC}"
+    npm run lint
+    exit 1
+fi
+echo -e "${GREEN}Lint passed${NC}"
+
+# Tests
+echo "Running tests..."
+if ! npm run test > /dev/null 2>&1; then
+    echo -e "${RED}Tests failed. Fix before committing.${NC}"
+    npm run test
+    exit 1
+fi
+echo -e "${GREEN}Tests passed${NC}"
+
+echo -e "${GREEN}All pre-commit checks passed!${NC}"
