@@ -74,11 +74,12 @@ export function Landing() {
           />
         </motion.div>
 
-        {/* Social Links */}
+        {/* Social Links - hidden from Google search snippets */}
         <motion.nav
           variants={fadeInUp}
           transition={{ delay: 0.3 }}
           className="flex justify-center gap-8 text-sm"
+          data-nosnippet
         >
           {siteConfig.social.linkedin && (
             <a
@@ -111,12 +112,13 @@ export function Landing() {
 
       </motion.div>
 
-      {/* Footer */}
+      {/* Footer - hidden from Google search snippets */}
       <motion.footer
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.5, duration: 0.5 }}
         className="absolute bottom-8 text-center"
+        data-nosnippet
       >
         <div className="text-xs text-[var(--text-muted)] dark:text-[var(--text-dark-muted)]">
           <span className="font-serif-he">間</span>
