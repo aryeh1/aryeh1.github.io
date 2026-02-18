@@ -1,0 +1,6 @@
+# robots.txt - Allow search engine indexing
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://aryehlopian.com/sitemap.xml
