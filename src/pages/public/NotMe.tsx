@@ -186,17 +186,6 @@ export function NotMe() {
         >
           Google Play
         </a>
-        <a
-          href={notmeConfig.githubUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="pb-1 border-b border-[var(--border)] dark:border-[var(--border-dark)]
-                     hover:border-[var(--accent)] dark:hover:border-[var(--accent-dark)]
-                     hover:text-[var(--accent)] dark:hover:text-[var(--accent-dark)]
-                     transition-colors"
-        >
-          GitHub
-        </a>
       </motion.nav>
 
       {/* Footer */}
