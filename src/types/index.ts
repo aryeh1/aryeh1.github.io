@@ -13,3 +13,21 @@ export interface SiteConfig {
     analytics: boolean;
   };
 }
+
+/** NotMe app showcase */
+export interface NotMeFeature {
+  icon: string;
+  title: string;
+  description: string;
+}
+
+export interface NotMeConfig {
+  name: string;
+  tagline: string;
+  version: string;
+  playStoreUrl: string;
+  githubUrl: string;
+  features: NotMeFeature[];
+  privacy: string[];
+  tech: string;
+}
