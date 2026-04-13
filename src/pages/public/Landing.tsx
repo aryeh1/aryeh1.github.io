@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { siteConfig } from '@/data/config';
 import { useDarkMode } from '@/hooks/useDarkMode';
 
@@ -107,6 +108,15 @@ export function Landing() {
               GitHub
             </a>
           )}
+          <Link
+            to="/notme"
+            className="pb-1 border-b border-[var(--border)] dark:border-[var(--border-dark)]
+                       hover:border-[var(--accent)] dark:hover:border-[var(--accent-dark)]
+                       hover:text-[var(--accent)] dark:hover:text-[var(--accent-dark)]
+                       transition-colors"
+          >
+            NotMe
+          </Link>
         </motion.nav>
 
 

@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { Landing } from '@/pages/public/Landing';
-import { SoliMarket } from '@/pages/public/SoliMarket';
+import { NotMe } from '@/pages/public/NotMe';
 import { PostMagazine } from '@/pages/public/PostMagazine';
 import { PostInvestigative } from '@/pages/public/PostInvestigative';
 import { PostMinimal } from '@/pages/public/PostMinimal';
@@ -12,7 +12,7 @@ function App() {
     <ErrorBoundary>
       <BrowserRouter>
         <Routes>
-          <Route path="/solimarket" element={<SoliMarket />} />
+          <Route path="/notme" element={<NotMe />} />
           <Route path="/post/magazine" element={<PostMagazine />} />
           <Route path="/post/investigative" element={<PostInvestigative />} />
           <Route path="/post/minimal" element={<PostMinimal />} />
