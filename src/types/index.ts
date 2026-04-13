@@ -26,7 +26,6 @@ export interface NotMeConfig {
   tagline: string;
   version: string;
   playStoreUrl: string;
-  githubUrl: string;
   features: NotMeFeature[];
   privacy: string[];
   tech: string;

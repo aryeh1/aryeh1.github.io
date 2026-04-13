@@ -5,7 +5,6 @@ export const notmeConfig: NotMeConfig = {
   tagline: 'A privacy-focused notification logger for Android',
   version: '1.0',
   playStoreUrl: 'https://play.google.com/store/apps/details?id=com.app.notme',
-  githubUrl: 'https://github.com/aryeh1/NotMe',
   features: [
     {
       icon: '◉',
