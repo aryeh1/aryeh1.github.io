@@ -83,7 +83,7 @@ export function SearchBar({ people, onSelect, onMatchedChange }: Props) {
         <input
           type="search"
           value={q}
-          placeholder="חיפוש: שם, ישיבה, ניקבי…"
+          placeholder="חיפוש לפי שם, כינוי או ישיבה"
           onChange={(e) => { setQ(e.target.value); setOpen(true); }}
           onFocus={() => setOpen(true)}
           onBlur={() => setTimeout(() => setOpen(false), 150)}

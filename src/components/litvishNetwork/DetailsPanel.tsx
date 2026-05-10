@@ -28,6 +28,8 @@ const REL_LABEL: Record<EdgeType, { in: string; out: string }> = {
   succession: { in: 'קודם בתפקיד', out: 'יורש בתפקיד' },
 };
 
+const SECTION = 'text-[10px] font-medium uppercase tracking-[0.08em] text-[var(--text-muted)] dark:text-[var(--text-dark-muted)] mb-1.5';
+
 export function DetailsPanel({
   person,
   edges,
@@ -42,86 +44,81 @@ export function DetailsPanel({
       {person && (
         <motion.aside
           key={person.id}
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 30 }}
-          transition={{ duration: 0.25, ease: 'easeOut' }}
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -30 }}
+          transition={{ duration: 0.2, ease: 'easeOut' }}
           dir="rtl"
           lang="he"
           className="
-            fixed z-30
-            inset-x-0 bottom-0 max-h-[70vh]
-            md:inset-y-4 md:right-4 md:bottom-auto md:left-auto md:w-[380px] md:max-h-[calc(100vh-2rem)]
-            rounded-t-2xl md:rounded-2xl
+            fixed z-30 pointer-events-auto
+            inset-x-0 bottom-0 max-h-[55vh]
+            md:inset-y-3 md:left-3 md:bottom-auto md:right-auto md:top-[64px] md:w-[320px] md:max-h-[calc(100vh-76px)]
+            rounded-t-xl md:rounded-xl
             bg-[var(--bg-card)] dark:bg-[var(--bg-dark-card)]
             border border-[var(--border)] dark:border-[var(--border-dark)]
-            shadow-xl
+            shadow-lg
             flex flex-col
+            text-[13px]
           "
           style={{ fontFamily: "'Noto Serif Hebrew', Georgia, serif" }}
         >
           {/* Header */}
-          <header className="px-5 pt-4 pb-3 border-b border-[var(--border)] dark:border-[var(--border-dark)]
-                             flex items-start justify-between gap-3">
+          <header className="px-4 pt-3 pb-2.5 border-b border-[var(--border)] dark:border-[var(--border-dark)]
+                             flex items-start justify-between gap-2">
             <div className="flex-1 min-w-0">
-              <h2 className="text-lg font-medium leading-tight">{person.name}</h2>
+              <div className="text-[15px] leading-tight font-medium">{person.name}</div>
               {person.nickname && (
-                <p className="mt-0.5 text-sm text-[var(--accent)] dark:text-[var(--accent-dark)]">
+                <div className="mt-0.5 text-[12px] text-[var(--accent)] dark:text-[var(--accent-dark)]">
                   {person.nickname}
-                </p>
+                </div>
               )}
               {(person.born || person.died) && (
-                <p
-                  className="mt-1 text-xs text-[var(--text-muted)] dark:text-[var(--text-dark-muted)]"
+                <div
+                  className="mt-1 text-[11px] text-[var(--text-muted)] dark:text-[var(--text-dark-muted)]"
                   style={{ direction: 'ltr', textAlign: 'right' }}
                 >
                   {person.born ?? '?'}{person.died ? ` – ${person.died}` : ''}
                   {person.bornPlace ? ` · ${person.bornPlace}` : ''}
-                </p>
+                </div>
               )}
             </div>
             <button
               type="button"
               onClick={onClose}
               aria-label="סגור"
-              className="text-xl leading-none px-2 py-1 rounded-full hover:bg-[var(--bg-alt)] dark:hover:bg-[var(--bg-dark-alt)]"
+              className="text-base leading-none w-7 h-7 rounded-full hover:bg-[var(--bg-alt)] dark:hover:bg-[var(--bg-dark-alt)] inline-flex items-center justify-center"
             >
               ⨯
             </button>
           </header>
 
           {/* Body */}
-          <div className="overflow-y-auto px-5 py-4 space-y-5">
+          <div className="overflow-y-auto px-4 py-3 space-y-3.5 leading-[1.55]">
             {person.significance && (
               <section>
-                <h3 className="text-[11px] uppercase tracking-wider text-[var(--accent)] dark:text-[var(--accent-dark)] mb-1">
-                  למה במפה
-                </h3>
-                <p className="text-sm leading-relaxed">{person.significance}</p>
+                <div className={SECTION + ' text-[var(--accent)] dark:text-[var(--accent-dark)]'}>למה במפה</div>
+                <p className="text-[13px]">{person.significance}</p>
               </section>
             )}
 
             {person.bio && (
               <section>
-                <h3 className="text-[11px] uppercase tracking-wider text-[var(--text-muted)] dark:text-[var(--text-dark-muted)] mb-1">
-                  ביוגרפיה
-                </h3>
-                <p className="text-sm leading-relaxed">{person.bio}</p>
+                <div className={SECTION}>ביוגרפיה</div>
+                <p className="text-[13px]">{person.bio}</p>
               </section>
             )}
 
             {person.roles && person.roles.length > 0 && (
               <section>
-                <h3 className="text-[11px] uppercase tracking-wider text-[var(--text-muted)] dark:text-[var(--text-dark-muted)] mb-2">
-                  תפקידים
-                </h3>
+                <div className={SECTION}>תפקידים</div>
                 <ul className="space-y-1">
                   {person.roles.map((r, i) => {
                     const y = yeshivotById.get(r.yeshivaId);
                     return (
-                      <li key={i} className="text-sm flex items-baseline justify-between gap-3">
-                        <span className="font-medium">{y?.shortName ?? y?.name ?? r.yeshivaId}</span>
-                        <span className="text-xs text-[var(--text-muted)] dark:text-[var(--text-dark-muted)]">
+                      <li key={i} className="text-[12.5px] flex items-baseline justify-between gap-2">
+                        <span className="font-medium truncate">{y?.shortName ?? y?.name ?? r.yeshivaId}</span>
+                        <span className="text-[11px] text-[var(--text-muted)] dark:text-[var(--text-dark-muted)] whitespace-nowrap">
                           {ROLE_LABEL[r.role] ?? r.role}
                           {r.fromYear ? ` · ${r.fromYear}${r.toYear ? `–${r.toYear}` : ''}` : ''}
                         </span>
@@ -134,17 +131,15 @@ export function DetailsPanel({
 
             {person.boards && person.boards.length > 0 && (
               <section>
-                <h3 className="text-[11px] uppercase tracking-wider text-[var(--text-muted)] dark:text-[var(--text-dark-muted)] mb-2">
-                  גופים פוליטיים
-                </h3>
+                <div className={SECTION}>גופים פוליטיים</div>
                 <ul className="space-y-1">
                   {person.boards.map((bId) => {
                     const b = boardsById.get(bId);
                     return (
-                      <li key={bId} className="text-sm">
+                      <li key={bId} className="text-[12.5px]">
                         <span className="font-medium">{b?.shortName ?? bId}</span>
                         {b?.description && (
-                          <p className="text-xs text-[var(--text-muted)] dark:text-[var(--text-dark-muted)] mt-0.5">
+                          <p className="text-[11px] text-[var(--text-muted)] dark:text-[var(--text-dark-muted)] mt-0.5 leading-snug">
                             {b.description}
                           </p>
                         )}
@@ -164,10 +159,8 @@ export function DetailsPanel({
 
             {person.sources && person.sources.length > 0 && (
               <section>
-                <h3 className="text-[11px] uppercase tracking-wider text-[var(--text-muted)] dark:text-[var(--text-dark-muted)] mb-2">
-                  מקורות
-                </h3>
-                <ul className="space-y-1 text-xs">
+                <div className={SECTION}>מקורות</div>
+                <ul className="space-y-1 text-[11px] break-all">
                   {person.sources.map((s, i) => (
                     <li key={i}>
                       <a href={s} target="_blank" rel="noreferrer noopener" className="underline decoration-dotted underline-offset-2 hover:text-[var(--accent)] dark:hover:text-[var(--accent-dark)]">
@@ -210,21 +203,27 @@ function RelationshipsSection({
   const has = (Object.keys(grouped) as EdgeType[]).some((k) => grouped[k].length > 0);
   if (!has) return null;
 
+  const REL_GROUP_LABEL: Record<EdgeType, string> = {
+    parent: 'הורות',
+    spouse: 'נישואין',
+    inlaw: 'חיתון',
+    teacher: 'רב/תלמיד',
+    succession: 'ירושת תפקיד',
+  };
+
   return (
     <section>
-      <h3 className="text-[11px] uppercase tracking-wider text-[var(--text-muted)] dark:text-[var(--text-dark-muted)] mb-2">
-        קשרים
-      </h3>
-      <div className="space-y-3">
+      <div className={SECTION}>קשרים</div>
+      <div className="space-y-2.5">
         {(Object.keys(grouped) as EdgeType[]).map((t) => {
           const list = grouped[t];
           if (list.length === 0) return null;
           return (
             <div key={t}>
-              <div className="text-[11px] mb-1 text-[var(--text-secondary)] dark:text-[var(--text-dark-secondary)]">
-                {t === 'parent' ? 'הורות' : t === 'spouse' ? 'נישואין' : t === 'inlaw' ? 'חיתון' : t === 'teacher' ? 'רב/תלמיד' : 'ירושת תפקיד'}
+              <div className="text-[10.5px] mb-1 text-[var(--text-secondary)] dark:text-[var(--text-dark-secondary)]">
+                {REL_GROUP_LABEL[t]}
               </div>
-              <ul className="space-y-1">
+              <ul className="space-y-0.5">
                 {list.map((rel, i) => {
                   const other = peopleById.get(rel.otherId);
                   if (!other) return null;
@@ -235,13 +234,12 @@ function RelationshipsSection({
                       <button
                         type="button"
                         onClick={() => onSelect(rel.otherId)}
-                        className="w-full text-right text-sm rounded-md px-2 py-1.5
+                        className="w-full text-right text-[12.5px] rounded-md px-2 py-1
                                    hover:bg-[var(--bg-alt)] dark:hover:bg-[var(--bg-dark-alt)]
-                                   border border-transparent hover:border-[var(--border)] dark:hover:border-[var(--border-dark)]
                                    transition-colors flex items-center justify-between gap-2"
                       >
                         <span className="flex-1 truncate">{other.name}</span>
-                        <span className="text-[10px] text-[var(--text-muted)] dark:text-[var(--text-dark-muted)]">
+                        <span className="text-[10px] text-[var(--text-muted)] dark:text-[var(--text-dark-muted)] whitespace-nowrap">
                           {rel.note ? rel.note : role}
                         </span>
                       </button>

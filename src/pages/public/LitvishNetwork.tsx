@@ -13,7 +13,6 @@ import {
   type NodeMouseHandler,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { motion } from 'framer-motion';
 
 import { useDarkMode } from '@/hooks/useDarkMode';
 import {
@@ -36,10 +35,19 @@ const nodeTypes = { person: PersonNode } as const;
 const ALL_EDGE_TYPES: EdgeType[] = ['parent', 'spouse', 'inlaw', 'teacher', 'succession'];
 
 /**
- * Page-local CSS variables for edge colors so dark mode flips them
- * without needing to re-render the React Flow graph.
+ * Page-local CSS:
+ *   1. Reset the global `h1/h2/h3` size overrides for this page only —
+ *      Tailwind v4 puts utilities in @layer utilities, and unlayered
+ *      global element selectors win, so without this all headings
+ *      explode to 2.5rem.
+ *   2. Edge colors as CSS variables so dark mode flips them without
+ *      re-rendering the graph.
  */
-const PAGE_VARS_LIGHT = `
+const PAGE_VARS = `
+.litvish-page h1, .litvish-page h2, .litvish-page h3, .litvish-page h4 {
+  all: unset;
+  display: block;
+}
 :root {
   --edge-parent: #6A6A6A;
   --edge-spouse: #B0394A;
@@ -68,10 +76,10 @@ function PageInner() {
   const { isDark, toggleTheme } = useDarkMode();
   const reactFlow = useReactFlow();
 
-  // Maps for fast lookup, computed once.
   const peopleById = useMemo(() => new Map(people.map((p) => [p.id, p])), []);
   const yeshivotById = useMemo(() => new Map(yeshivot.map((y) => [y.id, y])), []);
   const boardsById = useMemo(() => new Map(boards.map((b) => [b.id, b])), []);
+  const yeshivaShortById = useMemo(() => new Map(yeshivot.map((y) => [y.id, y.shortName ?? y.name])), []);
 
   const [state, setState] = useState<State>({
     selectedId: null,
@@ -81,10 +89,6 @@ function PageInner() {
     onlyDescendantsOf: null,
   });
 
-  /**
-   * Compute the set of visible person ids given the descendant filter.
-   * BFS following parent / inlaw / spouse edges from the root.
-   */
   const visibleIds = useMemo<Set<string> | null>(() => {
     if (!state.onlyDescendantsOf) return null;
     const seen = new Set<string>([state.onlyDescendantsOf]);
@@ -100,16 +104,10 @@ function PageInner() {
     return seen;
   }, [state.onlyDescendantsOf]);
 
-  // Build the React Flow node array.
-  const yeshivaShortById = useMemo(() => new Map(yeshivot.map((y) => [y.id, y.shortName ?? y.name])), []);
-
   const baseNodes: Node[] = useMemo(() => {
     return people.map((p) => {
       const yeshivaLabels = (p.roles ?? []).slice(0, 2).map((r) => yeshivaShortById.get(r.yeshivaId) ?? '');
-      const data: PersonNodeData = {
-        person: p,
-        yeshivaLabels,
-      };
+      const data: PersonNodeData = { person: p, yeshivaLabels };
       return {
         id: p.id,
         type: 'person',
@@ -121,7 +119,6 @@ function PageInner() {
     });
   }, [yeshivaShortById]);
 
-  // Build the React Flow edge array.
   const baseEdges: Edge[] = useMemo(() => {
     return relEdges.map((e) => {
       const v = EDGE_STYLE[e.type];
@@ -146,13 +143,10 @@ function PageInner() {
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>(baseEdges);
 
   /**
-   * Re-run layout whenever the layout kind changes, or the visible
-   * subset (descendant filter) changes, or the data changes.
+   * Re-run layout on layoutKind / descendant-filter change.
    */
   useEffect(() => {
-    const peopleSubset = visibleIds
-      ? people.filter((p) => visibleIds.has(p.id))
-      : people;
+    const peopleSubset = visibleIds ? people.filter((p) => visibleIds.has(p.id)) : people;
     const edgesSubset = visibleIds
       ? relEdges.filter((e) => visibleIds.has(e.source) && visibleIds.has(e.target))
       : relEdges;
@@ -164,23 +158,19 @@ function PageInner() {
     const laid = layout(state.layoutKind, peopleSubset, edgesSubset, rfNodesSubset, rfEdgesSubset);
     setNodes(laid.nodes);
     setEdges(laid.edges);
-
-    // Fit view shortly after layout stabilizes.
-    const t = setTimeout(() => reactFlow.fitView({ padding: 0.18, duration: 300 }), 60);
+    const t = setTimeout(() => reactFlow.fitView({ padding: 0.15, duration: 300 }), 60);
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.layoutKind, visibleIds, baseNodes, baseEdges]);
 
   /**
-   * Apply selection / search highlight overlays to nodes and edges
-   * without re-running layout.
+   * Selection / search highlight overlay.
    */
   useEffect(() => {
     const sel = state.selectedId;
     const matched = state.matchedIds;
-    const hasFilter = sel || matched.size > 0;
+    const hasFilter = !!sel || matched.size > 0;
 
-    // Connected node ids when one is selected.
     const connectedIds = new Set<string>();
     if (sel) {
       connectedIds.add(sel);
@@ -230,16 +220,18 @@ function PageInner() {
     );
   }, [state.selectedId, state.matchedIds, state.visibleEdgeTypes, setNodes, setEdges]);
 
+  const centerOnNode = useCallback((id: string) => {
+    const node = nodes.find((nn) => nn.id === id);
+    if (!node) return;
+    const w = window.innerWidth;
+    const z = w < 600 ? 1.0 : 1.25;
+    setTimeout(() => reactFlow.setCenter(node.position.x + 100, node.position.y + 50, { zoom: z, duration: 350 }), 30);
+  }, [nodes, reactFlow]);
+
   const handleNodeClick: NodeMouseHandler = useCallback((_e, n) => {
     setState((s) => ({ ...s, selectedId: n.id }));
-    // Center on the node, modest zoom-in.
-    const w = window.innerWidth;
-    const z = w < 600 ? 1.0 : 1.3;
-    setTimeout(() => {
-      const node = nodes.find((nn) => nn.id === n.id);
-      if (node) reactFlow.setCenter(node.position.x + 100, node.position.y + 50, { zoom: z, duration: 350 });
-    }, 30);
-  }, [nodes, reactFlow]);
+    centerOnNode(n.id);
+  }, [centerOnNode]);
 
   const handlePaneClick = useCallback(() => {
     setState((s) => ({ ...s, selectedId: null }));
@@ -247,13 +239,8 @@ function PageInner() {
 
   const handleSelectFromSearch = useCallback((id: string) => {
     setState((s) => ({ ...s, selectedId: id }));
-    const n = nodes.find((nn) => nn.id === id);
-    if (n) {
-      const w = window.innerWidth;
-      const z = w < 600 ? 1.0 : 1.3;
-      setTimeout(() => reactFlow.setCenter(n.position.x + 100, n.position.y + 50, { zoom: z, duration: 350 }), 30);
-    }
-  }, [nodes, reactFlow]);
+    centerOnNode(id);
+  }, [centerOnNode]);
 
   const toggleEdgeType = useCallback((t: EdgeType) => {
     setState((s) => {
@@ -280,45 +267,82 @@ function PageInner() {
   }, []);
 
   const resetView = useCallback(() => {
-    reactFlow.fitView({ padding: 0.18, duration: 350 });
+    reactFlow.fitView({ padding: 0.15, duration: 350 });
   }, [reactFlow]);
 
   const selectedPerson = state.selectedId ? peopleById.get(state.selectedId) ?? null : null;
   const rootForFilter = state.onlyDescendantsOf ? peopleById.get(state.onlyDescendantsOf) ?? null : null;
 
-  // ------------- Render -------------
   return (
-    <div className="fixed inset-0 flex flex-col bg-[var(--bg-primary)] dark:bg-[var(--bg-dark)] text-[var(--text-primary)] dark:text-[var(--text-dark)]">
-      <style>{PAGE_VARS_LIGHT}</style>
+    <div className="litvish-page fixed inset-0 bg-[var(--bg-primary)] dark:bg-[var(--bg-dark)] text-[var(--text-primary)] dark:text-[var(--text-dark)]">
+      <style>{PAGE_VARS}</style>
 
-      {/* Header */}
+      {/* Canvas — fills the entire viewport. Strictly LTR for xyflow #3116. */}
+      <div className="absolute inset-0" style={{ direction: 'ltr' }}>
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onNodeClick={handleNodeClick}
+          onPaneClick={handlePaneClick}
+          nodeTypes={nodeTypes}
+          fitView
+          fitViewOptions={{ padding: 0.15 }}
+          proOptions={{ hideAttribution: true }}
+          minZoom={0.15}
+          maxZoom={3}
+          panOnDrag
+          zoomOnPinch
+          nodesDraggable={false}
+          nodesConnectable={false}
+          elementsSelectable
+        >
+          <Background gap={28} size={1} color={isDark ? '#2E2E2E' : '#E4DFD4'} />
+          <Controls position="bottom-right" showInteractive={false} className="!shadow-md" />
+          <MiniMap
+            position="top-left"
+            pannable
+            zoomable
+            ariaLabel="מפת ניווט"
+            nodeColor={(n) => {
+              const data = n.data as unknown as PersonNodeData;
+              if (data?.person?.marquee) return isDark ? '#C4424F' : '#8B2635';
+              return isDark ? '#3A3A3A' : '#B0AAA0';
+            }}
+            maskColor={isDark ? 'rgba(20,20,20,0.65)' : 'rgba(247,245,240,0.7)'}
+            className="!hidden md:!block !bg-[var(--bg-card)] dark:!bg-[var(--bg-dark-card)] !w-[180px] !h-[120px]"
+          />
+        </ReactFlow>
+      </div>
+
+      {/* Top floating header — single compact row */}
       <header
         dir="rtl"
         lang="he"
-        className="relative z-20 px-4 md:px-6 pt-3 md:pt-4 pb-2 md:pb-3
-                   border-b border-[var(--border)] dark:border-[var(--border-dark)]
-                   bg-[var(--bg-primary)]/90 dark:bg-[var(--bg-dark)]/90 backdrop-blur"
+        className="absolute top-0 inset-x-0 z-20 px-3 md:px-4 pt-3 pb-2
+                   pointer-events-none"
       >
-        <div className="flex items-baseline gap-3 mb-2">
-          <motion.h1
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-base md:text-xl font-medium"
+        <div className="max-w-[1400px] mx-auto flex items-center gap-2 pointer-events-auto">
+          {/* Title chip */}
+          <div
+            className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full
+                       bg-[var(--bg-card)]/95 dark:bg-[var(--bg-dark-card)]/95
+                       border border-[var(--border)] dark:border-[var(--border-dark)]
+                       shadow-sm backdrop-blur whitespace-nowrap"
             style={{ fontFamily: "'Noto Serif Hebrew', Georgia, serif" }}
           >
-            רשת השליטה של אליטת הישיבות הליטאית
-          </motion.h1>
-          <span className="hidden md:inline-block w-1 h-1 rounded-full bg-[var(--accent)] dark:bg-[var(--accent-dark)]" />
-          <p className="hidden md:block text-xs text-[var(--text-muted)] dark:text-[var(--text-dark-muted)]"
-             style={{ fontFamily: "'Noto Serif Hebrew', Georgia, serif" }}>
-            מהסבא מסלבודקא ועד מועצת דגל התורה תשפ"ו
-          </p>
-        </div>
+            <span className="text-[13px] font-medium">רשת הליטאיות</span>
+            <span className="w-1 h-1 rounded-full bg-[var(--accent)] dark:bg-[var(--accent-dark)]" />
+            <span className="text-[11px] text-[var(--text-muted)] dark:text-[var(--text-dark-muted)]">
+              מסלבודקא לתשפ"ו
+            </span>
+          </div>
 
-        <div className="flex flex-col md:flex-row md:items-center gap-2">
-          <div className="flex-1 max-w-2xl">
+          <div className="flex-1 min-w-0 max-w-[480px]">
             <SearchBar people={people} onSelect={handleSelectFromSearch} onMatchedChange={setMatchedIds} />
           </div>
+
           <Toolbar
             layout={state.layoutKind}
             onLayoutChange={setLayoutKind}
@@ -337,62 +361,22 @@ function PageInner() {
         </div>
       </header>
 
-      {/* Canvas — strictly LTR per xyflow #3116 (RTL only inside nodes/panels) */}
-      <main className="relative flex-1" style={{ direction: 'ltr' }}>
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          onNodeClick={handleNodeClick}
-          onPaneClick={handlePaneClick}
-          nodeTypes={nodeTypes}
-          fitView
-          fitViewOptions={{ padding: 0.18 }}
-          proOptions={{ hideAttribution: true }}
-          minZoom={0.2}
-          maxZoom={3}
-          panOnDrag
-          panOnScroll={false}
-          zoomOnPinch
-          nodesDraggable={false}
-          nodesConnectable={false}
-          elementsSelectable
+      {/* Floating CTA when a person is selected — "show only descendants" */}
+      {selectedPerson && state.onlyDescendantsOf !== selectedPerson.id && (
+        <button
+          type="button"
+          dir="rtl"
+          onClick={() => filterToDescendantsOf(selectedPerson.id)}
+          className="absolute bottom-4 left-4 z-20 text-[12px] px-3 py-1.5 rounded-full
+                     bg-[var(--accent)] text-white dark:bg-[var(--accent-dark)]
+                     shadow-md hover:opacity-90 transition-opacity"
+          style={{ fontFamily: "'Noto Serif Hebrew', Georgia, serif" }}
         >
-          <Background gap={28} size={1} color={isDark ? '#3A3A3A' : '#D4CFC5'} />
-          <Controls position="bottom-left" showInteractive={false} />
-          <MiniMap
-            position="bottom-right"
-            pannable
-            zoomable
-            ariaLabel="מפת ניווט"
-            nodeColor={(n) => {
-              const data = n.data as unknown as PersonNodeData;
-              if (data?.person?.marquee) return isDark ? '#C4424F' : '#8B2635';
-              return isDark ? '#3A3A3A' : '#B0AAA0';
-            }}
-            maskColor={isDark ? 'rgba(20,20,20,0.65)' : 'rgba(247,245,240,0.7)'}
-            className="!bg-[var(--bg-card)] dark:!bg-[var(--bg-dark-card)]"
-          />
-        </ReactFlow>
+          ⤳ צאצאי {selectedPerson.nickname ?? selectedPerson.name.split(' ').slice(-2).join(' ')}
+        </button>
+      )}
 
-        {/* Floating CTA when a person is selected — "show only descendants" */}
-        {selectedPerson && state.onlyDescendantsOf !== selectedPerson.id && (
-          <button
-            type="button"
-            dir="rtl"
-            onClick={() => filterToDescendantsOf(selectedPerson.id)}
-            className="absolute bottom-4 left-4 z-20 text-xs px-3 py-2 rounded-full
-                       bg-[var(--accent)] text-white dark:bg-[var(--accent-dark)]
-                       shadow-md hover:opacity-90"
-            style={{ fontFamily: "'Noto Serif Hebrew', Georgia, serif" }}
-          >
-            ⤳ הצג רק צאצאים
-          </button>
-        )}
-      </main>
-
-      {/* Details panel (slides in from bottom on mobile, side on desktop) */}
+      {/* Details panel — bottom drawer on mobile, left sidebar on desktop */}
       <DetailsPanel
         person={selectedPerson}
         edges={relEdges}
@@ -407,8 +391,7 @@ function PageInner() {
 }
 
 /**
- * Outer wrapper supplies the ReactFlowProvider context so child hooks
- * (useReactFlow) work.
+ * Outer wrapper supplies the ReactFlowProvider context.
  */
 export function LitvishNetwork() {
   return (
