@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import type { EdgeType } from '@/data/litvishNetwork';
 import type { LayoutKind } from '@/utils/litvishNetwork/layout';
 
@@ -19,7 +20,7 @@ interface Props {
 }
 
 const LAYOUTS: { id: LayoutKind; label: string; hint: string }[] = [
-  { id: 'tree', label: 'אילן יוחסין', hint: 'עץ דגרה — שורש: הסבא מסלבודקא' },
+  { id: 'tree', label: 'אילן', hint: 'אילן יוחסין — שורש: הסבא מסלבודקא' },
   { id: 'network', label: 'רשת', hint: 'טבעות לפי דור' },
   { id: 'generations', label: 'דורות', hint: 'שורות לפי דור' },
 ];
@@ -32,6 +33,12 @@ const EDGE_FILTERS: { id: EdgeType; label: string; chipColor: string }[] = [
   { id: 'succession', label: 'ירושת תפקיד', chipColor: '#B58400' },
 ];
 
+/**
+ * Floating, compact, popover-based toolbar.
+ * - Always-visible chip row: layout segmented control + tools button.
+ * - Popover (on click) shows: edge-type filters, exports, theme,
+ *   reset, descendant-filter status.
+ */
 export function Toolbar({
   layout,
   onLayoutChange,
@@ -50,129 +57,122 @@ export function Toolbar({
   const [open, setOpen] = useState(false);
 
   return (
-    <div
-      dir="rtl"
-      lang="he"
-      className="rounded-2xl bg-[var(--bg-card)] dark:bg-[var(--bg-dark-card)]
-                 border border-[var(--border)] dark:border-[var(--border-dark)]
-                 shadow-md backdrop-blur"
-      style={{ fontFamily: "'Noto Serif Hebrew', Georgia, serif" }}
-    >
-      {/* Compact row — always visible */}
-      <div className="flex items-center gap-2 p-2.5">
-        <SegmentedControl<LayoutKind>
-          options={LAYOUTS.map((l) => ({ value: l.id, label: l.label, title: l.hint }))}
-          value={layout}
-          onChange={onLayoutChange}
-        />
+    <div dir="rtl" lang="he" className="relative inline-flex items-center gap-1.5"
+         style={{ fontFamily: "'Noto Serif Hebrew', Georgia, serif" }}>
+      <SegmentedControl<LayoutKind>
+        options={LAYOUTS.map((l) => ({ value: l.id, label: l.label, title: l.hint }))}
+        value={layout}
+        onChange={onLayoutChange}
+      />
 
-        <div className="hidden md:block w-px h-6 bg-[var(--border)] dark:bg-[var(--border-dark)] mx-1" />
+      <IconBtn onClick={onResetView} aria-label="התאם לחלון" title="התאם לחלון">⤢</IconBtn>
+      <IconBtn onClick={onToggleTheme} aria-label={isDark ? 'מצב בהיר' : 'מצב כהה'} title={isDark ? 'מצב בהיר' : 'מצב כהה'}>{isDark ? '☀' : '☾'}</IconBtn>
+      <IconBtn onClick={() => setOpen((v) => !v)} aria-expanded={open} aria-label="כלים" title="כלים נוספים">⚙</IconBtn>
 
-        <button
-          type="button"
-          onClick={() => setOpen((v) => !v)}
-          className="text-xs px-3 py-1.5 rounded-full border border-[var(--border)] dark:border-[var(--border-dark)]
-                     hover:bg-[var(--bg-alt)] dark:hover:bg-[var(--bg-dark-alt)]"
-          aria-expanded={open}
-        >
-          {open ? 'הסתר אפשרויות' : 'אפשרויות'}
-        </button>
-
-        <button
-          type="button"
-          onClick={onResetView}
-          className="text-xs px-3 py-1.5 rounded-full border border-[var(--border)] dark:border-[var(--border-dark)]
-                     hover:bg-[var(--bg-alt)] dark:hover:bg-[var(--bg-dark-alt)]
-                     hidden md:inline-block"
-        >
-          התאם לחלון
-        </button>
-
-        <div className="ms-auto flex items-center gap-1.5">
-          <button
-            type="button"
-            onClick={onToggleTheme}
-            aria-label={isDark ? 'מצב בהיר' : 'מצב כהה'}
-            className="w-8 h-8 rounded-full border border-[var(--border)] dark:border-[var(--border-dark)]
-                       hover:bg-[var(--bg-alt)] dark:hover:bg-[var(--bg-dark-alt)]
-                       inline-flex items-center justify-center text-base"
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.15 }}
+            className="absolute right-0 top-[calc(100%+8px)] z-50 w-[260px]
+                       rounded-xl bg-[var(--bg-card)] dark:bg-[var(--bg-dark-card)]
+                       border border-[var(--border)] dark:border-[var(--border-dark)]
+                       shadow-xl p-3 space-y-3 text-[12px]"
           >
-            {isDark ? '☀' : '☽'}
-          </button>
-        </div>
-      </div>
-
-      {/* Expanded options */}
-      {open && (
-        <div className="border-t border-[var(--border)] dark:border-[var(--border-dark)] p-3 space-y-3">
-          {/* Edge filter chips */}
-          <div>
-            <div className="text-[10px] uppercase tracking-wider text-[var(--text-muted)] dark:text-[var(--text-dark-muted)] mb-1.5">
-              סוגי קשרים
-            </div>
-            <div className="flex flex-wrap gap-1.5">
-              {EDGE_FILTERS.map(({ id, label, chipColor }) => {
-                const active = visibleEdgeTypes.has(id);
-                return (
+            {/* Descendant filter status */}
+            {onlyDescendantsOf && (
+              <div className="text-[11.5px] rounded-md p-2 bg-[var(--bg-alt)] dark:bg-[var(--bg-dark-alt)]">
+                <div className="text-[var(--text-muted)] dark:text-[var(--text-dark-muted)] text-[10px] mb-0.5">סינון:</div>
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-medium truncate">צאצאי {rootName ?? onlyDescendantsOf}</span>
                   <button
-                    key={id}
                     type="button"
-                    onClick={() => onToggleEdgeType(id)}
-                    aria-pressed={active}
-                    className={[
-                      'text-[11px] px-2.5 py-1 rounded-full border transition-colors',
-                      active
-                        ? 'bg-[var(--bg-alt)] dark:bg-[var(--bg-dark-alt)] border-[var(--border)] dark:border-[var(--border-dark)]'
-                        : 'bg-transparent text-[var(--text-muted)] dark:text-[var(--text-dark-muted)] border-[var(--border)] dark:border-[var(--border-dark)] line-through',
-                    ].join(' ')}
+                    onClick={onClearDescendantFilter}
+                    className="text-[10px] underline decoration-dotted underline-offset-2 whitespace-nowrap"
                   >
-                    <span aria-hidden style={{ color: chipColor, marginInlineEnd: 4 }}>●</span>
-                    {label}
+                    בטל
                   </button>
-                );
-              })}
-            </div>
-          </div>
+                </div>
+              </div>
+            )}
 
-          {/* Descendant filter */}
-          {onlyDescendantsOf && (
-            <div className="text-xs">
-              <span className="text-[var(--text-muted)] dark:text-[var(--text-dark-muted)]">מסונן לצאצאים של: </span>
-              <span className="font-medium">{rootName ?? onlyDescendantsOf}</span>
-              <button
-                type="button"
-                onClick={onClearDescendantFilter}
-                className="ms-2 text-[10px] underline decoration-dotted underline-offset-2"
-              >
-                בטל סינון
-              </button>
+            {/* Edge type filter chips */}
+            <div>
+              <div className="text-[10px] uppercase tracking-[0.06em] text-[var(--text-muted)] dark:text-[var(--text-dark-muted)] mb-1.5">
+                סוגי קשרים
+              </div>
+              <div className="flex flex-wrap gap-1">
+                {EDGE_FILTERS.map(({ id, label, chipColor }) => {
+                  const active = visibleEdgeTypes.has(id);
+                  return (
+                    <button
+                      key={id}
+                      type="button"
+                      onClick={() => onToggleEdgeType(id)}
+                      aria-pressed={active}
+                      className={[
+                        'text-[10.5px] px-2 py-0.5 rounded-full border transition-colors',
+                        active
+                          ? 'bg-[var(--bg-alt)] dark:bg-[var(--bg-dark-alt)] border-[var(--border)] dark:border-[var(--border-dark)]'
+                          : 'bg-transparent text-[var(--text-muted)] dark:text-[var(--text-dark-muted)] border-[var(--border)] dark:border-[var(--border-dark)] line-through',
+                      ].join(' ')}
+                    >
+                      <span aria-hidden style={{ color: chipColor, marginInlineEnd: 3 }}>●</span>
+                      {label}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-          )}
 
-          {/* Export */}
-          <div>
-            <div className="text-[10px] uppercase tracking-wider text-[var(--text-muted)] dark:text-[var(--text-dark-muted)] mb-1.5">
-              ייצוא
+            {/* Export */}
+            <div>
+              <div className="text-[10px] uppercase tracking-[0.06em] text-[var(--text-muted)] dark:text-[var(--text-dark-muted)] mb-1.5">
+                ייצוא
+              </div>
+              <div className="grid grid-cols-4 gap-1">
+                <ExpBtn onClick={onExportPng}>PNG</ExpBtn>
+                <ExpBtn onClick={onExportSvg}>SVG</ExpBtn>
+                <ExpBtn onClick={onExportJson}>JSON</ExpBtn>
+                <ExpBtn onClick={() => window.print()}>PDF</ExpBtn>
+              </div>
             </div>
-            <div className="flex flex-wrap gap-1.5">
-              <button type="button" onClick={onExportPng} className="text-xs px-3 py-1.5 rounded-full border border-[var(--border)] dark:border-[var(--border-dark)] hover:bg-[var(--bg-alt)] dark:hover:bg-[var(--bg-dark-alt)]">PNG</button>
-              <button type="button" onClick={onExportSvg} className="text-xs px-3 py-1.5 rounded-full border border-[var(--border)] dark:border-[var(--border-dark)] hover:bg-[var(--bg-alt)] dark:hover:bg-[var(--bg-dark-alt)]">SVG</button>
-              <button type="button" onClick={onExportJson} className="text-xs px-3 py-1.5 rounded-full border border-[var(--border)] dark:border-[var(--border-dark)] hover:bg-[var(--bg-alt)] dark:hover:bg-[var(--bg-dark-alt)]">JSON</button>
-              <button type="button" onClick={() => window.print()} className="text-xs px-3 py-1.5 rounded-full border border-[var(--border)] dark:border-[var(--border-dark)] hover:bg-[var(--bg-alt)] dark:hover:bg-[var(--bg-dark-alt)]">הדפסה / PDF</button>
-            </div>
-          </div>
-
-          {/* Mobile only: re-fit button */}
-          <button
-            type="button"
-            onClick={onResetView}
-            className="md:hidden text-xs w-full px-3 py-1.5 rounded-full border border-[var(--border)] dark:border-[var(--border-dark)] hover:bg-[var(--bg-alt)] dark:hover:bg-[var(--bg-dark-alt)]"
-          >
-            התאם לחלון
-          </button>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
+  );
+}
+
+function IconBtn({ children, ...rest }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
+  return (
+    <button
+      {...rest}
+      type="button"
+      className="w-8 h-8 inline-flex items-center justify-center rounded-full
+                 border border-[var(--border)] dark:border-[var(--border-dark)]
+                 bg-[var(--bg-card)] dark:bg-[var(--bg-dark-card)]
+                 hover:bg-[var(--bg-alt)] dark:hover:bg-[var(--bg-dark-alt)]
+                 text-[14px] leading-none transition-colors"
+    >
+      {children}
+    </button>
+  );
+}
+
+function ExpBtn({ children, ...rest }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
+  return (
+    <button
+      {...rest}
+      type="button"
+      className="text-[10.5px] px-2 py-1 rounded border border-[var(--border)] dark:border-[var(--border-dark)]
+                 hover:bg-[var(--bg-alt)] dark:hover:bg-[var(--bg-dark-alt)]
+                 transition-colors"
+    >
+      {children}
+    </button>
   );
 }
 
@@ -186,7 +186,8 @@ function SegmentedControl<T extends string>({
   onChange: (v: T) => void;
 }) {
   return (
-    <div className="inline-flex rounded-full border border-[var(--border)] dark:border-[var(--border-dark)] p-0.5 text-xs">
+    <div className="inline-flex rounded-full border border-[var(--border)] dark:border-[var(--border-dark)] p-0.5
+                    bg-[var(--bg-card)] dark:bg-[var(--bg-dark-card)] text-[11px]">
       {options.map((o) => {
         const active = o.value === value;
         return (
@@ -197,7 +198,7 @@ function SegmentedControl<T extends string>({
             title={o.title}
             aria-pressed={active}
             className={[
-              'px-3 py-1 rounded-full transition-colors',
+              'px-2.5 py-0.5 rounded-full transition-colors',
               active
                 ? 'bg-[var(--accent)] text-white dark:bg-[var(--accent-dark)]'
                 : 'text-[var(--text-secondary)] dark:text-[var(--text-dark-secondary)] hover:bg-[var(--bg-alt)] dark:hover:bg-[var(--bg-dark-alt)]',
