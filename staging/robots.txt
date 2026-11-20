@@ -1,3 +1,0 @@
-# robots.txt - Allow search engine indexing
-User-agent: *
-Allow: /
