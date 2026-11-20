@@ -8,10 +8,6 @@ export interface SiteConfig {
     github?: string;
     email?: string;
   };
-  features: {
-    darkMode: boolean;
-    analytics: boolean;
-  };
 }
 
 /** NotMe app showcase */
