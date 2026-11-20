@@ -8,8 +8,4 @@ export const siteConfig: SiteConfig = {
     linkedin: 'https://www.linkedin.com/in/aryeh1',
     github: 'https://github.com/aryeh1',
   },
-  features: {
-    darkMode: true,
-    analytics: false, // Enable when ready
-  },
 };

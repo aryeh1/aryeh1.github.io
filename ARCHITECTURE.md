@@ -2,7 +2,7 @@
 
 ## Overview
 
-Minimal landing page for [aryehlopian.com](https://aryehlopian.com).
+Minimal site for [aryehlopian.com](https://aryehlopian.com): a landing page and a NotMe app showcase (`/notme`).
 
 ## Tech Stack
 
@@ -19,17 +19,19 @@ Minimal landing page for [aryehlopian.com](https://aryehlopian.com).
 
 ```
 src/
-├── App.tsx              # Router (all paths → Landing)
+├── App.tsx              # Router (/notme → NotMe, everything else → Landing)
 ├── main.tsx             # Entry point
 ├── index.css            # Tailwind + theme variables
 ├── components/
 │   └── ErrorBoundary    # Error handling
 ├── pages/public/
-│   └── Landing          # The only page
+│   ├── Landing          # Landing page
+│   └── NotMe            # NotMe app showcase
 ├── hooks/
 │   └── useDarkMode      # Theme toggle
 ├── data/
-│   └── config           # Site configuration
+│   ├── config           # Site configuration
+│   └── notme            # NotMe page content
 └── types/               # TypeScript interfaces
 ```
 
@@ -48,6 +50,8 @@ src/
 1. **Dark Mode** - System preference detection + manual toggle
 2. **Error Boundary** - Graceful error handling
 3. **SPA Routing** - GitHub Pages compatible with 404.html fallback
+
+No analytics or visit tracking of any kind.
 
 ## Deployment
 

@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+- Litvish network page (`/litvish`, `/network`) with its components, data, and utils
+- Graph dependencies used only by that page (`@xyflow/react`, `dagre`, `fuse.js`, `html-to-image`)
+- Unlinked post pages (`/post/magazine`, `/post/investigative`, `/post/minimal`) and their data
+- Unused `features` flags (`darkMode`, `analytics`) from site config
+- Sitemap reference in robots.txt (no sitemap exists)
+
+### Changed
+- Documentation updated to describe the two remaining pages (Landing, NotMe)
+
 ## [0.4.0] - 2026-02-06
 
 ### Changed
